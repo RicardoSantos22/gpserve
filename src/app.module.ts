@@ -1,10 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypegooseModule } from 'nestjs-typegoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { mongoFactory } from './config/database.config';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    TypegooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: mongoFactory,
+      inject: [ConfigService],
+    }),
+  ]
 })
+
 export class AppModule {}
