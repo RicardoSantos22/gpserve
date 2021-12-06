@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop } from '@typegoose/typegoose';
 
+import { carType } from '../../shared/enums';
+
 @modelOptions({
   schemaOptions: { timestamps: true }
 })
@@ -48,7 +50,7 @@ export class Reservations {
   })
 
   @prop()
-  carType: 'New' | 'Used'
+  carType: carType;
 
   @ApiProperty({
     description: "The payment's reference",

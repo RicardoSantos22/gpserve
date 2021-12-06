@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop } from '@typegoose/typegoose';
 
+import { userType } from '../../shared/enums';
+
 @modelOptions({
   schemaOptions: { timestamps: true }
 })
@@ -64,7 +66,7 @@ export class InspectionAppointment {
   })
 
   @prop()
-  userType: 'Guest' | 'User';
+  userType: userType;
 
   @ApiProperty({
     description: 'The status of the appointment',

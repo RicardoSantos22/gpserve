@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
+// Only for dev
 require('dotenv').config()
 
 const port = process.env.PORT;

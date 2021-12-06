@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop } from '@typegoose/typegoose';
 
+import { userType, carType } from '../../shared/enums';
+
 @modelOptions({
   schemaOptions: { timestamps: true }
 })
@@ -56,7 +58,7 @@ export class InsuranceRequests {
   })
 
   @prop()
-  carType: 'New' | 'Used'
+  carType: carType;
 
   @ApiProperty({
     description: 'The guest ID attached to this model',
@@ -72,5 +74,5 @@ export class InsuranceRequests {
   })
 
   @prop()
-  userType: 'Guest' | 'User';
+  userType: userType;
 }

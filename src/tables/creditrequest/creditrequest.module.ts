@@ -7,8 +7,8 @@ import { CreditRequestController } from './controller/creditrequest.controller';
 
 @Module({
   imports: [TypegooseModule.forFeature([CreditRequest])],
-  controllers: [CreditRequestService],
-  providers: [CreditRequestController],
+  controllers: [CreditRequestController],
+  providers: [CreditRequestService],
 })
 
 export class CreditRequestModule {}
