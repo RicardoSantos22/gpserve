@@ -5,17 +5,17 @@ import { resolve } from 'path';
 
 import { mongoFactory } from './config/database.config';
 
-import { AdminModule } from './tables/admin/admin.module';
-import { AgencyModule } from './tables/agency/agency.module';
-import { CreditRequestModule } from './tables/creditrequest/creditrequest.module';
-import { GuestModule } from './tables/guest/guest.module';
-import { InspectionAppointmentModule } from './tables/inspectionappointment/inspectionappointment.module';
-import { InsuranceRequestsModule } from './tables/insurancerequests/insurancerequests.module';
-import { NewCarModule } from './tables/newcar/newcar.module';
-import { ReservationsModule } from './tables/reservations/reservations.module';
-import { TestDriveAppointmentsModule } from './tables/testdriveappointments/testdriveappointments.module';
-import { UsedCarModule } from './tables/usedcar/usercar.module';
-import { UserModule } from './tables/user/user.module';
+import { AdminModule } from './entities/admin/admin.module';
+import { AgencyModule } from './entities/agency/agency.module';
+import { CreditRequestModule } from './entities/creditrequest/creditrequest.module';
+import { GuestModule } from './entities/guest/guest.module';
+import { InspectionAppointmentModule } from './entities/inspectionappointment/inspectionappointment.module';
+import { InsuranceRequestsModule } from './entities/insurancerequests/insurancerequests.module';
+import { NewCarModule } from './entities/newcar/newcar.module';
+import { ReservationsModule } from './entities/reservations/reservations.module';
+import { TestDriveAppointmentsModule } from './entities/testdriveappointments/testdriveappointments.module';
+import { UsedCarModule } from './entities/usedcar/usercar.module';
+import { UserModule } from './entities/user/user.module';
 
 @Module({
   imports: [
