@@ -51,7 +51,7 @@ export class User {
   firebaseId: string;
 
   @ApiProperty({
-    description: 'The user state',
+    description: "The user's state",
     readOnly: true,
   })
 
@@ -67,7 +67,7 @@ export class User {
   zipCode: number;
 
   @ApiProperty({
-    description: 'The RFC of the user; can be optional',
+    description: "The user's RFC; can be optional",
     readOnly: true,
   })
 
@@ -75,7 +75,7 @@ export class User {
   rfc?: string;
 
   @ApiProperty({
-    description: "The user's whishlist of new cars",
+    description: "The user's wishlist of new cars",
     readOnly: true,
   })
 
@@ -83,7 +83,7 @@ export class User {
   newCarsWishlist: string[];
 
   @ApiProperty({
-    description: "The user's whishlist of used cars",
+    description: "The user's wishlist of used cars",
     readOnly: true,
   })
 
