@@ -194,5 +194,5 @@ export class InspectionAppointmentController {
   @Delete(':id')
   async delete(@Param() params: DeleteParams) {
     return { id: await this.service.delete(params.id) };
-  }
-}
+  };
+};
