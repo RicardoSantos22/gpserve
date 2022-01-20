@@ -1,6 +1,6 @@
 import { Logger, NotFoundException } from '@nestjs/common';
 import { DocumentType } from '@typegoose/typegoose';
-import aqp from 'api-query-params';
+import * as aqp from 'api-query-params';
 
 import { PaginatedEntities } from '../models/paginated-entities.model';
 import { ERROR_FINDING_DOCUMENT } from '../models/errors/database.errors';
