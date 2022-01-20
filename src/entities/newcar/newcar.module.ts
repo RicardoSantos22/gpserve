@@ -5,9 +5,13 @@ import { NewCar } from './model/newcar.model';
 import { NewCarController } from './controller/newcar.controller';
 import { NewCarService } from './service/newcar.service';
 import { NewCarRepository } from './repository/newcar.fepository';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypegooseModule.forFeature([NewCar])],
+  imports: [
+    TypegooseModule.forFeature([NewCar]),
+    HttpModule.register({timeout: 20000, maxRedirects: 5})
+  ],
   controllers: [NewCarController],
   providers: [NewCarService, NewCarRepository],
 })
