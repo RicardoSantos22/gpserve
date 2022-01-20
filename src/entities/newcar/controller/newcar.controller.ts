@@ -125,6 +125,11 @@ export class NewCarController {
     return this.service.create({ ...body });
   }
 
+  @Post('setup')
+  async getCarCatalogue() {
+    return this.service.getCarCatalogue()
+  }
+
   /**
    * #region update
    * 

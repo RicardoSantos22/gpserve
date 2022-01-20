@@ -16,7 +16,7 @@ export class NewCar {
   })
 
   @prop()
-  id: string;
+  _id: string;
 
   @ApiProperty({
     description: 'The agency ID attached to this model',
