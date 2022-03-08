@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, prop } from '@typegoose/typegoose';
+import { modelOptions, prop, Severity } from '@typegoose/typegoose';
 
 @modelOptions({
-  schemaOptions: { timestamps: true }
+  schemaOptions: { timestamps: true },
+  options: {
+    allowMixed: Severity.ALLOW
+  }
 })
 
 export class User {

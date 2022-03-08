@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, prop } from '@typegoose/typegoose';
+import { modelOptions, prop, Severity } from '@typegoose/typegoose';
 
 import { carType } from '../../shared/enums';
 
 @modelOptions({
-  schemaOptions: { timestamps: true }
+  schemaOptions: { timestamps: true },
+  options: {
+    allowMixed: Severity.ALLOW
+  }
 })
 
 export class Reservations {

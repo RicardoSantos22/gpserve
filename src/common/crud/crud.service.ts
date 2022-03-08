@@ -5,7 +5,7 @@ import {
   ModelUpdateOptions,
   UpdateQuery,
 } from 'mongoose';
-import { ConfigService } from 'nestjs-config';
+import { ConfigService } from '@nestjs/config';
 
 import { CrudRepository } from './crud.repository';
 

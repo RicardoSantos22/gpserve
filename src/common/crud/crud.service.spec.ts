@@ -1,6 +1,6 @@
 import { CrudService } from './crud.service';
 import { CrudRepository } from './crud.repository';
-import { ConfigService } from 'nestjs-config';
+import { ConfigService } from '@nestjs/config';
 jest.mock('./crud.service');
 
 class CrudChildService extends CrudService<any> {

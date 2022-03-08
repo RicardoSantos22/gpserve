@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypegooseModule } from 'nestjs-typegoose';
-import { ConfigModule, ConfigService } from 'nestjs-config';
-import { resolve } from 'path';
-
+import configuration from './config/configuration';
 import { mongoFactory } from './config/database.config';
-
 import { AdminModule } from './entities/admin/admin.module';
 import { AgencyModule } from './entities/agency/agency.module';
 import { CreditRequestModule } from './entities/creditrequest/creditrequest.module';
@@ -19,8 +17,10 @@ import { UserModule } from './entities/user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.load(resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
-
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration]
+    }),
     TypegooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: mongoFactory,
