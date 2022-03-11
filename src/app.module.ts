@@ -12,7 +12,7 @@ import { InsuranceRequestsModule } from './entities/insurancerequests/insurancer
 import { NewCarModule } from './entities/newcar/newcar.module';
 import { ReservationsModule } from './entities/reservations/reservations.module';
 import { TestDriveAppointmentsModule } from './entities/testdriveappointments/testdriveappointments.module';
-import { UsedCarModule } from './entities/usedcar/usercar.module';
+import { UsedCarModule } from './entities/usedcar/usedcar.module';
 import { UserModule } from './entities/user/user.module';
 
 @Module({

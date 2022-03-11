@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 import { ConfigService } from '@nestjs/config';
 
 import { CrudService } from '../../../common/crud/crud.service';
