@@ -51,7 +51,13 @@ export class NewCarService extends CrudService<NewCar> {
               _id: sc.ID,
               agencyId: sc.agencyID.toString(),
               brand: sc.brand,
-              model: sc.model
+              model: sc.model,
+              series: sc.version,
+              price: sc.price,
+              year: sc.year,
+              transmision: sc.transmision,
+              fuel: sc.fuelType,
+              colours: sc.color,
             }
             newCarsArray.push(newCar)
           }
