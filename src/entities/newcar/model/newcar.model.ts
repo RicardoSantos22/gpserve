@@ -49,41 +49,41 @@ export class NewCar {
     description: "The car's series",
     readOnly: true,
   })
-
+  @prop()
   series: string;
 
   @ApiProperty({
     description: "The car's price",
     readOnly: true,
   })
-
+  @prop()
   price: string;
 
   @ApiProperty({
     description: "The car's manufacturing year",
     readOnly: true,
   })
-
+  @prop()
   year: string;
 
   @ApiProperty({
     description: "The car's transmision type",
     readOnly: true,
   })
-
+  @prop()
   transmision: any;
 
   @ApiProperty({
     description: "The car's fuel type",
     readOnly: true,
   })
-
+  @prop()
   fuel: string;
 
   @ApiProperty({
     description: "The car's colour",
     readOnly: true,
   })
-
+  @prop()
   colours: string | string[];
 }
