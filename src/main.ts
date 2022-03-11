@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 // Only for dev
-require('dotenv').config()
+require('dotenv').config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,6 +23,8 @@ async function bootstrap() {
       forbidUnknownValues: true,
     }),
   );
+
+  app.enableCors();
 
   await app.listen(port || 3000);
 }
