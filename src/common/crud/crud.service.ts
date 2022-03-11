@@ -1,6 +1,5 @@
 import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
 import {
-  CreateQuery,
   FilterQuery,
   ModelUpdateOptions,
   UpdateQuery,
@@ -87,7 +86,7 @@ export abstract class CrudService<T> {
    *
    * @param item - the creation data
    */
-  async create(item: CreateQuery<Partial<T>>): Promise<T> {
+  async create(item: any): Promise<T> {
     try {
       return await this.repository.create(item);
     } catch (e) {
@@ -144,18 +143,18 @@ export abstract class CrudService<T> {
    * @param item - the data to update the documents with
    * @param options - update options
    */
-  async updateMany(
-    conditions: FilterQuery<T>,
-    item: UpdateQuery<T>,
-    options?: ModelUpdateOptions | null,
-  ): Promise<T[]> {
-    try {
-      return await this.repository.updateMany(conditions, item, options);
-    } catch (e) {
-      this.logger.error(e);
-      throw new DatabaseException(ERROR_UPDATING_DOCUMENTS(this.name));
-    }
-  }
+  // async updateMany(
+  //   conditions: FilterQuery<T>,
+  //   item: UpdateQuery<T>,
+  //   options?: ModelUpdateOptions | null,
+  // ): Promise<T[]> {
+  //   try {
+  //     return await this.repository.updateMany(conditions, item, options);
+  //   } catch (e) {
+  //     this.logger.error(e);
+  //     throw new DatabaseException(ERROR_UPDATING_DOCUMENTS(this.name));
+  //   }
+  // }
 
   /**
    *

@@ -5,7 +5,6 @@ import * as aqp from 'api-query-params';
 import { PaginatedEntities } from '../models/paginated-entities.model';
 import { ERROR_FINDING_DOCUMENT } from '../models/errors/database.errors';
 import {
-  CreateQuery,
   FilterQuery,
   Model,
   ModelUpdateOptions,
@@ -69,22 +68,22 @@ export abstract class CrudRepository<T> {
         ERROR_FINDING_DOCUMENT(this.name, `element with id ${id} not found`),
       );
     }
-    return item.toObject();
+    return item
   }
 
   async findOne(query?: FilterQuery<T>): Promise<T> {
     const item = await this.model.findOne(query as any).exec();
-    return !!item ? item.toObject() : undefined;
+    return item
   }
 
-  async create(item: CreateQuery<Partial<T>>): Promise<T> {
+  async create(item: any): Promise<T> {
     const result = await this.model.create(item);
-    return result.toObject();
+    return result
   }
 
   async createMany(items: Array<Partial<T>>): Promise<T[]> {
     const results = await this.model.insertMany(items);
-    return results.map(r => r.toObject());
+    return results
   }
 
   async update(id: string, item: Partial<T>): Promise<T> {
@@ -106,19 +105,19 @@ export abstract class CrudRepository<T> {
     const result = await this.model
       .findByIdAndUpdate(id, updatedItem, { new: true })
       .exec();
-    return result.toObject();
+    return result
   }
 
-  async updateMany(
-    conditions: FilterQuery<T>,
-    item: UpdateQuery<T>,
-    options?: ModelUpdateOptions | null,
-  ): Promise<T[]> {
-    const results = await this.model
-      .updateMany(conditions as any, item as any, options)
-      .exec();
-    return results.map(r => r.toObject());
-  }
+  // async updateMany(
+  //   conditions: FilterQuery<T>,
+  //   item: UpdateQuery<T>,
+  //   options?: ModelUpdateOptions | null,
+  // ): Promise<T[]> {
+  //   const results = await this.model
+  //     .updateMany(conditions as any, item as any, options)
+  //     .exec();
+  //   return results
+  // }
 
   async delete(id: string): Promise<boolean> {
     await this.model.findByIdAndDelete(id).exec();

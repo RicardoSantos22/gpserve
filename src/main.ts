@@ -5,13 +5,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 // Only for dev
-require('dotenv').config()
+if(process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   const port = process.env.PORT;
-
+  app.setGlobalPrefix('api')
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

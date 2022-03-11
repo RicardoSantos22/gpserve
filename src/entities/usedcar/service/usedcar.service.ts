@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 
 import { UsedCar } from '../model/usedcar.model';
-import { UsedCarRepository } from '../repository/usedCar.repository';
+import { UsedCarRepository } from '../repository/usedcar.repository';
 
 @Injectable()
 export class UsedCarService extends CrudService<UsedCar> {
