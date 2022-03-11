@@ -20,4 +20,4 @@ export class SADNewCar {
     demo: string;
     images: {imageUrl: string}[]
     specs: {spec: string, descriptionSpec: string}[]
-} 
+}
