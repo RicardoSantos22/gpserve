@@ -37,6 +37,9 @@ export class NewCar {
   @prop()
   brand: string;
 
+  @prop()
+  brandUrl: string
+
   @ApiProperty({
     description: "The car's model",
     readOnly: true,
@@ -45,12 +48,18 @@ export class NewCar {
   @prop()
   model: string;
 
+  @prop()
+  modelUrl: string
+
   @ApiProperty({
     description: "The car's series",
     readOnly: true,
   })
   @prop()
   series: string;
+
+  @prop()
+  seriesUrl: string
 
   @ApiProperty({
     description: "The car's price",
