@@ -3,8 +3,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { CrudService } from '../../../common/crud/crud.service';
+import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
+import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
 import { SADNewCar } from '../entities/sad-newcar';
-
+import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
 import { NewCarRepository } from '../repository/newcar.fepository';
 
@@ -31,6 +33,15 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
+  async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
+    const cars = await this.repository.findAll(query)
+    const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+    return {
+      ...cars,
+      items: groupedCars
+    }
+  }
+
   async getCarCatalogue() {
     const { token } = await this.loginToSAD()
     let newCarsArray : NewCar[] = []
@@ -52,6 +63,9 @@ export class NewCarService extends CrudService<NewCar> {
               brand: sc.brand,
               model: sc.model,
               series: sc.version,
+              brandUrl: NewCarHelps.stringToUrl(sc.brand),
+              modelUrl: NewCarHelps.stringToUrl(sc.model),
+              seriesUrl: NewCarHelps.stringToUrl(sc.version),
               price: sc.price,
               year: sc.year,
               transmision: sc.transmision,
