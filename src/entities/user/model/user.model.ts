@@ -21,6 +21,8 @@ export class User {
   @prop()
   id: string;
 
+  _id: string;
+
   @ApiProperty({
     description: 'Name of the user',
     readOnly: true,
@@ -34,7 +36,7 @@ export class User {
     readOnly: true,
   })
 
-  @prop()
+  @prop({unique: true})
   email: string;
 
   @ApiProperty({
@@ -50,7 +52,7 @@ export class User {
     readOnly: true,
   })
 
-  @prop()
+  @prop({unique: true})
   firebaseId: string;
 
   @ApiProperty({
@@ -82,7 +84,7 @@ export class User {
     readOnly: true,
   })
 
-  @prop()
+  @prop({default: []})
   newCarsWishlist: string[];
 
   @ApiProperty({
@@ -90,7 +92,7 @@ export class User {
     readOnly: true,
   })
 
-  @prop()
+  @prop({default: []})
   usedCarsWishlist: string[];
 
   @ApiProperty({
@@ -98,7 +100,7 @@ export class User {
     readOnly: true,
   })
 
-  @prop()
+  @prop({default: true})
   isVerified: boolean;
 
   @ApiProperty({
@@ -106,6 +108,6 @@ export class User {
     readOnly: true,
   })
 
-  @prop()
+  @prop({default: false})
   isDisabled: boolean;
 }

@@ -10,6 +10,7 @@ import { UserRepository } from './repository/user.repository';
   imports: [TypegooseModule.forFeature([User])],
   controllers: [UserController],
   providers: [UserService, UserRepository],
+  exports: [UserService]
 })
 
 export class UserModule {}

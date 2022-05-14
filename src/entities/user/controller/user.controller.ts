@@ -6,7 +6,8 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UseGuards
 } from '@nestjs/common';
 
 import {
@@ -25,6 +26,9 @@ import { UserService } from '../service/user.service';
 import { CreateUserDTO } from '../dto/create-user';
 import { FindAllUsersQuery } from '../dto/find-all-users-query';
 import { UpdateUserDTO } from '../dto/update-user';
+import { AuthenticatedUser } from '../../../common/decorators/user.decorator';
+import { ValidatedUser } from '../../../auth/strategies/jwt.strategy';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -60,6 +64,12 @@ export class UserController {
     return this.service.findAll(query);
   };
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async findSelf(@AuthenticatedUser() user: ValidatedUser) {
+    return this.service.findById(user.id)
+  }
+
   /**
    * #region findById
    * 
@@ -94,6 +104,7 @@ export class UserController {
   async findById(@Param() params: FindByIdParams) {
     return this.service.findById(params.id);
   }
+
 
   /**
    * #region create

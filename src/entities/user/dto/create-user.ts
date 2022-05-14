@@ -31,6 +31,16 @@ export class CreateUserDTO {
   readonly email: string;
 
   @ApiProperty({
+    description: 'Firebase ID Auth of the user',
+    example: 'firebase-id-21876291',
+  })
+
+  @IsString()
+  @IsNotEmpty()
+
+  readonly firebaseId: string;
+
+  @ApiProperty({
     description: "The user's phone; can be optional",
     example: '961 281 7653',
   })
@@ -70,39 +80,4 @@ export class CreateUserDTO {
 
   readonly rfc?: string;
 
-  @ApiProperty({
-    description: "The user's wishlist of new cars",
-    example: ['Range Rover', 'Corola'],
-  })
-
-  @IsArray()
-
-  readonly newCarsWishlist: string[];
-
-  @ApiProperty({
-    description: "The user's wishlist of used cars",
-    example: ['Range Rover', 'Corola'],
-  })
-
-  @IsArray()
-
-  readonly usedCarsWishlist: string[];
-
-  @ApiProperty({
-    description: 'Is the user verified?',
-    example: false,
-  })
-
-  @IsBoolean()
-
-  readonly isVerified: boolean;
-
-  @ApiProperty({
-    description: 'Is the user disabled?',
-    example: true,
-  })
-
-  @IsBoolean()
-
-  readonly isDisabled: boolean;
 };
