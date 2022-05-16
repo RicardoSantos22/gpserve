@@ -2,7 +2,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop, Severity } from '@typegoose/typegoose';
 
 @modelOptions({
-  schemaOptions: { timestamps: true },
+  schemaOptions: { 
+    timestamps: true,
+    id: true,
+    toJSON: {
+      virtuals: true
+    },
+    toObject: {
+      virtuals: true
+    }
+  },
   options: {
     allowMixed: Severity.ALLOW
   }
