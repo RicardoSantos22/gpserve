@@ -10,7 +10,7 @@ import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
     TypegooseModule.forFeature([NewCar]),
-    HttpModule.register({timeout: 20000, maxRedirects: 5})
+    HttpModule.register({timeout: 60000, maxRedirects: 5})
   ],
   controllers: [NewCarController],
   providers: [NewCarService, NewCarRepository],

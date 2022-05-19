@@ -45,37 +45,45 @@ export class NewCarService extends CrudService<NewCar> {
   async getCarCatalogue() {
     const { token } = await this.loginToSAD()
     let newCarsArray : NewCar[] = []
+    let agencyIds = [3, 12] // agency 12 takes forever. can be removed for faster testing of method
+    let promises = []
     try {
-      const response = await this.httpService.get<{success: boolean, message: string, data: SADNewCar[]}>(
-        `${this.sadApiConfig.baseUrl}/Vehicles?dealerId=3`,
-         {
-          headers: {
-            'Authorization': 'Bearer ' + token.trim()
-          }
-        }
-        ).toPromise()
-        if(response.data.success) {
-          const sadNewCars = response.data.data
-          for(let sc of sadNewCars) {
-            let newCar: NewCar = {
-              _id: sc.ID,
-              agencyId: sc.agencyID.toString(),
-              brand: sc.brand,
-              model: sc.model,
-              series: sc.version,
-              brandUrl: NewCarHelps.stringToUrl(sc.brand),
-              modelUrl: NewCarHelps.stringToUrl(sc.model),
-              seriesUrl: NewCarHelps.stringToUrl(sc.version),
-              price: sc.price,
-              year: sc.year,
-              transmision: sc.transmision,
-              fuel: sc.fuelType,
-              colours: sc.color,
+      for(let id of agencyIds) {
+        promises.push(this.httpService.get<{success: boolean, message: string, data: SADNewCar[]}>(
+          `${this.sadApiConfig.baseUrl}/Vehicles?dealerId=${id}`,
+          {
+            headers: {
+              'Authorization': 'Bearer ' + token.trim()
             }
-            newCarsArray.push(newCar)
           }
-          return this.repository.createMany(newCarsArray)
+          ).toPromise()
+        )
+      }
+      const responses = await Promise.all(promises)
+      for(let response of responses) {
+          if(response.data.success) {
+            const sadNewCars = response.data.data
+            for(let sc of sadNewCars) {
+              let newCar: NewCar = {
+                _id: sc.ID,
+                agencyId: sc.agencyID.toString(),
+                brand: sc.brand,
+                model: sc.model,
+                series: sc.version,
+                brandUrl: NewCarHelps.stringToUrl(sc.brand),
+                modelUrl: NewCarHelps.stringToUrl(sc.model),
+                seriesUrl: NewCarHelps.stringToUrl(sc.version),
+                price: sc.price,
+                year: sc.year,
+                transmision: sc.transmision,
+                fuel: sc.fuelType,
+                colours: sc.color,
+              }
+              newCarsArray.push(newCar)
+            }
         }
+      }
+      return this.repository.createMany(newCarsArray)
     }
     catch(err) {
       Logger.error(err)
