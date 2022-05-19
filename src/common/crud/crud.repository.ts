@@ -73,7 +73,7 @@ export abstract class CrudRepository<T> {
 
   async findOne(query?: FilterQuery<T>): Promise<T> {
     const item = await this.model.findOne(query as any).exec();
-    return item ? item.toObject(): undefined
+    return item
   }
 
   async create(item: any): Promise<T> {
