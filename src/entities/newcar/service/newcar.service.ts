@@ -5,11 +5,12 @@ import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
 import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
+import { NewCarGroupFilter } from '../dto/new-car-group-filter';
 import { NewCarsFilters } from '../dto/new-cars-filters';
 import { SADNewCar } from '../entities/sad-newcar';
 import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
-import { NewCarRepository } from '../repository/newcar.fepository';
+import { NewCarRepository } from '../repository/newcar.repository';
 
 @Injectable()
 export class NewCarService extends CrudService<NewCar> {
@@ -39,6 +40,18 @@ export class NewCarService extends CrudService<NewCar> {
     return {
       ...cars,
       items: groupedCars
+    }
+  }
+
+  async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{cars: NewCar[], colours: string[]}> {
+    const cars = await this.repository.findByGroup(groupFilter)
+    let coloursSet = new Set<string>()
+    for(let car of cars) {
+      coloursSet.add(car.colours as string)
+    }
+    return {
+      cars,
+      colours: [...coloursSet]
     }
   }
 

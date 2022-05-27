@@ -27,6 +27,7 @@ import { NewCarService } from '../service/newcar.service';
 import { CreateNewCarDTO } from '../dto/create-newcar';
 import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
 import { UpdateNewCarDTO } from '../dto/update-newcar';
+import { NewCarGroupFilter } from '../dto/new-car-group-filter';
 
 @Controller('newcar')
 export class NewCarController {
@@ -65,6 +66,17 @@ export class NewCarController {
   @Get('filters')
   async getFiltersValues() {
     return this.service.getFiltersValues()
+  }
+
+  @Get(':brandUrl/:modelUrl/:seriesUrl/:year')
+  async getByCarGroup(@Param('brandUrl') brandUrl: string, @Param('modelUrl') modelUrl: string, @Param('seriesUrl') seriesUrl: string, @Param('year') year: string) {
+    const groupFilter : NewCarGroupFilter = {
+      brandUrl,
+      modelUrl,
+      seriesUrl,
+      year
+    }
+    return this.service.getByCarGroup(groupFilter)
   }
 
   /**
