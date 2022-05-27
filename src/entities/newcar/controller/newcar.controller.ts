@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 
 import {
@@ -54,7 +56,7 @@ export class NewCarController {
   })
 
   // #endregion findAll
-
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   async findAll(@Query() query: FindAllNewCarsQuery) {
     return this.service.findAll(query);

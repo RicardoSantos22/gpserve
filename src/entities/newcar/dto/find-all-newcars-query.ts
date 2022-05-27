@@ -77,7 +77,7 @@ export class FindAllNewCarsQuery extends PartialType(FindAllQuery) implements Pa
 
   @IsOptional()
 
-  transmission: any;
+  transmision: any;
 
   @ApiProperty({
     description: "The car's fuel type",
