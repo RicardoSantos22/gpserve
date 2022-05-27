@@ -62,6 +62,11 @@ export class NewCarController {
     return this.service.findAll(query);
   };
 
+  @Get('filters')
+  async getFiltersValues() {
+    return this.service.getFiltersValues()
+  }
+
   /**
    * #region findById
    * 

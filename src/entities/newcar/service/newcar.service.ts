@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
 import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
+import { NewCarsFilters } from '../dto/new-cars-filters';
 import { SADNewCar } from '../entities/sad-newcar';
 import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
@@ -12,7 +13,6 @@ import { NewCarRepository } from '../repository/newcar.fepository';
 
 @Injectable()
 export class NewCarService extends CrudService<NewCar> {
-
 
   sadApiConfig = {
     baseUrl: null,
@@ -40,6 +40,42 @@ export class NewCarService extends CrudService<NewCar> {
       ...cars,
       items: groupedCars
     }
+  }
+
+  async getFiltersValues(): Promise<NewCarsFilters> {
+    const allCars = await this.repository.findAll()
+    const sets = {
+      brand: new Set<string>(),
+      year: new Set<number>(),
+      transmision: new Set<string>(),
+      colours: new Set<string>(),
+      prices: new Set<number>()
+    }
+
+    let minPrice = Number.MAX_SAFE_INTEGER
+    let maxPrice = 0
+    for(let car of allCars.items) {
+      sets.brand.add(car.brand)
+      sets.year.add(+car.year)
+      sets.transmision.add(car.transmision)
+      sets.colours.add(car.colours as string)
+      maxPrice = Math.max(maxPrice, +car.price)
+      minPrice = Math.min(minPrice, +car.price)
+    }
+    //Logger.debug({minPrice, maxPrice})
+    sets.prices.add(minPrice)
+    sets.prices.add(maxPrice)
+
+    const result: NewCarsFilters = {
+      brand: [...sets.brand],
+      year: [...sets.year],
+      transmision: [...sets.transmision],
+      colours: [...sets.colours],
+      prices: [...sets.prices]
+    }
+
+    return result
+
   }
 
   async getCarCatalogue() {
