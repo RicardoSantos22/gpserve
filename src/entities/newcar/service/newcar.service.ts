@@ -94,7 +94,7 @@ export class NewCarService extends CrudService<NewCar> {
   async getCarCatalogue() {
     const { token } = await this.loginToSAD()
     let newCarsArray : NewCar[] = []
-    let agencyIds = [3, 12] // agency 12 takes forever. can be removed for faster testing of method
+    let agencyIds = [3, 12]
     let promises = []
     try {
       for(let id of agencyIds) {
@@ -111,7 +111,7 @@ export class NewCarService extends CrudService<NewCar> {
       const responses = await Promise.all(promises)
       for(let response of responses) {
           if(response.data.success) {
-            const sadNewCars = response.data.data
+            const sadNewCars = response.data.data as SADNewCar[]
             for(let sc of sadNewCars) {
               let newCar: NewCar = {
                 _id: sc.ID,
@@ -124,6 +124,7 @@ export class NewCarService extends CrudService<NewCar> {
                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
                 price: +sc.price,
                 year: sc.year,
+                images: !sc.images ? []: sc.images.map(i => i.imageUrl),
                 transmision: sc.transmision,
                 fuel: sc.fuelType,
                 colours: sc.color,

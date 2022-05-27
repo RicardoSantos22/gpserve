@@ -75,6 +75,9 @@ export class NewCar {
   @prop()
   year: string;
 
+  @prop({default: []})
+  images: string[]
+
   @ApiProperty({
     description: "The car's transmision type",
     readOnly: true,
