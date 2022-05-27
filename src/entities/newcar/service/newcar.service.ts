@@ -122,7 +122,7 @@ export class NewCarService extends CrudService<NewCar> {
                 brandUrl: NewCarHelps.stringToUrl(sc.brand),
                 modelUrl: NewCarHelps.stringToUrl(sc.model),
                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
-                price: sc.price,
+                price: +sc.price,
                 year: sc.year,
                 transmision: sc.transmision,
                 fuel: sc.fuelType,
