@@ -65,6 +65,17 @@ export class UsedCarService extends CrudService<UsedCar> {
 
   }
 
+  async getModelsByBrands(brands: string[]): Promise<{ models: string[] }> {
+    const cars = await this.repository.findByBrands(brands)
+    const modelsSet = new Set<string>()
+    for(let c of cars) {
+      modelsSet.add(c.model)
+    }
+    return {
+      models: Array.from(modelsSet)
+    }
+  }
+
   async getUsedCarCatalogue() {
     const { token } = await this.loginToSAD()
     let usedCarArrays : UsedCar[] = []

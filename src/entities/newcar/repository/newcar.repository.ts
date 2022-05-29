@@ -17,4 +17,8 @@ export class NewCarRepository extends CrudRepository<NewCar> {
     return this.model.find(group)
   }
 
+  async findByBrands(brands: string[]): Promise<NewCar[]> {
+    return this.model.find({brand: { $in: brands }}).select('model').exec()
+  }
+
 };
