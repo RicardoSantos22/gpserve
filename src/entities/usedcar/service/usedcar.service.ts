@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
+import { NewCarsFilters } from '../../newcar/dto/new-cars-filters';
 import { SADUsedCar } from '../entities/sad-used-car';
 import { UsedCar } from '../model/usedcar.model';
 import { UsedCarRepository } from '../repository/usedcar.repository';
@@ -26,6 +27,42 @@ export class UsedCarService extends CrudService<UsedCar> {
       username: this.config.get('sadAPI.username'),
       password: this.config.get('sadAPI.password')
     }
+  }
+
+  async getFiltersValues(): Promise<NewCarsFilters> {
+    const allCars = await this.repository.findAll()
+    const sets = {
+      brand: new Set<string>(),
+      year: new Set<number>(),
+      transmision: new Set<string>(),
+      colours: new Set<string>(),
+      prices: new Set<number>()
+    }
+
+    let minPrice = Number.MAX_SAFE_INTEGER
+    let maxPrice = 0
+    for(let car of allCars.items) {
+      sets.brand.add(car.brand)
+      sets.year.add(+car.year)
+      if(car.transmision) sets.transmision.add(car.transmision)
+      sets.colours.add(car.colours as string)
+      maxPrice = Math.max(maxPrice, +car.price)
+      minPrice = Math.min(minPrice, +car.price)
+    }
+    //Logger.debug({minPrice, maxPrice})
+    sets.prices.add(minPrice)
+    sets.prices.add(maxPrice)
+
+    const result: NewCarsFilters = {
+      brand: [...sets.brand],
+      year: [...sets.year],
+      transmision: [...sets.transmision],
+      colours: [...sets.colours],
+      prices: [...sets.prices]
+    }
+
+    return result
+
   }
 
   async getUsedCarCatalogue() {
