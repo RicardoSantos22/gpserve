@@ -81,7 +81,7 @@ export class UsedCarService extends CrudService<UsedCar> {
     let usedCarArrays : UsedCar[] = []
     try {
       const response = await this.httpService.get<{success: boolean, message: string, data: SADUsedCar[]}>(
-        `${this.sadApiConfig.baseUrl}/Vehicles/Used?dealerId=3`,
+        `${this.sadApiConfig.baseUrl}/Vehicles/Used?dealerId=12`,
          {
           headers: {
             'Authorization': 'Bearer ' + token.trim()
@@ -99,6 +99,7 @@ export class UsedCarService extends CrudService<UsedCar> {
               series: sc.version,
               price: sc.price,
               year: sc.year,
+              images: [],
               transmision: sc.transmision,
               fuel: sc.fuelType,
               colours: sc.color,

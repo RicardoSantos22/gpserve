@@ -105,7 +105,10 @@ export class NewCarService extends CrudService<NewCar> {
   async getCarCatalogue() {
     const { token } = await this.loginToSAD()
     let newCarsArray : NewCar[] = []
-    let agencyIds = [3, 12]
+    let agencyIds = [
+      // 3, // Hyundai (Pruebas)
+      12 // Chevrolet Culiacán
+    ]
     let promises = []
     try {
       for(let id of agencyIds) {
