@@ -1,10 +1,9 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
 
-import { IsOptional } from 'class-validator';
-
-import { CreateAdminDTO } from './create-admin';
-
+import { CreateAdminDTO } from './create-admin.dto';
 import { FindAllQuery } from '../../../common/models/dto/query/find-all-query.dto';
+
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class FindAllAdminsQuery extends PartialType(FindAllQuery) implements Partial<CreateAdminDTO> {
   id: any;
@@ -15,9 +14,17 @@ export class FindAllAdminsQuery extends PartialType(FindAllQuery) implements Par
     readOnly: true,
   })
 
-  @IsOptional()
+  @IsString()
+  firstName: any;
 
-  name: any;
+  @ApiProperty({
+    description: 'Name of the admin',
+    example: 'John Doe',
+    readOnly: true,
+  })
+
+  @IsString()
+  lastName: any;
 
   @ApiProperty({
     description: 'Email of the admin',

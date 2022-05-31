@@ -1,10 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-
+import {
+  DatabaseException,
+  ERROR_CREATING_DOCUMENT,
+  ERROR_FINDING_DOCUMENT,
+} from 'src/common/models/errors/database.errors';
 import { CrudService } from '../../../common/crud/crud.service';
-
 import { Admin } from '../model/admin.model';
 import { AdminRepository } from '../repository/admin.repository';
+import { CreateAdminDTO } from '../dto/create-admin.dto';
+
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AdminService extends CrudService<Admin> {
@@ -14,4 +23,32 @@ export class AdminService extends CrudService<Admin> {
   ) {
     super(repository, 'Admin', config);
   }
-};
+
+  async findAdminByEmail(email: string): Promise<any> {
+    const admin = await this.repository.findOne({ email });
+    if (!admin) {
+      throw new NotFoundException(ERROR_FINDING_DOCUMENT('Admin'));
+    }
+    return admin;
+  }
+
+  async create(dto: CreateAdminDTO): Promise<Admin> {
+    try {
+      const adminValidator = await this.repository.findOne({
+        email: dto.email,
+      });
+      if (adminValidator) {
+        throw new BadRequestException('This email already exists');
+      }
+      const admin = await this.repository.create(dto);
+      return admin;
+    } catch (e) {
+      if (e instanceof BadRequestException) {
+        throw e;
+      }
+      throw new DatabaseException(
+        ERROR_CREATING_DOCUMENT(this.name, e.message || e),
+      );
+    }
+  }
+}
