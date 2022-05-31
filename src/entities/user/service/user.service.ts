@@ -31,4 +31,3 @@ export class UserService extends CrudService<User> {
     return this.repository.findAll(query);
   }
 }
-
