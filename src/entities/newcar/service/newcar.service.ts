@@ -5,14 +5,15 @@ import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
 import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
+import { NewCarGroupFilter } from '../dto/new-car-group-filter';
+import { NewCarsFilters } from '../dto/new-cars-filters';
 import { SADNewCar } from '../entities/sad-newcar';
 import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
-import { NewCarRepository } from '../repository/newcar.fepository';
+import { NewCarRepository } from '../repository/newcar.repository';
 
 @Injectable()
 export class NewCarService extends CrudService<NewCar> {
-
 
   sadApiConfig = {
     baseUrl: null,
@@ -42,10 +43,72 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
+  async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{cars: NewCar[], colours: string[]}> {
+    const cars = await this.repository.findByGroup(groupFilter)
+    let coloursSet = new Set<string>()
+    for(let car of cars) {
+      coloursSet.add(car.colours as string)
+    }
+    return {
+      cars,
+      colours: [...coloursSet]
+    }
+  }
+
+  async getFiltersValues(): Promise<NewCarsFilters> {
+    const allCars = await this.repository.findAll()
+    const sets = {
+      brand: new Set<string>(),
+      year: new Set<number>(),
+      transmision: new Set<string>(),
+      colours: new Set<string>(),
+      prices: new Set<number>()
+    }
+
+    let minPrice = Number.MAX_SAFE_INTEGER
+    let maxPrice = 0
+    for(let car of allCars.items) {
+      sets.brand.add(car.brand)
+      sets.year.add(+car.year)
+      sets.transmision.add(car.transmision)
+      sets.colours.add(car.colours as string)
+      maxPrice = Math.max(maxPrice, +car.price)
+      minPrice = Math.min(minPrice, +car.price)
+    }
+    //Logger.debug({minPrice, maxPrice})
+    sets.prices.add(minPrice)
+    sets.prices.add(maxPrice)
+
+    const result: NewCarsFilters = {
+      brand: [...sets.brand],
+      year: [...sets.year],
+      transmision: [...sets.transmision],
+      colours: [...sets.colours],
+      prices: [...sets.prices]
+    }
+
+    return result
+
+  }
+
+  async getModelsByBrands(brands: string[]): Promise<{ models: string[] }> {
+    const cars = await this.repository.findByBrands(brands)
+    const modelsSet = new Set<string>()
+    for(let c of cars) {
+      modelsSet.add(c.model)
+    }
+    return {
+      models: Array.from(modelsSet)
+    }
+  }
+
   async getCarCatalogue() {
     const { token } = await this.loginToSAD()
     let newCarsArray : NewCar[] = []
-    let agencyIds = [3, 12] // agency 12 takes forever. can be removed for faster testing of method
+    let agencyIds = [
+      // 3, // Hyundai (Pruebas)
+      12 // Chevrolet Culiacán
+    ]
     let promises = []
     try {
       for(let id of agencyIds) {
@@ -62,7 +125,7 @@ export class NewCarService extends CrudService<NewCar> {
       const responses = await Promise.all(promises)
       for(let response of responses) {
           if(response.data.success) {
-            const sadNewCars = response.data.data
+            const sadNewCars = response.data.data as SADNewCar[]
             for(let sc of sadNewCars) {
               let newCar: NewCar = {
                 _id: sc.ID,
@@ -73,8 +136,9 @@ export class NewCarService extends CrudService<NewCar> {
                 brandUrl: NewCarHelps.stringToUrl(sc.brand),
                 modelUrl: NewCarHelps.stringToUrl(sc.model),
                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
-                price: sc.price,
+                price: +sc.price,
                 year: sc.year,
+                images: !sc.images ? []: sc.images.map(i => i.imageUrl),
                 transmision: sc.transmision,
                 fuel: sc.fuelType,
                 colours: sc.color,

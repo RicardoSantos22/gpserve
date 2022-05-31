@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 
 import {
@@ -25,6 +27,7 @@ import { UsedCarService } from '../service/usedcar.service';
 import { CreateUsedCarDTO } from '../dto/create-usedcar';
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { UpdateUsedCarDTO } from '../dto/update-usedcar';
+import { ModelsByBrandsQuery } from '../../newcar/dto/models-by-brands.query';
 
 @Controller('usedcar')
 export class UsedCarController {
@@ -59,6 +62,17 @@ export class UsedCarController {
   async findAll(@Query() query: FindAllUsedCarsQuery) {
     return this.service.findAll(query);
   };
+
+  @Get('filters')
+  async getFiltersValues() {
+    return this.service.getFiltersValues()
+  }
+
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
+  @Get('filters/models')
+  async getModelsByBrands(@Query() { brand }: ModelsByBrandsQuery) {
+    return this.service.getModelsByBrands(brand)
+  }
 
   /**
    * #region findById

@@ -27,6 +27,8 @@ import { NewCarService } from '../service/newcar.service';
 import { CreateNewCarDTO } from '../dto/create-newcar';
 import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
 import { UpdateNewCarDTO } from '../dto/update-newcar';
+import { NewCarGroupFilter } from '../dto/new-car-group-filter';
+import { ModelsByBrandsQuery } from '../dto/models-by-brands.query';
 
 @Controller('newcar')
 export class NewCarController {
@@ -61,6 +63,28 @@ export class NewCarController {
   async findAll(@Query() query: FindAllNewCarsQuery) {
     return this.service.findAll(query);
   };
+
+  @Get('filters')
+  async getFiltersValues() {
+    return this.service.getFiltersValues()
+  }
+
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
+  @Get('filters/models')
+  async getModelsByBrands(@Query() { brand }: ModelsByBrandsQuery) {
+    return this.service.getModelsByBrands(brand)
+  }
+
+  @Get(':brandUrl/:modelUrl/:seriesUrl/:year')
+  async getByCarGroup(@Param('brandUrl') brandUrl: string, @Param('modelUrl') modelUrl: string, @Param('seriesUrl') seriesUrl: string, @Param('year') year: string) {
+    const groupFilter : NewCarGroupFilter = {
+      brandUrl,
+      modelUrl,
+      seriesUrl,
+      year
+    }
+    return this.service.getByCarGroup(groupFilter)
+  }
 
   /**
    * #region findById

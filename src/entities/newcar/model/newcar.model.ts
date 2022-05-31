@@ -66,7 +66,7 @@ export class NewCar {
     readOnly: true,
   })
   @prop()
-  price: string;
+  price: number;
 
   @ApiProperty({
     description: "The car's manufacturing year",
@@ -74,6 +74,9 @@ export class NewCar {
   })
   @prop()
   year: string;
+
+  @prop({default: []})
+  images: string[]
 
   @ApiProperty({
     description: "The car's transmision type",
