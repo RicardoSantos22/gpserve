@@ -142,6 +142,7 @@ export class NewCarService extends CrudService<NewCar> {
                 transmision: sc.transmision,
                 fuel: sc.fuelType,
                 colours: sc.color,
+                specs: sc.specs
               }
               newCarsArray.push(newCar)
             }
