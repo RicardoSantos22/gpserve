@@ -3,12 +3,14 @@ import { ConfigService } from '@nestjs/config';
 
 import { CrudService } from '../../../common/crud/crud.service';
 import { CreateUserDTO } from '../dto/create-user';
+import { UpdateUserWishlistDTO } from '../dto/update-user-wishlist.dto';
 
 import { User } from '../model/user.model';
 import { UserRepository } from '../repository/user.repository';
 
 @Injectable()
 export class UserService extends CrudService<User> {
+
   constructor(
     readonly repository: UserRepository,
     readonly config: ConfigService,
@@ -24,6 +26,18 @@ export class UserService extends CrudService<User> {
 
   async findByEmailAndFirebaseId(firebaseId: string, email: string): Promise<User> {
     return this.repository.findOne({firebaseId, email})
+  }
+
+  async updateWishlist(id: string, body: UpdateUserWishlistDTO) {
+    if(body.action === 'add') {
+      return this.repository.addToWishlist(id, body.carId, body.carType)
+    }
+    else if(body.action === 'remove') {
+      return this.repository.removeFromWishlist(id, body.carId, body.carType)
+    }
+    else {
+      throw new BadRequestException('Invalid action')
+    }
   }
 
 }
