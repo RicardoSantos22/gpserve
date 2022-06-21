@@ -99,7 +99,7 @@ export class UsedCarService extends CrudService<UsedCar> {
               series: sc.version,
               price: sc.price,
               year: sc.year,
-              images: [],
+              images: !sc.images ? []: sc.images.map(i => i.imageUrl),
               transmision: sc.transmision,
               fuel: sc.fuelType,
               colours: sc.color,

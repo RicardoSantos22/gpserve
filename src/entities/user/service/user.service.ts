@@ -2,6 +2,8 @@ import { FindAllQuery } from 'src/common/models/dto/query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 import { CrudService } from '../../../common/crud/crud.service';
 import { CreateUserDTO } from '../dto/create-user';
+import { UpdateUserWishlistDTO } from '../dto/update-user-wishlist.dto';
+
 import { User } from '../model/user.model';
 import { UserRepository } from '../repository/user.repository';
 
@@ -10,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService extends CrudService<User> {
+
   constructor(
     readonly repository: UserRepository,
     readonly config: ConfigService,
@@ -29,5 +32,17 @@ export class UserService extends CrudService<User> {
 
   async findAll(query: FindAllQuery): Promise<PaginatedEntities<User>> {
     return this.repository.findAll(query);
+  }
+
+  async updateWishlist(id: string, body: UpdateUserWishlistDTO) {
+    if(body.action === 'add') {
+      return this.repository.addToWishlist(id, body.carId, body.carType)
+    }
+    else if(body.action === 'remove') {
+      return this.repository.removeFromWishlist(id, body.carId, body.carType)
+    }
+    else {
+      throw new BadRequestException('Invalid action')
+    }
   }
 }

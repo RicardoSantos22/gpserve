@@ -7,7 +7,9 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards
+  UseGuards,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 
 import {
@@ -29,6 +31,7 @@ import { UpdateUserDTO } from '../dto/update-user';
 import { AuthenticatedUser } from '../../../common/decorators/user.decorator';
 import { ValidatedUser } from '../../../auth/strategies/jwt.strategy';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+import { UpdateUserWishlistDTO } from '../dto/update-user-wishlist.dto';
 
 @Controller('user')
 export class UserController {
@@ -170,6 +173,13 @@ export class UserController {
   @Patch(':id')
   async update(@Param() params: FindByIdParams, @Body() body: UpdateUserDTO) {
     return this.service.update(params.id, body);
+  }
+
+
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Patch(':id/wishlist')
+  async updateUserWishlist(@Param() params: FindByIdParams, @Body() body: UpdateUserWishlistDTO) {
+    return this.service.updateWishlist(params.id, body);
   }
 
   /**
