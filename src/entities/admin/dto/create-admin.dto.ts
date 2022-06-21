@@ -5,28 +5,37 @@ import {
   IsArray,
   IsNotEmpty,
   IsBoolean,
+  IsEmail,
 } from 'class-validator';
 
 export class CreateAdminDTO {
   @ApiProperty({
-    description: 'Name of the admin',
-    example: 'John Doe',
+    description: `The admin's email`,
+    example: 'john.doe@gmail.org',
   })
-
-  @IsString()
-  @IsNotEmpty()
-
-  readonly name: string;
+  @IsEmail()
+  readonly firstName!: string;
 
   @ApiProperty({
-    description: 'Email of the admin',
-    example: 'john@doe.com',
+    description: `The admin's email`,
+    example: 'john.doe@gmail.org',
   })
+  @IsEmail()
+  readonly lastName!: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @ApiProperty({
+    description: `The admin's email`,
+    example: 'john.doe@gmail.org',
+  })
+  @IsEmail()
+  readonly name!: string;
 
-  readonly email: string;
+  @ApiProperty({
+    description: `The admin's email`,
+    example: 'john.doe@gmail.org',
+  })
+  @IsEmail()
+  readonly email!: string;
 
   @ApiProperty({
     description: 'The agency ID attached to this model',

@@ -1,8 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, prop, Severity } from '@typegoose/typegoose';
+import {pre, modelOptions, prop, Severity } from '@typegoose/typegoose';
+import { hash } from 'bcryptjs';
 
+
+@pre<Admin>('save', async function(next) {
+  if (this.isModified('password')) {
+    this.password = await hash(this.password, 10);
+  }
+  next();
+})
 @modelOptions({
-  schemaOptions: { timestamps: true },
+  schemaOptions: {
+    timestamps: true,
+    toObject: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, ret) => {
+        delete ret._id;
+        delete ret.password;
+        Object.setPrototypeOf(ret, Admin);
+        return ret;
+      },
+    },
+  },
   options: {
     allowMixed: Severity.ALLOW
   }
@@ -27,7 +47,15 @@ export class Admin {
   })
 
   @prop()
-  name: string;
+  firstName: string;
+
+  @ApiProperty({
+    description: 'Name of the admin',
+    readOnly: true,
+  })
+
+  @prop()
+  lastName: string;
 
   @ApiProperty({
     description: 'Email of the admin',
@@ -76,4 +104,7 @@ export class Admin {
 
   @prop()
   permissions: string[];
+
+  @prop()
+  password: string;
 }

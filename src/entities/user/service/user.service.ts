@@ -1,12 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-
+import { FindAllQuery } from 'src/common/models/dto/query';
+import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 import { CrudService } from '../../../common/crud/crud.service';
 import { CreateUserDTO } from '../dto/create-user';
 import { UpdateUserWishlistDTO } from '../dto/update-user-wishlist.dto';
 
 import { User } from '../model/user.model';
 import { UserRepository } from '../repository/user.repository';
+
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -28,6 +30,10 @@ export class UserService extends CrudService<User> {
     return this.repository.findOne({firebaseId, email})
   }
 
+  async findAll(query: FindAllQuery): Promise<PaginatedEntities<User>> {
+    return this.repository.findAll(query);
+  }
+
   async updateWishlist(id: string, body: UpdateUserWishlistDTO) {
     if(body.action === 'add') {
       return this.repository.addToWishlist(id, body.carId, body.carType)
@@ -39,5 +45,4 @@ export class UserService extends CrudService<User> {
       throw new BadRequestException('Invalid action')
     }
   }
-
 }

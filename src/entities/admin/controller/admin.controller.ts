@@ -22,7 +22,7 @@ import { FindByIdParams, DeleteParams } from '../../../common/models/dto/params'
 import { Admin } from '../model/admin.model';
 import { AdminService } from '../service/admin.service';
 
-import { CreateAdminDTO } from '../dto/create-admin';
+import { CreateAdminDTO } from '../dto/create-admin.dto';
 import { FindAllAdminsQuery } from '../dto/find-all-admins-query';
 import { UpdateAdminDTO } from '../dto/update-admin';
 
