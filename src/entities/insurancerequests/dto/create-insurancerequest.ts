@@ -45,7 +45,7 @@ export class CreateInsuranceRequestDTO {
 
   @IsDate()
 
-  readonly preferredBroker: Date;
+  readonly preferredBroker: string;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',

@@ -53,7 +53,7 @@ export class InsuranceRequests {
   })
 
   @prop()
-  preferredBroker: Date;
+  preferredBroker: string;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',
