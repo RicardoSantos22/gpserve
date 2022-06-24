@@ -39,6 +39,8 @@ export class FindAllTestDriveAppointmentsQuery extends PartialType(FindAllQuery)
 
   carId: any;
 
+  // TODO: We are going to need to merge both scheduledDate and scheduledHours into a field that accepts Time UNIX entries for better hadnling of the selected time
+
   @ApiProperty({
     description: 'The scheduled date for the drive test appointment',
     readOnly: true,
@@ -47,6 +49,15 @@ export class FindAllTestDriveAppointmentsQuery extends PartialType(FindAllQuery)
   @IsOptional()
 
   scheduledDate: any;
+
+  @ApiProperty({
+    description: 'The scheduled hours for the drive test appointment',
+    readOnly: true,
+  })
+
+  @IsOptional()
+
+  scheduledHours: any;
 
   @ApiProperty({
     description: 'The current status of the appointment',

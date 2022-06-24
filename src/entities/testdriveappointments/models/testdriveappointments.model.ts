@@ -45,6 +45,8 @@ export class TestDriveAppointments {
   @prop()
   carId: string;
 
+  // TODO: We are going to need to merge both scheduledDate and scheduledHours into a field that accepts Time UNIX entries for better hadnling of the selected time
+
   @ApiProperty({
     description: 'The scheduled date for the drive test appointment',
     readOnly: true,
@@ -52,6 +54,14 @@ export class TestDriveAppointments {
 
   @prop()
   scheduledDate: Date;
+
+  @ApiProperty({
+    description: 'The scheduled hours for the drive test appointment',
+    readOnly: true,
+  })
+
+  @prop()
+  scheduledHours: string;
 
   @ApiProperty({
     description: 'The current status of the appointment',
