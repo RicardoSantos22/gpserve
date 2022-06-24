@@ -63,7 +63,7 @@ export class CreateCreditRequestDTO {
 
   @IsString()
 
-  readonly string: string;
+  readonly guestId: string;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',
@@ -89,9 +89,8 @@ export class CreateCreditRequestDTO {
   })
 
   @IsBoolean()
-  @IsOptional()
 
-  readonly hasTradedCar?: boolean;
+  readonly hasTradedCar: boolean;
 
   @ApiProperty({
     description: 'The value of the traded car if any',

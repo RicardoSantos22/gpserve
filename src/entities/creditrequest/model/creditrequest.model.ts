@@ -56,7 +56,7 @@ export class CreditRequest {
   })
 
   @prop()
-  string: string;
+  guestId: string;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',
@@ -80,7 +80,7 @@ export class CreditRequest {
   })
 
   @prop()
-  hasTradedCar?: boolean;
+  hasTradedCar: boolean;
 
   @ApiProperty({
     description: 'The value of the traded car if any',

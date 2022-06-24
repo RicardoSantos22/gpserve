@@ -57,7 +57,7 @@ export class FindAllCreditRequestsQuery extends PartialType(FindAllQuery) implem
 
   @IsOptional()
 
-  string: any;
+  guestId: any;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',
