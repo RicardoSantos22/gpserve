@@ -84,9 +84,8 @@ export class CreateCreditRequestDTO {
   })
 
   @IsBoolean()
-  @IsOptional()
 
-  readonly hasTradedCar?: boolean;
+  readonly hasTradedCar: boolean;
 
   @ApiProperty({
     description: 'The value of the traded car if any',

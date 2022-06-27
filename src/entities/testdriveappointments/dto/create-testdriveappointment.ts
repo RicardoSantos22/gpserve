@@ -5,6 +5,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsDate,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateTestDriveAppointmentDTO {
@@ -38,11 +39,19 @@ export class CreateTestDriveAppointmentDTO {
 
   readonly carId: string;
 
+  // TODO: We are going to need to merge both scheduledDate and scheduledHours into a field that accepts Time UNIX entries for better hadnling of the selected time
+
   @ApiProperty({ description: 'The scheduled date for the drive test appointment' })
 
   @IsDate()
 
   readonly scheduledDate: Date;
+
+  @ApiProperty({ description: 'The scheduled hours for the drive test appointment' })
+
+  @IsNumber()
+
+  readonly scheduledHours: string;
 
   @ApiProperty({
     description: 'The current status of the appointment',
