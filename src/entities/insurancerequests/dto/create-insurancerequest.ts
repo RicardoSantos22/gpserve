@@ -5,6 +5,7 @@ import {
   IsDate,
   IsIn,
   IsNotEmpty,
+  IsEnum,
 } from 'class-validator';
 
 import { userType } from '../../../entities/shared/enums';
@@ -43,16 +44,16 @@ export class CreateInsuranceRequestDTO {
 
   @ApiProperty({ description: 'The preferred broker for the request' })
 
-  @IsDate()
+  @IsString()
 
-  readonly preferredBroker: Date;
+  readonly preferredBroker: string;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',
     example: 'New',
   })
 
-  @IsIn(Object.values(carType))
+  @IsEnum(carType)
 
   readonly carType: carType;
 
@@ -68,10 +69,10 @@ export class CreateInsuranceRequestDTO {
 
   @ApiProperty({
     description: 'The type of user; either Guest or User',
-    example: 'USer',
+    example: userType.user,
   })
 
-  @IsIn(Object.values(userType))
+  @IsEnum(userType)
 
   readonly userType: userType;
 };

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 import {
   IsString,
@@ -6,7 +7,44 @@ import {
   IsArray,
   IsNotEmpty,
   IsObject,
+  ValidateNested,
 } from 'class-validator';
+
+export class TestDriveScheduleDTO {
+
+  @IsNotEmpty()
+  @IsString()
+  label: string
+
+  @IsNotEmpty()
+  @IsString({each: true})
+  monday: string[]
+
+  @IsNotEmpty()
+  @IsString({each: true})
+  tuesday: string[]
+
+  @IsNotEmpty()
+  @IsString({each: true})
+  wednesday: string[]
+
+  @IsNotEmpty()
+  @IsString({each: true})
+  thursday: string[]
+
+  @IsNotEmpty()
+  @IsString({each: true})
+  friday: string[]
+
+  @IsNotEmpty()
+  @IsString({each: true})
+  saturday: string[]
+
+  @IsNotEmpty()
+  @IsString({each: true})
+  sunday: string[]
+
+}
 
 export class CreateAgencyDTO {
   @ApiProperty({
@@ -76,6 +114,11 @@ export class CreateAgencyDTO {
     start: string,
     end: string,
   };
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => TestDriveScheduleDTO)
+  testDriveHours: TestDriveScheduleDTO
 
   @ApiProperty({
     description: 'The available brands in the Agency',

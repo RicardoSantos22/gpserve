@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 
 import {
@@ -119,7 +121,7 @@ export class AgencyController {
   })
 
   // #endregion create
-
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
   async create(@Body() body: CreateAgencyDTO) {
     return this.service.create({ ...body });

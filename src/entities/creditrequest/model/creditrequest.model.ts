@@ -1,10 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, prop, Severity } from '@typegoose/typegoose';
+import { modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
+import { Agency } from '../../agency/model/agency.model';
+import { NewCar } from '../../newcar/model/newcar.model';
 
 import { userType, carType } from '../../shared/enums';
+import { User } from '../../user/model/user.model';
 
 @modelOptions({
-  schemaOptions: { timestamps: true },
+  schemaOptions: { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  },
   options: {
     allowMixed: Severity.ALLOW
   }
@@ -16,23 +23,31 @@ export class CreditRequest {
   }
 
   @ApiProperty({
-    description: 'The social URLs of the Agencies',
-    readOnly: true,
-  })
-
-  @prop()
-  webUrls: {
-    id: string,
-    url: string
-  }[];
-
-  @ApiProperty({
     description: 'The car ID attached to this model',
     readOnly: true,
   })
 
+  // @prop({ required: true, ref: 'NewCar' })
+  // carId: Ref<NewCar>;
+
   @prop()
-  carId: string;
+  carId: string
+
+  @prop({
+    ref: NewCar,
+    foreignField: '_id',
+    localField: 'carId',
+    justOne: true
+  })
+  car: Ref<NewCar>
+
+  @ApiProperty({
+    description: 'The agency ID attached to this model',
+    readOnly: true,
+  })
+
+  @prop({ required: true, ref: () => Agency })
+  agencyId: Ref<Agency>;
 
   @ApiProperty({
     description: 'The current down payment of the vehicle',
@@ -51,12 +66,12 @@ export class CreditRequest {
   creditMonths: number;
 
   @ApiProperty({
-    description: 'The Guest ID attached to this model',
+    description: 'The user ID attached to this model',
     readOnly: true,
   })
 
-  @prop()
-  string: string;
+  @prop({ required: true, ref: () => User  })
+  userId: Ref<User>;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',

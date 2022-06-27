@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 
 import {
@@ -26,7 +28,7 @@ import { CreateInsuranceRequestDTO } from '../dto/create-insurancerequest';
 import { FindAllInsuranceRequestsQuery } from '../dto/find-all-insurancerequests';
 import { UpdateInsuranceRequestDTO } from '../dto/update-insurancerequest';
 
-@Controller('insurancerequests')
+@Controller('insurancerequest')
 export class InsuranceRequestsController {
   constructor(private readonly service: InsuranceRequestsService) {}
 
@@ -119,7 +121,7 @@ export class InsuranceRequestsController {
   })
 
   // #endregion create
-
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
   async create(@Body() body: CreateInsuranceRequestDTO) {
     return this.service.create({ ...body });

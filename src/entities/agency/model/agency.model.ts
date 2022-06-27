@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop, Severity } from '@typegoose/typegoose';
+import * as mongoose from 'mongoose'
+import { TestDriveSchedule } from './test-drive-schedule.model';
 
 @modelOptions({
   schemaOptions: { timestamps: true },
@@ -79,6 +81,9 @@ export class Agency {
     start: string,
     end: string,
   };
+
+  @prop({type: mongoose.Schema.Types.Mixed})
+  testDriveHours: TestDriveSchedule
 
   @ApiProperty({
     description: 'The available brands in the Agency',

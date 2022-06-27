@@ -24,7 +24,7 @@ export abstract class CrudRepository<T> {
   }
 
   async findAll(query?: FindAllQuery): Promise<PaginatedEntities<T>> {
-    const { filter, skip, limit, sort, projection } = aqp(query);
+    const { filter, skip, limit, sort, projection, population } = aqp(query);
     const count = await this.model
       .find(filter)
       .countDocuments()
@@ -35,6 +35,7 @@ export abstract class CrudRepository<T> {
       .limit(limit)
       .sort(sort)
       .select(projection)
+      .populate(population)
       .exec();
     const items = results.map((r: any) => r.toObject()) as T[];
     return {

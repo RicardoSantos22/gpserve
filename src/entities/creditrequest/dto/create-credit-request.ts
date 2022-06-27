@@ -8,23 +8,13 @@ import {
   IsOptional,
   IsBoolean,
   IsIn,
+  IsEnum,
 } from 'class-validator';
 
 import { carType } from '../../../entities/shared/enums';
 import { userType } from '../../../entities/shared/enums';
 
 export class CreateCreditRequestDTO {
-  @ApiProperty({
-    description: 'The social URLs of the Agencies',
-    example: [{ id: '1', urls: ['agency1.com', 'agency2.com'] }, { id: '2', urls: ['agency3.com', 'agency4.com'] }],
-  })
-
-  @IsArray()
-
-  readonly webUrls: {
-    id: string,
-    url: string
-  }[];
 
   @ApiProperty({
     description: 'The car ID attached to this model',
@@ -35,6 +25,11 @@ export class CreateCreditRequestDTO {
   @IsNotEmpty()
 
   readonly carId: string;
+
+  @IsString()
+  @IsNotEmpty()
+
+  readonly agencyId: string;
 
   @ApiProperty({
     description: 'The current down payment of the vehicle',
@@ -63,14 +58,14 @@ export class CreateCreditRequestDTO {
 
   @IsString()
 
-  readonly string: string;
+  readonly userId: string;
 
   @ApiProperty({
     description: 'The type of car; either New or Used',
     example: 'Used',
   })
 
-  @IsIn(Object.values(carType))
+  @IsEnum(carType)
 
   readonly carType: carType;
 
@@ -79,7 +74,7 @@ export class CreateCreditRequestDTO {
     example: 'User',
   })
 
-  @IsIn(Object.values(userType))
+  @IsEnum(userType)
 
   readonly userType: userType;
 

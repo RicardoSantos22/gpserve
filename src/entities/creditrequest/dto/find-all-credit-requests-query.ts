@@ -7,17 +7,6 @@ import { CreateCreditRequestDTO } from './create-credit-request';
 import { FindAllQuery } from '../../../common/models/dto/query/find-all-query.dto';
 
 export class FindAllCreditRequestsQuery extends PartialType(FindAllQuery) implements Partial<CreateCreditRequestDTO> {
-  id: any;
-
-  @ApiProperty({
-    description: 'The social URLs of the Agencies',
-    example: [{ id: '1', urls: ['agency1.com', 'agency2.com'] }, { id: '2', urls: ['agency3.com', 'agency4.com'] }],
-    readOnly: true,
-  })
-
-  @IsOptional()
-
-  webUrls: any;
 
   @ApiProperty({
     description: 'The car ID attached to this model',
