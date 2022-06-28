@@ -17,32 +17,32 @@ export class TestDriveScheduleDTO {
   label: string
 
   @IsNotEmpty()
-  @IsString({each: true})
-  monday: string[]
+  @IsNumber({}, {each: true})
+  monday: number[]
 
   @IsNotEmpty()
-  @IsString({each: true})
-  tuesday: string[]
+  @IsNumber({}, {each: true})
+  tuesday: number[]
 
   @IsNotEmpty()
-  @IsString({each: true})
-  wednesday: string[]
+  @IsNumber({}, {each: true})
+  wednesday: number[]
 
   @IsNotEmpty()
-  @IsString({each: true})
-  thursday: string[]
+  @IsNumber({}, {each: true})
+  thursday: number[]
 
   @IsNotEmpty()
-  @IsString({each: true})
-  friday: string[]
+  @IsNumber({}, {each: true})
+  friday: number[]
 
   @IsNotEmpty()
-  @IsString({each: true})
-  saturday: string[]
+  @IsNumber({}, {each: true})
+  saturday: number[]
 
   @IsNotEmpty()
-  @IsString({each: true})
-  sunday: string[]
+  @IsNumber({}, {each: true})
+  sunday: number[]
 
 }
 

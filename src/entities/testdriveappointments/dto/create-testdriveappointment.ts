@@ -53,6 +53,10 @@ export class CreateTestDriveAppointmentDTO {
 
   readonly scheduledHours: string;
 
+  @IsNumber()
+
+  readonly timestamp: number;
+
   @ApiProperty({
     description: 'The current status of the appointment',
     example: 'In Progress',

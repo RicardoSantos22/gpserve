@@ -2,18 +2,18 @@ export class TestDriveSchedule {
 
     label: string
 
-    monday: string[]
+    monday: number[]
 
-    tuesday: string[]
+    tuesday: number[]
 
-    wednesday: string[]
+    wednesday: number[]
 
-    thursday: string[]
+    thursday: number[]
 
-    friday: string[]
+    friday: number[]
 
-    saturday: string[]
+    saturday: number[]
 
-    sunday: string[]
+    sunday: number[]
 
 }

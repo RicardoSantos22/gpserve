@@ -63,6 +63,9 @@ export class TestDriveAppointments {
   @prop()
   scheduledHours: string;
 
+  @prop()
+  timestamp: number;
+
   @ApiProperty({
     description: 'The current status of the appointment',
     readOnly: true,
