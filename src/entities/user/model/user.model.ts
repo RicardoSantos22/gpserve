@@ -70,7 +70,7 @@ export class User {
   })
 
   @prop()
-  phone?: string;
+  phone: string;
 
   @ApiProperty({
     description: "The model's indetifier in Firebase",

@@ -66,9 +66,9 @@ export class CreateUserDTO {
   })
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
 
-  readonly phone?: string;
+  readonly phone: string;
 
   @ApiProperty({
     description: "The user's state",
