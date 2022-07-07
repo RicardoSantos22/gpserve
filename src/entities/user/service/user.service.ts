@@ -9,6 +9,8 @@ import { UserRepository } from '../repository/user.repository';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SelfUserResponse } from '../dto/self-user-response.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -32,6 +34,13 @@ export class UserService extends CrudService<User> {
 
   async findAll(query: FindAllQuery): Promise<PaginatedEntities<User>> {
     return this.repository.findAll(query);
+  }
+
+  async findSelf(userId: string): Promise<SelfUserResponse> {
+    const foundUser = await this.repository.findById(userId)
+    const dto = plainToClass(SelfUserResponse, foundUser, { excludeExtraneousValues: true })
+    dto.fullName = foundUser.getFullName()
+    return dto
   }
 
   async updateWishlist(id: string, body: UpdateUserWishlistDTO) {

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -32,6 +33,7 @@ import { AuthenticatedUser } from '../../../common/decorators/user.decorator';
 import { ValidatedUser } from '../../../auth/strategies/jwt.strategy';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { UpdateUserWishlistDTO } from '../dto/update-user-wishlist.dto';
+import { SelfUserResponse } from '../dto/self-user-response.dto';
 
 @Controller('user')
 export class UserController {
@@ -69,8 +71,8 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async findSelf(@AuthenticatedUser() user: ValidatedUser) {
-    return this.service.findById(user.id)
+  async findSelf(@AuthenticatedUser() user: ValidatedUser): Promise<SelfUserResponse> {
+    return this.service.findSelf(user.id)
   }
 
   /**
@@ -133,10 +135,10 @@ export class UserController {
   })
 
   // #endregion create
-
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
   async create(@Body() body: CreateUserDTO) {
-    return this.service.create({ ...body });
+    return this.service.create(body);
   }
 
   /**

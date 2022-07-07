@@ -38,7 +38,23 @@ export class User {
   })
 
   @prop()
-  name: string;
+  firstName: string;
+
+  @ApiProperty({
+    description: 'Last Name of the user',
+    readOnly: true,
+  })
+
+  @prop()
+  lastName: string;
+
+  @ApiProperty({
+    description: 'Second Name of the user',
+    readOnly: true,
+  })
+
+  @prop()
+  secondLastName: string;
 
   @ApiProperty({
     description: 'Email of the user',
@@ -119,4 +135,8 @@ export class User {
 
   @prop({default: false})
   isDisabled: boolean;
+
+  getFullName() {
+    return this.firstName + ' ' + this.lastName + ' ' + this.secondLastName
+  }
 }
