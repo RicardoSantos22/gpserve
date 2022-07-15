@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
@@ -152,8 +153,8 @@ export class NewCarController {
   }
 
   @Post('setup')
-  async getCarCatalogue() {
-    return this.service.getCarCatalogue()
+  async getCarCatalogue(@Headers('Authorization') authHeader: string) {
+    return this.service.getCarCatalogue(authHeader)
   }
 
   /**
