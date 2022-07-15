@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { NewCarsFilters } from '../../newcar/dto/new-cars-filters';
@@ -9,6 +9,8 @@ import { UsedCarRepository } from '../repository/usedcar.repository';
 
 @Injectable()
 export class UsedCarService extends CrudService<UsedCar> {
+
+  setupCarsSecret: string
 
   sadApiConfig = {
     baseUrl: null,
@@ -27,6 +29,7 @@ export class UsedCarService extends CrudService<UsedCar> {
       username: this.config.get('sadAPI.username'),
       password: this.config.get('sadAPI.password')
     }
+    this.setupCarsSecret = this.config.get('setupCarsSecret')
   }
 
   async getFiltersValues(): Promise<NewCarsFilters> {
@@ -76,18 +79,52 @@ export class UsedCarService extends CrudService<UsedCar> {
     }
   }
 
-  async getUsedCarCatalogue() {
+  async getUsedCarCatalogue(authHeader: string) {
+    if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
     const { token } = await this.loginToSAD()
-    let usedCarArrays : UsedCar[] = []
+    await this.repository.deleteMany({})
+    let usedCarsArray : UsedCar[] = []
+    let agencyIds = [
+      1, // Hyundai Culiacán
+      5, // Toyota Mazatlán
+      6, // Chevrolet Mazatlán
+      7, // Hyundai Mazatlán
+      8, // Hyundai Mexicali
+      9, // Hyundai Tijuana
+      10, // Hyundai Los Cabos
+      11, // Hino Culiacán
+      12, // Chevrolet Culiacán
+      13, // GMC Culiacán
+      14, // Toyota Culiacán
+      15, // Toyota Zaragoza
+      16, // Toyota Los Mochis
+      17, // Toyota Guasave
+      18, // Chrysler Culiacán
+      19, // Land Rover Culiacán
+      20, // Kia Culiacán
+      21, // Chevrolet Hermosillo
+      22, // Chrysler Mochis
+      23, // KIA Cabos
+      24, // KIA Hermosillo
+      25, // KIA La Paz
+      26, // KIA Mochis
+      27, // KIA Obregón
+    ]
+    let promises = []
     try {
-      const response = await this.httpService.get<{success: boolean, message: string, data: SADUsedCar[]}>(
-        `${this.sadApiConfig.baseUrl}/Vehicles/Used?dealerId=12`,
-         {
-          headers: {
-            'Authorization': 'Bearer ' + token.trim()
+      for(let id of agencyIds) {
+        promises.push(this.httpService.get<{success: boolean, message: string, data: SADUsedCar[]}>(
+          `${this.sadApiConfig.baseUrl}/Vehicles/Used?dealerId=${id}`,
+           {
+            headers: {
+              'Authorization': 'Bearer ' + token.trim()
+            }
           }
-        }
-        ).toPromise()
+          ).toPromise()
+        )
+      }
+      const responses = await Promise.all(promises)
+      for(let response of responses) {
         if(response.data.success) {
           const sadNewCars = response.data.data
           for(let sc of sadNewCars) {
@@ -106,14 +143,18 @@ export class UsedCarService extends CrudService<UsedCar> {
               km: +sc.kmCount,
               location: sc.agencyCity
             }
-            usedCarArrays.push(usedCar)
+            usedCarsArray.push(usedCar)
           }
-          return this.repository.createMany(usedCarArrays)
         }
+      }
+      return this.repository.createMany(usedCarsArray)
     }
     catch(err) {
       Logger.error(err)
       throw err
+    }
+    finally {
+      Logger.debug(`Inserted ${usedCarsArray.length} records`)
     }
   }
 

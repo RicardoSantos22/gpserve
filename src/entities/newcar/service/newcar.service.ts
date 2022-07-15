@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { CrudService } from '../../../common/crud/crud.service';
@@ -14,6 +14,8 @@ import { NewCarRepository } from '../repository/newcar.repository';
 
 @Injectable()
 export class NewCarService extends CrudService<NewCar> {
+
+  setupCarsSecret: string
 
   sadApiConfig = {
     baseUrl: null,
@@ -32,6 +34,7 @@ export class NewCarService extends CrudService<NewCar> {
       username: this.config.get('sadAPI.username'),
       password: this.config.get('sadAPI.password')
     }
+    this.setupCarsSecret = this.config.get('setupCarsSecret')
   }
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
@@ -102,12 +105,36 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
-  async getCarCatalogue() {
+  async getCarCatalogue(authHeader: string) {
+    if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
     const { token } = await this.loginToSAD()
+    await this.repository.deleteMany({})
     let newCarsArray : NewCar[] = []
     let agencyIds = [
-      // 3, // Hyundai (Pruebas)
-      12 // Chevrolet Culiacán
+      1, // Hyundai Culiacán
+      5, // Toyota Mazatlán
+      6, // Chevrolet Mazatlán
+      7, // Hyundai Mazatlán
+      8, // Hyundai Mexicali
+      9, // Hyundai Tijuana
+      10, // Hyundai Los Cabos
+      11, // Hino Culiacán
+      12, // Chevrolet Culiacán
+      13, // GMC Culiacán
+      14, // Toyota Culiacán
+      15, // Toyota Zaragoza
+      16, // Toyota Los Mochis
+      17, // Toyota Guasave
+      18, // Chrysler Culiacán
+      19, // Land Rover Culiacán
+      20, // Kia Culiacán
+      21, // Chevrolet Hermosillo
+      22, // Chrysler Mochis
+      23, // KIA Cabos
+      24, // KIA Hermosillo
+      25, // KIA La Paz
+      26, // KIA Mochis
+      27, // KIA Obregón
     ]
     let promises = []
     try {
@@ -153,6 +180,9 @@ export class NewCarService extends CrudService<NewCar> {
     catch(err) {
       Logger.error(err)
       throw err
+    }
+    finally {
+      Logger.debug(`Inserted ${newCarsArray.length} records`)
     }
   }
 
