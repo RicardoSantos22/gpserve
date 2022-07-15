@@ -79,7 +79,12 @@ export class NewCar {
   images: string[]
 
   @prop({default: []})
-  specs: { spec: string, descriptionSpec: string }[]
+  specs: { 
+    spec: string,
+    descriptionSpec: string,
+    label?: string,
+    category?: string
+  }[]
 
   @ApiProperty({
     description: "The car's transmision type",

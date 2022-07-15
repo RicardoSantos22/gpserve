@@ -18,6 +18,13 @@ export class SADNewCar {
     isAvailable: string;
     agencyCity: string;
     demo: string;
-    images: {imageUrl: string}[]
-    specs: {spec: string, descriptionSpec: string}[]
+    images: {
+        imageUrl: string
+    }[]
+    specs: {
+        spec: string,
+        descriptionSpec: string,
+        label?: string,
+        category?: string
+    }[]
 }
