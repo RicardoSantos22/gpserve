@@ -126,7 +126,7 @@ export class UsedCarService extends CrudService<UsedCar> {
       const responses = await Promise.all(promises)
       for(let response of responses) {
         if(response.data.success) {
-          const sadNewCars = response.data.data
+          const sadNewCars = response.data.data as SADUsedCar[]
           for(let sc of sadNewCars) {
             let usedCar: UsedCar = {
               _id: sc.ID,
@@ -141,7 +141,8 @@ export class UsedCarService extends CrudService<UsedCar> {
               fuel: sc.fuelType,
               colours: sc.color,
               km: +sc.kmCount,
-              location: sc.agencyCity
+              location: sc.agencyCity,
+              specs: sc.specs
             }
             usedCarsArray.push(usedCar)
           }

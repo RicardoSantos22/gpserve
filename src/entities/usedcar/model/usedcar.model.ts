@@ -65,6 +65,14 @@ export class UsedCar {
   @prop({default: []})
   images: string[];
 
+  @prop({default: []})
+  specs: { 
+    spec: string,
+    descriptionSpec: string,
+    label?: string,
+    category?: string
+  }[]
+
   @ApiProperty({
     description: "The car's transmision type",
     readOnly: true,
@@ -99,4 +107,5 @@ export class UsedCar {
   })
   @prop()
   colours: string | string[];
+
 }
