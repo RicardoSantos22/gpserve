@@ -108,7 +108,8 @@ export class NewCarService extends CrudService<NewCar> {
   async getCarCatalogue(authHeader: string) {
     if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
     const { token } = await this.loginToSAD()
-    await this.repository.deleteMany({})
+    const deletedRecords = await this.repository.deleteMany({})
+    Logger.debug(`Deleted ${deletedRecords.affected} records`)
     let newCarsArray : NewCar[] = []
     let agencyIds = [
       1, // Hyundai Culiacán
@@ -154,28 +155,35 @@ export class NewCarService extends CrudService<NewCar> {
           if(response.data.success) {
             const sadNewCars = response.data.data as SADNewCar[]
             for(let sc of sadNewCars) {
-              let newCar: NewCar = {
-                _id: sc.ID,
-                agencyId: sc.agencyID.toString(),
-                brand: sc.brand,
-                model: sc.model,
-                series: sc.version,
-                brandUrl: NewCarHelps.stringToUrl(sc.brand),
-                modelUrl: NewCarHelps.stringToUrl(sc.model),
-                seriesUrl: NewCarHelps.stringToUrl(sc.version),
-                price: +sc.price,
-                year: sc.year,
-                images: !sc.images ? []: sc.images.map(i => i.imageUrl),
-                transmision: sc.transmision,
-                fuel: sc.fuelType,
-                colours: sc.color,
-                specs: sc.specs
+              if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
+              //if(true) {
+                let newCar: NewCar = {
+                  _id: sc.ID,
+                  agencyId: sc.agencyID.toString(),
+                  brand: sc.brand,
+                  model: sc.model,
+                  series: sc.version,
+                  brandUrl: NewCarHelps.stringToUrl(sc.brand),
+                  modelUrl: NewCarHelps.stringToUrl(sc.model),
+                  seriesUrl: NewCarHelps.stringToUrl(sc.version),
+                  price: +sc.price,
+                  year: sc.year,
+                  images: !sc.images ? []: sc.images.map(i => i.imageUrl),
+                  transmision: sc.transmision,
+                  fuel: sc.fuelType,
+                  colours: sc.color,
+                  specs: sc.specs
+                }
+                newCarsArray.push(newCar)
               }
-              newCarsArray.push(newCar)
             }
         }
       }
-      return this.repository.createMany(newCarsArray)
+      const createdCars = await this.repository.createMany(newCarsArray)
+      return {
+        count: newCarsArray.length,
+        results: createdCars
+      }
     }
     catch(err) {
       Logger.error(err)

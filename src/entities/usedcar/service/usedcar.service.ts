@@ -82,7 +82,8 @@ export class UsedCarService extends CrudService<UsedCar> {
   async getUsedCarCatalogue(authHeader: string) {
     if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
     const { token } = await this.loginToSAD()
-    await this.repository.deleteMany({})
+    const deletedRecords = await this.repository.deleteMany({})
+    Logger.debug(`Deleted ${deletedRecords.affected} records`)
     let usedCarsArray : UsedCar[] = []
     let agencyIds = [
       1, // Hyundai Culiacán
@@ -128,23 +129,26 @@ export class UsedCarService extends CrudService<UsedCar> {
         if(response.data.success) {
           const sadNewCars = response.data.data as SADUsedCar[]
           for(let sc of sadNewCars) {
-            let usedCar: UsedCar = {
-              _id: sc.ID,
-              agencyId: sc.agencyID.toString(),
-              brand: sc.brand,
-              model: sc.model,
-              series: sc.version,
-              price: sc.price,
-              year: sc.year,
-              images: !sc.images ? []: sc.images.map(i => i.imageUrl),
-              transmision: sc.transmision,
-              fuel: sc.fuelType,
-              colours: sc.color,
-              km: +sc.kmCount,
-              location: sc.agencyCity,
-              specs: sc.specs
+            if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
+            //if(true) {
+              let usedCar: UsedCar = {
+                _id: sc.ID,
+                agencyId: sc.agencyID.toString(),
+                brand: sc.brand,
+                model: sc.model,
+                series: sc.version,
+                price: sc.price,
+                year: sc.year,
+                images: !sc.images ? []: sc.images.map(i => i.imageUrl),
+                transmision: sc.transmision,
+                fuel: sc.fuelType,
+                colours: sc.color,
+                km: +sc.kmCount,
+                location: sc.agencyCity,
+                specs: sc.specs
+              }
+              usedCarsArray.push(usedCar)
             }
-            usedCarsArray.push(usedCar)
           }
         }
       }
