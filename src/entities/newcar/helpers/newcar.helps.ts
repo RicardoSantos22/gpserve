@@ -16,7 +16,8 @@ export class NewCarHelps {
             repeatedHashes++
             let temp = existingHash
             if(Array.isArray(temp.colours)) {
-              temp.colours.push(car.colours as string)
+              const currentColor = car.colours as string
+              if(temp.colours.indexOf(currentColor) === -1) temp.colours.push(currentColor)
             }
             carsHashMap.set(key, temp)
           }
@@ -30,13 +31,13 @@ export class NewCarHelps {
         }
         const resultArray = Array.from(carsHashMap.values())
         Logger.debug({uniqueHashes, repeatedHashes})
-        let masterColorArray = []
-        for(let car of resultArray) {
-          for(let color of car.colours) {
-            masterColorArray.push(color)
-          }
-        }
-        Logger.debug(masterColorArray.length)
+        // let masterColorArray = []
+        // for(let car of resultArray) {
+        //   for(let color of car.colours) {
+        //     masterColorArray.push(color)
+        //   }
+        // }
+        // Logger.debug(masterColorArray)
         return resultArray
     }
 
