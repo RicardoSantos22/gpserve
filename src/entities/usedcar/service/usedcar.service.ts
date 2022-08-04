@@ -45,7 +45,7 @@ export class UsedCarService extends CrudService<UsedCar> {
     let minPrice = Number.MAX_SAFE_INTEGER
     let maxPrice = 0
     for(let car of allCars.items) {
-      sets.brand.add(car.brand.trim())
+      sets.brand.add(car.brand)
       sets.year.add(+car.year)
       if(car.transmision) sets.transmision.add(car.transmision)
       sets.colours.add(car.colours as string)
@@ -58,7 +58,7 @@ export class UsedCarService extends CrudService<UsedCar> {
 
     const result: NewCarsFilters = {
       brand: [...sets.brand],
-      year: [...sets.year],
+      year: [...sets.year].sort((y1, y2) => y1 - y2),
       transmision: [...sets.transmision],
       colours: [...sets.colours],
       prices: [...sets.prices]
@@ -134,17 +134,17 @@ export class UsedCarService extends CrudService<UsedCar> {
               let usedCar: UsedCar = {
                 _id: sc.ID,
                 agencyId: sc.agencyID.toString(),
-                brand: sc.brand,
-                model: sc.model,
-                series: sc.version,
+                brand: sc.brand.trim(),
+                model: sc.model.trim(),
+                series: sc.version.trim(),
                 price: sc.price,
                 year: sc.year,
                 images: !sc.images ? []: sc.images.map(i => i.imageUrl),
-                transmision: sc.transmision,
-                fuel: sc.fuelType,
-                colours: sc.color,
+                transmision: sc.transmision.trim(),
+                fuel: sc.fuelType.trim(),
+                colours: sc.color.trim(),
                 km: +sc.kmCount,
-                location: sc.agencyCity,
+                location: sc.agencyCity.trim(),
                 specs: sc.specs
               }
               usedCarsArray.push(usedCar)
