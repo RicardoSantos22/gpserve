@@ -32,6 +32,9 @@ definitions:
 
 pipelines:
   branches:
+    develop:
+      - step: *push-image
+      - step: *deploy-to-ecs
     master:
       - step: *push-image
       - step: *deploy-to-ecs
