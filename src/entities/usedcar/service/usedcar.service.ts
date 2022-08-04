@@ -45,7 +45,7 @@ export class UsedCarService extends CrudService<UsedCar> {
     let minPrice = Number.MAX_SAFE_INTEGER
     let maxPrice = 0
     for(let car of allCars.items) {
-      sets.brand.add(car.brand)
+      sets.brand.add(car.brand.trim())
       sets.year.add(+car.year)
       if(car.transmision) sets.transmision.add(car.transmision)
       sets.colours.add(car.colours as string)
