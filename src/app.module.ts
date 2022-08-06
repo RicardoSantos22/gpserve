@@ -15,6 +15,7 @@ import { TestDriveAppointmentsModule } from './entities/testdriveappointments/te
 import { UsedCarModule } from './entities/usedcar/usedcar.module';
 import { UserModule } from './entities/user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { LibroazulModule } from './entities/libroazul/libroazul.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AuthModule } from './auth/auth.module';
     UsedCarModule,
     UserModule,
     AuthModule,
+    LibroazulModule,
   ]
 })
 
