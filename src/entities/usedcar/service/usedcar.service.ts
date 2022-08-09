@@ -132,7 +132,7 @@ export class UsedCarService extends CrudService<UsedCar> {
             if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
             //if(true) {
               let usedCar: UsedCar = {
-                _id: sc.ID,
+                vin: sc.ID,
                 agencyId: sc.agencyID.toString(),
                 brand: sc.brand.trim(),
                 model: sc.model.trim(),

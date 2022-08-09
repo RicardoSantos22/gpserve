@@ -13,12 +13,15 @@ export class UsedCar {
     Object.assign(this, data);
   }
 
-  @ApiProperty({
-    description: "The model's identifier",
-    readOnly: true,
-  })
+  // @ApiProperty({
+  //   description: "The model's identifier",
+  //   readOnly: true,
+  // })
+  // @prop()
+  // _id: string;
+
   @prop()
-  _id: string;
+  vin: string
 
   @ApiProperty({
     description: 'The agency ID attached to this model',
