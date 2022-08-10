@@ -8,7 +8,7 @@ export class LibroazulService {
     constructor(private readonly http: HttpService){}
 
     async findAll(){   
-        let clave = await this.http.post('https://api.libroazul.com/Api/Sesion/?Usuario=demoKalyptio005471&Contrasena=roma3374').toPromise()
+        let clave = await this.http.post('https://api.libroazul.com/Api/Sesion/?Usuario=prodEstrenatuauto006745&Contrasena=EsPr*1419').toPromise()
         let data = await this.obteneredicones(clave.data)
         return data
     }
