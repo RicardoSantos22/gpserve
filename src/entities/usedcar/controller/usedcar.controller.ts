@@ -58,7 +58,7 @@ export class UsedCarController {
   })
 
   // #endregion findAll
-
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   async findAll(@Query() query: FindAllUsedCarsQuery) {
     return this.service.findAll(query);

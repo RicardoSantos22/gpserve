@@ -106,4 +106,8 @@ export class NewCar {
   })
   @prop()
   colours: string | string[];
+
+  @prop()
+  baseColour: string
+  
 }

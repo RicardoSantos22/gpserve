@@ -5,6 +5,7 @@ import { IsOptional } from 'class-validator';
 import { CreateNewCarDTO } from './create-newcar';
 
 import { FindAllQuery } from '../../../common/models/dto/query/find-all-query.dto';
+import { Expose } from 'class-transformer';
 
 export class FindAllNewCarsQuery extends PartialType(FindAllQuery) implements Partial<CreateNewCarDTO> {
   _id: any;
@@ -97,5 +98,7 @@ export class FindAllNewCarsQuery extends PartialType(FindAllQuery) implements Pa
 
   @IsOptional()
 
-  colours: any;
+  @Expose({name: 'colours'})
+
+  baseColour: any;
 };

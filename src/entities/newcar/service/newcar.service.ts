@@ -74,7 +74,7 @@ export class NewCarService extends CrudService<NewCar> {
       sets.brand.add(car.brand)
       sets.year.add(+car.year)
       sets.transmision.add(car.transmision)
-      sets.colours.add(car.colours as string)
+      sets.colours.add(car.baseColour as string)
       maxPrice = Math.max(maxPrice, +car.price)
       minPrice = Math.min(minPrice, +car.price)
     }
@@ -90,6 +90,11 @@ export class NewCarService extends CrudService<NewCar> {
       prices: [...sets.prices]
     }
 
+    const otrosIndex = result.colours.indexOf('Otros')
+    if(otrosIndex !== -1) {
+      result.colours.splice(otrosIndex, 1)
+      result.colours.push('Otros')
+    }
     return result
 
   }
@@ -172,6 +177,7 @@ export class NewCarService extends CrudService<NewCar> {
                   transmision: sc.transmision,
                   fuel: sc.fuelType,
                   colours: sc.color,
+                  baseColour: NewCarHelps.getBaseColour(sc.color),
                   specs: sc.specs
                 }
                 newCarsArray.push(newCar)

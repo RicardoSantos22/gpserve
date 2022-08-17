@@ -3,6 +3,7 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { NewCarsFilters } from '../../newcar/dto/new-cars-filters';
+import { NewCarHelps } from '../../newcar/helpers/newcar.helps';
 import { SADUsedCar } from '../entities/sad-used-car';
 import { UsedCar } from '../model/usedcar.model';
 import { UsedCarRepository } from '../repository/usedcar.repository';
@@ -48,7 +49,7 @@ export class UsedCarService extends CrudService<UsedCar> {
       sets.brand.add(car.brand)
       sets.year.add(+car.year)
       if(car.transmision) sets.transmision.add(car.transmision)
-      sets.colours.add(car.colours as string)
+      sets.colours.add(car.baseColour as string)
       maxPrice = Math.max(maxPrice, +car.price)
       minPrice = Math.min(minPrice, +car.price)
     }
@@ -64,8 +65,13 @@ export class UsedCarService extends CrudService<UsedCar> {
       prices: [...sets.prices]
     }
 
+    const otrosIndex = result.colours.indexOf('Otros')
+    if(otrosIndex !== -1) {
+      result.colours.splice(otrosIndex, 1)
+      result.colours.push('Otros')
+    }
     return result
-
+    
   }
 
   async getModelsByBrands(brands: string[]): Promise<{ models: string[] }> {
@@ -143,6 +149,7 @@ export class UsedCarService extends CrudService<UsedCar> {
                 transmision: sc.transmision.trim(),
                 fuel: sc.fuelType.trim(),
                 colours: sc.color.trim(),
+                baseColour: NewCarHelps.getBaseColour(sc.color),
                 km: +sc.kmCount,
                 location: sc.agencyCity.trim(),
                 specs: sc.specs
@@ -170,6 +177,5 @@ export class UsedCarService extends CrudService<UsedCar> {
     }).toPromise()
     return { token: response.data }
   }
-
 
 };

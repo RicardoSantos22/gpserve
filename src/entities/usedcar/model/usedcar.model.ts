@@ -111,4 +111,7 @@ export class UsedCar {
   @prop()
   colours: string | string[];
 
+  @prop()
+  baseColour: string
+
 }
