@@ -9,5 +9,9 @@ export default () => ({
         exp: process.env.JWT_EXPIRATION_TIME,
         expAdmin: process.env.JWT_ADMIN_EXPIRATION_TIME,
     },
-    setupCarsSecret: process.env.SETUP_CARS_SECRET
+    setupCarsSecret: process.env.SETUP_CARS_SECRET,
+    libroAzul: {
+        user: process.env.LIBRO_AZUL_USER,
+        pwd: process.env.LIBRO_AZUL_PASSWORD
+    }
 })

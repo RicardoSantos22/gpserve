@@ -1,14 +1,21 @@
 import { Injectable} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
 export class LibroazulService {
 
-    constructor(private readonly http: HttpService){}
+    private readonly libroAzulUser: string
+    private readonly libroAzulPwd: string
+
+    constructor(private readonly http: HttpService, private readonly configService: ConfigService) {
+      this.libroAzulUser = this.configService.get<string>('libroAzul.user')
+      this.libroAzulPwd = this.configService.get<string>('libroAzul.pwd')
+    }
 
     async findAll(){   
-        let clave = await this.http.post('https://api.libroazul.com/Api/Sesion/?Usuario=prodEstrenatuauto006745&Contrasena=EsPr*1419').toPromise()
+        let clave = await this.http.post(`https://api.libroazul.com/Api/Sesion/?Usuario=${this.libroAzulUser}&Contrasena=${this.libroAzulPwd}`).toPromise()
         let data = await this.obteneredicones(clave.data)
         return data
     }

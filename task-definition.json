@@ -56,6 +56,14 @@
           {
             "name": "SETUP_CARS_SECRET",
             "value": "VfesCziwYE7yyWcDEYczHVWD43xCHM5CT6hYDpDL"
+          },
+          {
+            "name": "LIBRO_AZUL_USER",
+            "value": "prodEstrenatuauto006745"
+          },
+          {
+            "name": "LIBRO_AZUL_PASSWORD",
+            "value": "EsPr*1419"
           }
         ],
         "mountPoints": [],
