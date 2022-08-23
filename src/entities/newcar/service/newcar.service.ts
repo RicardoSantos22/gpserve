@@ -35,6 +35,7 @@ export class NewCarService extends CrudService<NewCar> {
       password: this.config.get('sadAPI.password')
     }
     this.setupCarsSecret = this.config.get('setupCarsSecret')
+    Logger.debug(this.setupCarsSecret, 'setupCarsSecret')
   }
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
