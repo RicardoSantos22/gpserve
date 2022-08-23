@@ -5,10 +5,12 @@ import { UserRepository } from './repository/user.repository';
 
 import { Module } from '@nestjs/common';
 import { TypegooseModule } from 'nestjs-typegoose';
+import { BucketModule } from '../../bucket/bucket.module';
 
 @Module({
   imports: [
-    TypegooseModule.forFeature([User])
+    TypegooseModule.forFeature([User]),
+    BucketModule
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository],

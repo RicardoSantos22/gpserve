@@ -16,6 +16,7 @@ import { UsedCarModule } from './entities/usedcar/usedcar.module';
 import { UserModule } from './entities/user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LibroazulModule } from './entities/libroazul/libroazul.module';
+import { CarSaleRequestModule } from './entities/carsalerequest/carsalerequest.module';
 
 @Module({
   imports: [
@@ -28,7 +29,6 @@ import { LibroazulModule } from './entities/libroazul/libroazul.module';
       useFactory: mongoFactory,
       inject: [ConfigService],
     }),
-
     AdminModule,
     AgencyModule,
     CreditRequestModule,
@@ -42,6 +42,7 @@ import { LibroazulModule } from './entities/libroazul/libroazul.module';
     UserModule,
     AuthModule,
     LibroazulModule,
+    CarSaleRequestModule
   ]
 })
 

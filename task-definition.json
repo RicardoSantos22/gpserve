@@ -20,50 +20,16 @@
         ],
         "command": [],
         "cpu": 0,
+        "environmentFiles": [
+          {
+            "value": "arn:aws:s3:::ecs-env-configs/prod.env",
+            "type": "s3"
+          }
+        ],
         "environment": [
-          {
-            "name": "JWT_ADMIN_EXPIRATION_TIME",
-            "value": "24h"
-          },
-          {
-            "name": "JWT_EXPIRATION_TIME",
-            "value": "1h"
-          },
-          {
-            "name": "JWT_SECRET",
-            "value": "kk9iMnz0EJJkqMm9Za1NjJG6MIn0fR_fH9zckpUe522VCZwuHMcDuYIGu1Vg1sPVBgc5VWaPmk9rHjuDL"
-          },
-          {
-            "name": "MONGODB_URL",
-            "value": "mongodb+srv://nestjsapi:59bE3TRwzYjGg6cL@devclustergp.a8jjo.mongodb.net/estrenatuauto?retryWrites=true&w=majority"
-          },
           {
             "name": "PORT",
             "value": "80"
-          },
-          {
-            "name": "SAD_API_PASSWORD",
-            "value": "awBhAGwAeQBwAHQAaQBvAF8AcABhAHMAcwB3AG8AcgBkAA=="
-          },
-          {
-            "name": "SAD_API_USERNAME",
-            "value": "kalyptio_user"
-          },
-          {
-            "name": "SAD_BASE_URL",
-            "value": "http://201.116.249.45:1086/api"
-          },
-          {
-            "name": "SETUP_CARS_SECRET",
-            "value": "VfesCziwYE7yyWcDEYczHVWD43xCHM5CT6hYDpDL"
-          },
-          {
-            "name": "LIBRO_AZUL_USER",
-            "value": "prodEstrenatuauto006745"
-          },
-          {
-            "name": "LIBRO_AZUL_PASSWORD",
-            "value": "EsPr*1419"
           }
         ],
         "mountPoints": [],

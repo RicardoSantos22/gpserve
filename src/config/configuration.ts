@@ -13,5 +13,11 @@ export default () => ({
     libroAzul: {
         user: process.env.LIBRO_AZUL_USER,
         pwd: process.env.LIBRO_AZUL_PASSWORD
+    },
+    s3: {
+        region: process.env.MEDIA_S3_REGION,
+        accessKey: process.env.MEDIA_S3_ACCESS_KEY,
+        secretKey: process.env.MEDIA_S3_SECRET_KEY,
+        bucket: process.env.MEDIA_S3_BUCKET
     }
 })

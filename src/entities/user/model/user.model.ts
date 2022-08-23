@@ -136,6 +136,14 @@ export class User {
   @prop({default: false})
   isDisabled: boolean;
 
+  @prop({default: []})
+  documents: [
+    {
+      name: string,
+      url: string
+    }
+  ]
+
   getFullName() {
     return this.firstName + ' ' + this.lastName + ' ' + this.secondLastName
   }

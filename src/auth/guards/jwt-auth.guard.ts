@@ -11,9 +11,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     handleRequest(err: any, user: any, info: any) {
-        // this.logger.debug({err})
-        // this.logger.debug({user})
-        // this.logger.debug({info})
+        this.logger.debug({err})
+        this.logger.debug({user})
+        this.logger.debug({info})
+        if(!user) {
+            throw new UnauthorizedException('Invalid token provided')
+        }
         if(info && info.name === 'TokenExpiredError') {
             throw new UnauthorizedException(info)
         }

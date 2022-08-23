@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe
 } from '@nestjs/common';
@@ -34,6 +36,8 @@ import { ValidatedUser } from '../../../auth/strategies/jwt.strategy';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { UpdateUserWishlistDTO } from '../dto/update-user-wishlist.dto';
 import { SelfUserResponse } from '../dto/self-user-response.dto';
+import { UpdateUserDocuments } from '../dto/update-user-documents.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -110,6 +114,12 @@ export class UserController {
     return this.service.findById(params.id);
   }
 
+  @Get(':id/document')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findUserDocument(@Param() params: FindByIdParams, @Query() query: UpdateUserDocuments) {
+    return this.service.getUserDocument(params.id, query.name);
+  }
+
 
   /**
    * #region create
@@ -182,6 +192,13 @@ export class UserController {
   @Patch(':id/wishlist')
   async updateUserWishlist(@Param() params: FindByIdParams, @Body() body: UpdateUserWishlistDTO) {
     return this.service.updateWishlist(params.id, body);
+  }
+
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(FileInterceptor('documento'))
+  @Patch(':id/documents')
+  async updateUserDocuments(@Param() params: FindByIdParams, @Query() query: UpdateUserDocuments, @UploadedFile() file: Express.Multer.File) {
+    return this.service.updateUserDocuments(params.id, query, file);
   }
 
   /**
