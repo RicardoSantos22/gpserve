@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 
 import {
@@ -120,6 +122,7 @@ export class TestDriveAppointmentController {
 
   // #endregion create
 
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
   async create(@Body() body: CreateTestDriveAppointmentDTO) {
     return this.service.create({ ...body });
