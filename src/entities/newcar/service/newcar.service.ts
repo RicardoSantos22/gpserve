@@ -164,7 +164,7 @@ export class NewCarService extends CrudService<NewCar> {
               if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
               //if(true) {
                 let newCar: NewCar = {
-                  _id: sc.ID,
+                  vin: sc.ID,
                   agencyId: sc.agencyID.toString(),
                   brand: sc.brand,
                   model: sc.model,
