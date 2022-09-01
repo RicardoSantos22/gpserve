@@ -17,6 +17,7 @@ import { UserModule } from './entities/user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LibroazulModule } from './entities/libroazul/libroazul.module';
 import { CarSaleRequestModule } from './entities/carsalerequest/carsalerequest.module';
+import { NoteModule } from './entities/note/note.module';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { CarSaleRequestModule } from './entities/carsalerequest/carsalerequest.m
     UserModule,
     AuthModule,
     LibroazulModule,
-    CarSaleRequestModule
+    CarSaleRequestModule,
+    NoteModule,
   ]
 })
 
