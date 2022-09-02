@@ -11,7 +11,7 @@ import {
   IsEnum,
 } from 'class-validator';
 
-import { carType } from '../../../entities/shared/enums';
+import { carType, requestStatus } from '../../../entities/shared/enums';
 import { userType } from '../../../entities/shared/enums';
 
 export class CreateCreditRequestDTO {
@@ -96,4 +96,13 @@ export class CreateCreditRequestDTO {
   @IsOptional()
 
   readonly tradedCarValue?: number;
+
+  @ApiProperty({
+    description: 'The status of the credit',
+    example: 'Sin procesar',
+  })
+
+  @IsEnum(requestStatus)
+
+  readonly status: requestStatus;
 };

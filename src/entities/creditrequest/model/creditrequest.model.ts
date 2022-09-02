@@ -3,7 +3,7 @@ import { modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
 import { Agency } from '../../agency/model/agency.model';
 import { NewCar } from '../../newcar/model/newcar.model';
 
-import { userType, carType } from '../../shared/enums';
+import { userType, carType, requestStatus } from '../../shared/enums';
 import { User } from '../../user/model/user.model';
 
 @modelOptions({
@@ -104,4 +104,12 @@ export class CreditRequest {
 
   @prop()
   tradedCarValue?: number;
+
+  @ApiProperty({
+    description: 'The status of the credit',
+    readOnly: true,
+  })
+
+  @prop()
+  status: requestStatus;
 }

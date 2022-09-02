@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop, Severity } from '@typegoose/typegoose';
 
-import { userType } from '../../shared/enums';
+import { requestStatus, userType } from '../../shared/enums';
 
 @modelOptions({
   schemaOptions: { timestamps: true },
@@ -77,7 +77,7 @@ export class InspectionAppointment {
   })
 
   @prop()
-  status: string;
+  status: requestStatus;
 
   @ApiProperty({
     description: 'Attached comments',
