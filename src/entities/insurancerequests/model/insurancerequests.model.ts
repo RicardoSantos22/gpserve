@@ -78,4 +78,12 @@ export class InsuranceRequests {
 
   @prop()
   userType: userType;
+
+  @ApiProperty({
+    description: 'The current status of the appointment',
+    readOnly: true,
+  })
+
+  @prop()
+  status: string
 }

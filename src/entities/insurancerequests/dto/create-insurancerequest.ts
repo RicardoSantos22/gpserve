@@ -8,7 +8,7 @@ import {
   IsEnum,
 } from 'class-validator';
 
-import { userType } from '../../../entities/shared/enums';
+import { requestStatus, userType } from '../../../entities/shared/enums';
 import { carType } from '../../../entities/shared/enums';
 
 export class CreateInsuranceRequestDTO {
@@ -75,4 +75,12 @@ export class CreateInsuranceRequestDTO {
   @IsEnum(userType)
 
   readonly userType: userType;
+
+  @ApiProperty({
+    description: 'The status of the insurance',
+    example: 'Sin procesar',
+  })
+
+  @IsEnum(requestStatus)
+  readonly status: requestStatus;
 };

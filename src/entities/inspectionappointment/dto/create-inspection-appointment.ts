@@ -7,9 +7,10 @@ import {
   IsObject,
   IsDate,
   IsIn,
+  IsEnum,
 } from 'class-validator';
 
-import { userType } from '../../../entities/shared/enums';
+import { requestStatus, userType } from '../../../entities/shared/enums';
 
 export class CreateInspectionAppointmentDTO {
   @ApiProperty({
@@ -64,12 +65,12 @@ export class CreateInspectionAppointmentDTO {
 
   @ApiProperty({
     description: 'The status of the appointment',
-    example: 'In Progess',
+    example: 'Sin procesar',
   })
 
-  @IsString()
+  @IsEnum(requestStatus)
 
-  readonly status: string;
+  readonly status: requestStatus;
 
   @ApiProperty({
     description: 'Attached comments',
