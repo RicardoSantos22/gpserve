@@ -4,9 +4,9 @@ import {
   IsString,
   IsArray,
   IsNotEmpty,
-  IsDate,
   IsNumber,
   IsOptional,
+  IsDateString,
 } from 'class-validator';
 
 export class CreateTestDriveAppointmentDTO {
@@ -36,7 +36,7 @@ export class CreateTestDriveAppointmentDTO {
   readonly carId: string;
 
   @ApiProperty({ description: 'The scheduled date for the drive test appointment' })
-  @IsDate()
+  @IsDateString()
   @IsOptional()
   readonly scheduledDate: Date;
 
