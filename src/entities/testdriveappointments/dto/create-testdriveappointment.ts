@@ -20,6 +20,12 @@ export class CreateTestDriveAppointmentDTO {
   readonly userId: string;
 
   @ApiProperty({
+    description: 'The asesor ID attached to this model',
+    example: '001',
+  })
+   asesorid: string;
+
+  @ApiProperty({
     description: 'The agency ID attached to this model',
     example: '002',
   })

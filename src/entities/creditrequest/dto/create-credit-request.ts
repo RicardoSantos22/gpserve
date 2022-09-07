@@ -26,6 +26,14 @@ export class CreateCreditRequestDTO {
 
   readonly carId: string;
 
+  @ApiProperty({
+    description: 'The asesor ID attached to this model',
+    example: '001',
+  })
+
+  @IsString()
+  asesorid: string;
+
   @IsString()
   @IsNotEmpty()
 

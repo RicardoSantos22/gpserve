@@ -18,6 +18,8 @@ import {
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
+import { asesoresservice } from '../../asesores/service/asesores.service'
+
 import { DatabaseErrorDto, NotFoundErrorDto } from '../../../common/models/dto/errors';
 import { FindByIdParams, DeleteParams } from '../../../common/models/dto/params';
 
@@ -27,10 +29,11 @@ import { CreditRequestService } from '../service/creditrequest.service';
 import { CreateCreditRequestDTO } from '../dto/create-credit-request';
 import { FindAllCreditRequestsQuery } from '../dto/find-all-credit-requests-query';
 import { UpdateCreditRequestDTO } from '../dto/update-credit-request';
+import { Findallasesores } from 'src/entities/asesores/dto/findall-query';
 
 @Controller('creditrequest')
 export class CreditRequestController {
-  constructor(private readonly service: CreditRequestService) {}
+  constructor(private readonly service: CreditRequestService, private readonly asesoreservices: asesoresservice) {}
 
   /**
    * #region findAll
@@ -123,9 +126,14 @@ export class CreditRequestController {
   // #endregion create
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
-  async create(@Body() body: CreateCreditRequestDTO) {
-    return this.service.create({ ...body });
-  }
+  async create(@Body() body: any) {
+
+    let query: Findallasesores; 
+    let asesor = await this.asesoreservices.getasesores(query)
+    body.asesorid = asesor[0].id;
+    let newbody: CreateCreditRequestDTO = body;
+    return this.service.create({ ...newbody });
+ }
 
   /**
    * #region update

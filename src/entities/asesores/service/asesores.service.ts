@@ -39,7 +39,7 @@ export class asesoresservice extends CrudService<Asesores> {
             data.forEach(element => {
               element.dias.forEach(item => {
                 if(today > item.hi && today < item.hf){
-                  AsesoresList.push(element.nombre)
+                  AsesoresList.push({"id": element._id, "asesor": element.nombre})
                 }
               });
           });
