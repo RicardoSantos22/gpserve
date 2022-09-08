@@ -5,7 +5,6 @@ import { CreateAsesorDTO } from '../dto/create_asesor'
 import { asesorsrespository } from '../repository/asesores.repository'
 import { Asesores } from '../model/asesores.model'
 import { CrudService } from '../../../common/crud/crud.service';
-
 import { ConfigService } from '@nestjs/config';
 import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
 
@@ -29,22 +28,25 @@ export class asesoresservice extends CrudService<Asesores> {
         return this.repository.findAll(query);
       }
 
-      async getasesores(query: FindAllQuery): Promise<PaginatedEntities<Asesores>> {
-        let today = new Date();
-        let AsesoresList: any = [];
+      async getasesores(query: FindAllQuery){
+ 
+        let AsesoresList = await this.repository.findAll(query);
+      
+        return this.filterasesor(AsesoresList);
+      }
 
-        await this.repository.findAll(query)
-        .then((response) => {
-          let data:any = response.items;
-            data.forEach(element => {
-              element.dias.forEach(item => {
-                if(today > item.hi && today < item.hf){
-                  AsesoresList.push({"id": element._id, "asesor": element.nombre})
-                }
-              });
+      filterasesor(asesorlist){
+        let today = new Date()
+        let asesorenturno = [];
+        asesorlist.items.forEach(element => {
+          element.dias.forEach(item => {
+            if(today > item.hi && today < item.hf){
+              asesorenturno.push({ "id": element._id, "asesor": element.nombre});
+            }
           });
-        })
-        return AsesoresList;
+        });
+
+        return asesorenturno;
       }
 
 }

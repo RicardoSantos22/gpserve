@@ -126,13 +126,12 @@ export class CreditRequestController {
   // #endregion create
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
-  async create(@Body() body: any) {
+  async create(@Body() body: CreateCreditRequestDTO) {
 
     let query: Findallasesores; 
     let asesor = await this.asesoreservices.getasesores(query)
     body.asesorid = asesor[0].id;
-    let newbody: CreateCreditRequestDTO = body;
-    return this.service.create({ ...newbody });
+    return this.service.create({ ...body });
  }
 
   /**
