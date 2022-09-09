@@ -28,9 +28,13 @@ import { CreateInsuranceRequestDTO } from '../dto/create-insurancerequest';
 import { FindAllInsuranceRequestsQuery } from '../dto/find-all-insurancerequests';
 import { UpdateInsuranceRequestDTO } from '../dto/update-insurancerequest';
 
+import { Findallasesores } from 'src/entities/asesores/dto/findall-query';
+import { asesoresservice } from '../../asesores/service/asesores.service'
+
+
 @Controller('insurancerequest')
 export class InsuranceRequestsController {
-  constructor(private readonly service: InsuranceRequestsService) {}
+  constructor(private readonly service: InsuranceRequestsService, private readonly asesoreservices: asesoresservice) {}
 
   /**
    * #region findAll
@@ -124,7 +128,13 @@ export class InsuranceRequestsController {
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
   async create(@Body() body: CreateInsuranceRequestDTO) {
-    return this.service.create({ ...body });
+
+    let query: Findallasesores; 
+    let asesor = await this.asesoreservices.getAsesores(query)
+    body.asesorid = asesor[0].id;
+
+    
+    return this.service.create({ ...body});
   }
 
   /**

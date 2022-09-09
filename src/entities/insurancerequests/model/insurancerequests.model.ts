@@ -32,6 +32,14 @@ export class InsuranceRequests {
   userId: string;
 
   @ApiProperty({
+    description: 'The user ID attached to this model',
+  })
+
+  @prop()
+  asesorid: string;
+
+
+  @ApiProperty({
     description: 'The agency ID attached to this model',
     readOnly: true,
   })

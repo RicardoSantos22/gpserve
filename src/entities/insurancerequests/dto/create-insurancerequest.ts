@@ -22,6 +22,8 @@ export class CreateInsuranceRequestDTO {
 
   readonly userId: string;
 
+  asesorid : string;
+
   @ApiProperty({
     description: 'The agency ID attached to this model',
     example: '002',

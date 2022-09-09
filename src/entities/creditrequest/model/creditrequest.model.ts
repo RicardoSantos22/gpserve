@@ -33,6 +33,9 @@ export class CreditRequest {
   @prop()
   carId: string
 
+  @prop()
+  asesorid: string
+
   @prop({
     ref: NewCar,
     foreignField: '_id',

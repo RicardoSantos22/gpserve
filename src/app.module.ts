@@ -19,6 +19,9 @@ import { LibroazulModule } from './entities/libroazul/libroazul.module';
 import { CarSaleRequestModule } from './entities/carsalerequest/carsalerequest.module';
 import { NoteModule } from './entities/note/note.module';
 
+import { AsesoresModule } from './entities/asesores/asesores.module';
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -45,6 +48,7 @@ import { NoteModule } from './entities/note/note.module';
     LibroazulModule,
     CarSaleRequestModule,
     NoteModule,
+    AsesoresModule,
   ]
 })
 

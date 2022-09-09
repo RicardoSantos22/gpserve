@@ -28,9 +28,13 @@ import { CreateTestDriveAppointmentDTO } from '../dto/create-testdriveappointmen
 import { FindAllTestDriveAppointmentsQuery } from '../dto/find-all-testdriveappointments-query';
 import { UpdateTestDriveAppointmentDTO } from '../dto/update-testdriveappointment';
 
+import { Findallasesores } from 'src/entities/asesores/dto/findall-query';
+import { asesoresservice } from '../../asesores/service/asesores.service'
+
+
 @Controller('testdriveappointment')
 export class TestDriveAppointmentController {
-  constructor(private readonly service: TestDriveAppointmentsService) {}
+  constructor(private readonly service: TestDriveAppointmentsService, private readonly asesoreservices: asesoresservice) {}
 
   /**
    * #region findAll
@@ -125,6 +129,9 @@ export class TestDriveAppointmentController {
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
   async create(@Body() body: CreateTestDriveAppointmentDTO) {
+    let query: Findallasesores; 
+    let asesor = await this.asesoreservices.getAsesores(query)
+    body.asesorid = asesor[0].id;
     return this.service.create({ ...body });
   }
 

@@ -22,6 +22,13 @@ export class TestDriveAppointments {
   id: string;
 
   @ApiProperty({
+    description: "The model's identifier of asesor"
+  })
+
+  @prop()
+   asesorid: string;
+
+  @ApiProperty({
     description: 'The user ID attached to this model',
     readOnly: true,
   })

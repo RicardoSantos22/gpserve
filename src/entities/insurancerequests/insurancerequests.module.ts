@@ -6,10 +6,15 @@ import { InsuranceRequestsController } from './controller/insurancerequests.cont
 import { InsuranceRequestsService } from './service/insurancerequests.service';
 import { InsuranceRequestRepository } from './repository/insurancerequest.repository';
 
+import { asesorsrespository } from '../asesores/repository/asesores.repository'
+import { asesoresservice } from '../asesores/service/asesores.service'
+import { Asesores } from '../asesores/model/asesores.model'
+import { BucketModule } from '../../bucket/bucket.module';
+
 @Module({
-  imports: [TypegooseModule.forFeature([InsuranceRequests])],
+  imports: [TypegooseModule.forFeature([InsuranceRequests, Asesores]), BucketModule],
   controllers: [InsuranceRequestsController],
-  providers: [InsuranceRequestsService, InsuranceRequestRepository],
+  providers: [InsuranceRequestsService, InsuranceRequestRepository, asesoresservice, asesorsrespository],
 })
 
 export class InsuranceRequestsModule {}
