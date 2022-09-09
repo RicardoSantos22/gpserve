@@ -12,9 +12,9 @@ import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
 export class asesoresservice extends CrudService<Asesores> {
 
     constructor(
-        readonly repository: asesorsrespository,
-        readonly config: ConfigService,
-        readonly s3Service: AwsS3Service
+        protected readonly repository: asesorsrespository,
+        protected readonly config: ConfigService,
+        protected readonly s3Service: AwsS3Service
       ) {
         super(repository, 'Asesores', config);
       }
@@ -27,8 +27,7 @@ export class asesoresservice extends CrudService<Asesores> {
       async findAll(query: FindAllQuery): Promise<PaginatedEntities<Asesores>> {
         return this.repository.findAll(query);
       }
-
-      async getasesores(query: FindAllQuery){
+      async getAsesores(query: FindAllQuery){
  
         let AsesoresList = await this.repository.findAll(query);
       

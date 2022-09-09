@@ -130,7 +130,7 @@ export class InsuranceRequestsController {
   async create(@Body() body: CreateInsuranceRequestDTO) {
 
     let query: Findallasesores; 
-    let asesor = await this.asesoreservices.getasesores(query)
+    let asesor = await this.asesoreservices.getAsesores(query)
     body.asesorid = asesor[0].id;
 
     

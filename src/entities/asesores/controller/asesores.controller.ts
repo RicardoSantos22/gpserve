@@ -22,7 +22,7 @@ import { CreateAsesorDTO } from '../dto/create_asesor'
 import { asesoresservice } from '../service/asesores.service'
 
 @Controller('asesores')
-export class asesorescontroller {
+export class Asesorescontroller {
     constructor(private readonly service: asesoresservice) {}
 
 
@@ -35,7 +35,7 @@ export class asesorescontroller {
    */
        @Get()
        async findAll(@Query() query: Findallasesores) {
-         return this.service.getasesores(query);
+         return this.service.getAsesores(query);
        };
 
        @Post()

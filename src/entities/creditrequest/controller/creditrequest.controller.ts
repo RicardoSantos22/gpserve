@@ -129,7 +129,7 @@ export class CreditRequestController {
   async create(@Body() body: CreateCreditRequestDTO) {
 
     let query: Findallasesores; 
-    let asesor = await this.asesoreservices.getasesores(query)
+    let asesor = await this.asesoreservices.getAsesores(query)
     body.asesorid = asesor[0].id;
     return this.service.create({ ...body });
  }
