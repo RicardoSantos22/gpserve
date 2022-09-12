@@ -29,7 +29,7 @@ import { CreditRequestService } from '../service/creditrequest.service';
 import { CreateCreditRequestDTO } from '../dto/create-credit-request';
 import { FindAllCreditRequestsQuery } from '../dto/find-all-credit-requests-query';
 import { UpdateCreditRequestDTO } from '../dto/update-credit-request';
-import { Findallasesores } from 'src/entities/asesores/dto/findall-query';
+import { FindAllAsesoresDto } from 'src/entities/asesores/dto/findall-query';
 
 @Controller('creditrequest')
 export class CreditRequestController {
@@ -128,7 +128,7 @@ export class CreditRequestController {
   @Post()
   async create(@Body() body: CreateCreditRequestDTO) {
 
-    let query: Findallasesores; 
+    let query: FindAllAsesoresDto; 
     let asesor = await this.asesoreservices.getAsesores(query)
     body.asesorid = asesor[0].id;
     return this.service.create({ ...body });
