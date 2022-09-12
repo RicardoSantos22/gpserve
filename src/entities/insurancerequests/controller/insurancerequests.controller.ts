@@ -28,7 +28,7 @@ import { CreateInsuranceRequestDTO } from '../dto/create-insurancerequest';
 import { FindAllInsuranceRequestsQuery } from '../dto/find-all-insurancerequests';
 import { UpdateInsuranceRequestDTO } from '../dto/update-insurancerequest';
 
-import { Findallasesores } from 'src/entities/asesores/dto/findall-query';
+import { FindAllAsesoresDto } from 'src/entities/asesores/dto/findall-query';
 import { asesoresservice } from '../../asesores/service/asesores.service'
 
 
@@ -129,7 +129,7 @@ export class InsuranceRequestsController {
   @Post()
   async create(@Body() body: CreateInsuranceRequestDTO) {
 
-    let query: Findallasesores; 
+    let query: FindAllAsesoresDto; 
     let asesor = await this.asesoreservices.getAsesores(query)
     body.asesorid = asesor[0].id;
 
