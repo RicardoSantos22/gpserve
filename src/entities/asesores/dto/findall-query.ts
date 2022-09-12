@@ -3,7 +3,7 @@ import { IsOptional } from 'class-validator';
 import { FindAllQuery } from '../../../common/models/dto/query/find-all-query.dto';
 import { CreateAsesorDTO } from '../dto/create_asesor'
 
-export class Findallasesores extends PartialType(FindAllQuery) implements Partial<CreateAsesorDTO>{
+export class FindAllAsesoresDto extends PartialType(FindAllQuery) implements Partial<CreateAsesorDTO>{
 
     _id: any;
 

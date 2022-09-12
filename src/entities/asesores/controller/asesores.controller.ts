@@ -15,7 +15,7 @@ import {
     ValidationPipe
   } from '@nestjs/common';
 
-import { Findallasesores } from '../dto/findall-query'
+import { FindAllAsesoresDto } from '../dto/findall-query'
 
 import { CreateAsesorDTO } from '../dto/create_asesor'
 
@@ -35,12 +35,12 @@ export class Asesorescontroller {
    * @memberof asesorescontroller
    */
        @Get()
-       async findAll(@Query() query: Findallasesores) {
+       async findAll(@Query() query: FindAllAsesoresDto) {
          return this.service.getAsesores(query);
        };
       
        @Get('/all')
-       async findAllAdvisors(@Query() query: Findallasesores) {
+       async findAllAdvisors(@Query() query: FindAllAsesoresDto) {
          return this.service.findAll(query);
        };
 
