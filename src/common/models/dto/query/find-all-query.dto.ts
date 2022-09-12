@@ -28,5 +28,5 @@ export class FindAllQuery {
   @IsOptional()
   filter?: any;
 
-  [x: string]: string;
+  [x: string]: string | string[];
 }
