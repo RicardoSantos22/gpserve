@@ -5,9 +5,9 @@ import {
   IsArray,
   IsNotEmpty,
   IsObject,
-  IsDate,
   IsIn,
   IsEnum,
+  IsDateString,
 } from 'class-validator';
 
 import { requestStatus, userType } from '../../../entities/shared/enums';
@@ -31,7 +31,7 @@ export class CreateInspectionAppointmentDTO {
   @IsString()
   @IsNotEmpty()
 
-  readonly agencyId: number;
+  readonly agencyId: string;
 
   @ApiProperty({ description: 'The information of the car' })
 
@@ -41,8 +41,7 @@ export class CreateInspectionAppointmentDTO {
 
   @ApiProperty({ description: 'The date of the appointment' })
 
-  @IsDate()
-
+  @IsDateString()
   readonly scheduledDate: Date;
 
   @ApiProperty({
