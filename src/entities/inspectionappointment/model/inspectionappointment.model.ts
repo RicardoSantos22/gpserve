@@ -37,7 +37,7 @@ export class InspectionAppointment {
   })
 
   @prop()
-  agencyId: number;
+  agencyId: string;
 
   @ApiProperty({
     description: 'The information of the car',
