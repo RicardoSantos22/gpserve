@@ -116,6 +116,7 @@ export class UsedCarService extends CrudService<UsedCar> {
       25, // KIA La Paz
       26, // KIA Mochis
       27, // KIA Obregón
+      28, // JAC Cualiacán
     ]
     let promises = []
     try {
