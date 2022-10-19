@@ -11,4 +11,10 @@ export class NeworderController {
 
         return await this.Orderservies.CreateOrder(data);
     }
+
+    @Post("/addorder")
+    async addorder(@Body() data){
+
+        return await this.Orderservies.AddNewOrder(data); 
+    }
 }

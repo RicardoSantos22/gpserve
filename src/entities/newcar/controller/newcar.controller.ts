@@ -77,7 +77,7 @@ export class NewCarController {
   }
 
   @Get(':brandUrl/:modelUrl/:seriesUrl/:year')
-  async getByCarGroup(@Param('brandUrl') brandUrl: string, @Param('modelUrl') modelUrl: string, @Param('seriesUrl') seriesUrl: string, @Param('year') year: string) {
+  async getByCarGroup(@Param('brandUrl') brandUrl: string, @Param('modelUrl') modelUrl: string, @Param('seriesUrl') seriesUrl: string, @Param('year') year: string,) {
     const groupFilter : NewCarGroupFilter = {
       brandUrl,
       modelUrl,

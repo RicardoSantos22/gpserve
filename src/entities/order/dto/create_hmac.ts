@@ -6,6 +6,7 @@ import {
   IsIn,
   IsNotEmpty,
   IsEnum,
+  IsNumber,
 } from 'class-validator';
 
 import { requestStatus, userType } from '../../../entities/shared/enums';
@@ -19,7 +20,15 @@ export class HmacDTO {
       })
     
       @IsString()
-      @IsNotEmpty()
     
       readonly amount: string;
+
+      @ApiProperty({
+        description: 'Concept to reserve or buy the car',
+        example: '1 = apartado, 2 = compra',
+      })
+    
+      @IsNumber()
+    
+      readonly concept: number;
 }
