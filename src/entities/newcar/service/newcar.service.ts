@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { getRegexFilters } from 'src/common/utils/regex-filters';
 
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
@@ -12,7 +11,6 @@ import { SADNewCar } from '../entities/sad-newcar';
 import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
 import { NewCarRepository } from '../repository/newcar.repository';
-
 
 @Injectable()
 export class NewCarService extends CrudService<NewCar> {
@@ -41,9 +39,7 @@ export class NewCarService extends CrudService<NewCar> {
   }
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
-    
-    const regexFilters = getRegexFilters(query);
-    const cars = await this.repository.findAll(regexFilters)
+    const cars = await this.repository.findAll(query)
     const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
     return {
       ...cars,
@@ -51,10 +47,10 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
-  async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{ cars: NewCar[], colours: string[] }> {
+  async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{cars: NewCar[], colours: string[]}> {
     const cars = await this.repository.findByGroup(groupFilter)
     let coloursSet = new Set<string>()
-    for (let car of cars) {
+    for(let car of cars) {
       coloursSet.add(car.colours as string)
     }
     return {
@@ -75,7 +71,7 @@ export class NewCarService extends CrudService<NewCar> {
 
     let minPrice = Number.MAX_SAFE_INTEGER
     let maxPrice = 0
-    for (let car of allCars.items) {
+    for(let car of allCars.items) {
       sets.brand.add(car.brand)
       sets.year.add(+car.year)
       sets.transmision.add(car.transmision)
@@ -96,7 +92,7 @@ export class NewCarService extends CrudService<NewCar> {
     }
 
     const otrosIndex = result.colours.indexOf('Otros')
-    if (otrosIndex !== -1) {
+    if(otrosIndex !== -1) {
       result.colours.splice(otrosIndex, 1)
       result.colours.push('Otros')
     }
@@ -107,7 +103,7 @@ export class NewCarService extends CrudService<NewCar> {
   async getModelsByBrands(brands: string[]): Promise<{ models: string[] }> {
     const cars = await this.repository.findByBrands(brands)
     const modelsSet = new Set<string>()
-    for (let c of cars) {
+    for(let c of cars) {
       modelsSet.add(c.model)
     }
     return {
@@ -116,11 +112,11 @@ export class NewCarService extends CrudService<NewCar> {
   }
 
   async getCarCatalogue(authHeader: string) {
-    if (authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
+    if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
     const { token } = await this.loginToSAD()
     const deletedRecords = await this.repository.deleteMany({})
     Logger.debug(`Deleted ${deletedRecords.affected} records`)
-    let newCarsArray: NewCar[] = []
+    let newCarsArray : NewCar[] = []
     let agencyIds = [
       1, // Hyundai Culiacán
       5, // Toyota Mazatlán
@@ -150,45 +146,45 @@ export class NewCarService extends CrudService<NewCar> {
     ]
     let promises = []
     try {
-      for (let id of agencyIds) {
-        promises.push(this.httpService.get<{ success: boolean, message: string, data: SADNewCar[] }>(
+      for(let id of agencyIds) {
+        promises.push(this.httpService.get<{success: boolean, message: string, data: SADNewCar[]}>(
           `${this.sadApiConfig.baseUrl}/Vehicles?dealerId=${id}`,
           {
             headers: {
               'Authorization': 'Bearer ' + token.trim()
             }
           }
-        ).toPromise()
+          ).toPromise()
         )
       }
       const responses = await Promise.all(promises)
-      for (let response of responses) {
-        if (response.data.success) {
-          const sadNewCars = response.data.data as SADNewCar[]
-          for (let sc of sadNewCars) {
-            if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
+      for(let response of responses) {
+          if(response.data.success) {
+            const sadNewCars = response.data.data as SADNewCar[]
+            for(let sc of sadNewCars) {
+              if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
               //if(true) {
-              let newCar: NewCar = {
-                vin: sc.ID,
-                agencyId: sc.agencyID.toString(),
-                brand: sc.brand,
-                model: sc.model,
-                series: sc.version,
-                brandUrl: NewCarHelps.stringToUrl(sc.brand),
-                modelUrl: NewCarHelps.stringToUrl(sc.model),
-                seriesUrl: NewCarHelps.stringToUrl(sc.version),
-                price: +sc.price,
-                year: sc.year,
-                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
-                transmision: sc.transmision,
-                fuel: sc.fuelType,
-                colours: sc.color,
-                baseColour: NewCarHelps.getBaseColour(sc.color),
-                specs: sc.specs
+                let newCar: NewCar = {
+                  vin: sc.ID,
+                  agencyId: sc.agencyID.toString(),
+                  brand: sc.brand,
+                  model: sc.model,
+                  series: sc.version,
+                  brandUrl: NewCarHelps.stringToUrl(sc.brand),
+                  modelUrl: NewCarHelps.stringToUrl(sc.model),
+                  seriesUrl: NewCarHelps.stringToUrl(sc.version),
+                  price: +sc.price,
+                  year: sc.year,
+                  images: !sc.images ? []: sc.images.map(i => i.imageUrl),
+                  transmision: sc.transmision,
+                  fuel: sc.fuelType,
+                  colours: sc.color,
+                  baseColour: NewCarHelps.getBaseColour(sc.color),
+                  specs: sc.specs
+                }
+                newCarsArray.push(newCar)
               }
-              newCarsArray.push(newCar)
             }
-          }
         }
       }
       const createdCars = await this.repository.createMany(newCarsArray)
@@ -197,7 +193,7 @@ export class NewCarService extends CrudService<NewCar> {
         results: createdCars
       }
     }
-    catch (err) {
+    catch(err) {
       Logger.error(err)
       throw err
     }
@@ -206,7 +202,7 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
-  private async loginToSAD(): Promise<{ token: string }> {
+  private async loginToSAD(): Promise<{token: string}> {
     const response = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
       userName: this.sadApiConfig.username,
       password: this.sadApiConfig.password
