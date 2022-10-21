@@ -91,7 +91,7 @@ export class InitialAssessment {
     description: "The inspection appointment id",
     readOnly: true,
   })
-  @prop({ required: true})
+  @prop()
   inspectionAppointmentId: string;
 
 }
