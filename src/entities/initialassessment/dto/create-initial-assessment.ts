@@ -2,12 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import {
   IsString,
-  IsArray,
   IsNotEmpty,
-  IsObject,
-  IsIn,
-  IsEnum,
-  IsDateString,
   IsNumber,
   IsBoolean,
 } from 'class-validator';
@@ -51,10 +46,10 @@ export class CreateInitialAssessmentDTO {
     example: '2022',
   })
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
 
-  readonly year: string;
+  readonly year: number;
 
   @ApiProperty({
     description: "The car's transmision type",

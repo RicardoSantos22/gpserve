@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 
 import { CrudService } from '../../../common/crud/crud.service';
 
-import { InitialAssessment } from '../model/initialassessment.model';
-import { InitialAssessmentRepository } from '../repository/initialassessment.repository';
+import { InitialAssessment } from '../model/initial-assessment.model';
+import { InitialAssessmentRepository } from '../repository/initial-assessment.repository';
 
 @Injectable()
 export class InitialAssessmentService extends CrudService<InitialAssessment> {

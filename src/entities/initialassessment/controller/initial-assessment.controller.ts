@@ -19,8 +19,8 @@ import {
 import { DatabaseErrorDto, NotFoundErrorDto } from '../../../common/models/dto/errors';
 import { FindByIdParams, DeleteParams } from '../../../common/models/dto/params';
 
-import { InitialAssessment } from '../model/initialassessment.model';
-import { InitialAssessmentService } from '../service/initialassessment.service';
+import { InitialAssessment } from '../model/initial-assessment.model';
+import { InitialAssessmentService } from '../service/initial-assessment.service';
 
 import { CreateInitialAssessmentDTO } from '../dto/create-initial-assessment';
 import { FindAllInitialAssessmentsQuery } from '../dto/find-all-initial-assessments-query';
@@ -28,7 +28,7 @@ import { UpdateInitialAssessmentDTO } from '../dto/update-initial-assessment';
 
 @Controller('InitialAssessment')
 export class InitialAssessmentController {
-  constructor(private readonly service: InitialAssessmentService) {}
+  constructor(private readonly service: InitialAssessmentService) { }
 
   /**
    * #region findAll
@@ -38,7 +38,7 @@ export class InitialAssessmentController {
    * @memberof InitialAssessment
    */
 
-   @ApiOperation({
+  @ApiOperation({
     summary: 'Find all Initial Assessments',
     description: 'Retrieves all the current values of Initial Assessments that match the selected params',
   })
@@ -56,7 +56,7 @@ export class InitialAssessmentController {
   // #endregion findAll
 
   @Get()
-  async findAll(@Query() query: FindAllInitialAssessmentsQuery) {
+  findAll(@Query() query: FindAllInitialAssessmentsQuery) {
     return this.service.findAll(query);
   };
 
@@ -91,7 +91,7 @@ export class InitialAssessmentController {
   // #endregion findById
 
   @Get(':id')
-  async findById(@Param() params: FindByIdParams) {
+  findById(@Param() params: FindByIdParams) {
     return this.service.findById(params.id);
   }
 
@@ -121,7 +121,7 @@ export class InitialAssessmentController {
   // #endregion create
 
   @Post()
-  async create(@Body() body: CreateInitialAssessmentDTO) {
+  create(@Body() body: CreateInitialAssessmentDTO) {
     return this.service.create({ ...body });
   }
 
@@ -157,7 +157,7 @@ export class InitialAssessmentController {
   // #endregion update
 
   @Patch(':id')
-  async update(@Param() params: FindByIdParams, @Body() body: UpdateInitialAssessmentDTO) {
+  update(@Param() params: FindByIdParams, @Body() body: UpdateInitialAssessmentDTO) {
     return this.service.update(params.id, body);
   }
 

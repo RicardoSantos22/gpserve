@@ -4,7 +4,7 @@ import { InjectModel } from 'nestjs-typegoose';
 
 import { CrudRepository } from '../../../common/crud/crud.repository';
 
-import { InitialAssessment } from '../model/initialassessment.model';
+import { InitialAssessment } from '../model/initial-assessment.model';
 
 @Injectable()
 export class InitialAssessmentRepository extends CrudRepository<InitialAssessment> {

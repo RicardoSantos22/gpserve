@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
-import { InitialAssessment } from 'src/entities/initialassessment/model/initialassessment.model';
+import { InitialAssessment } from 'src/entities/initialassessment/model/initial-assessment.model';
 
 import { requestStatus, userType } from '../../shared/enums';
 

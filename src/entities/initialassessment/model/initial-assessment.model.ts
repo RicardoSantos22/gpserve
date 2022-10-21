@@ -56,7 +56,7 @@ export class InitialAssessment {
     readOnly: true,
   })
   @prop({ required: true})
-  year: string;
+  year: number;
 
   @ApiProperty({
     description: "The car's transmision type",
