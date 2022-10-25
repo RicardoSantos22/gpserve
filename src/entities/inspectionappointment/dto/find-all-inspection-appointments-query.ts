@@ -36,7 +36,7 @@ export class FindAllInspectionAppointmentsQuery extends PartialType(FindAllQuery
 
   @IsOptional()
 
-  carInfo: any;
+  initialAssessmentId: any;
 
   @ApiProperty({
     description: 'The date of the appointment',

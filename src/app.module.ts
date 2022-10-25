@@ -20,6 +20,7 @@ import { CarSaleRequestModule } from './entities/carsalerequest/carsalerequest.m
 import { NoteModule } from './entities/note/note.module';
 
 import { AsesoresModule } from './entities/asesores/asesores.module';
+import { InitialAssessmentModule } from './entities/initialassessment/initial-assessment.module';
 
 
 @Module({
@@ -49,6 +50,7 @@ import { AsesoresModule } from './entities/asesores/asesores.module';
     CarSaleRequestModule,
     NoteModule,
     AsesoresModule,
+    InitialAssessmentModule
   ]
 })
 
