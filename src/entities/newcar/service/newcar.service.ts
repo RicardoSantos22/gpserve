@@ -2,6 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { Cron, CronExpression } from '@nestjs/schedule'
+
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
 import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
@@ -111,8 +113,8 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
-  async getCarCatalogue(authHeader: string) {
-    if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
+ 
+  async updateCarCatalogue(){
     const { token } = await this.loginToSAD()
     const deletedRecords = await this.repository.deleteMany({})
     Logger.debug(`Deleted ${deletedRecords.affected} records`)
@@ -202,12 +204,33 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
+  getCarCatalogue(authHeader: string) {
+    if(authHeader === "automaticupdate") {
+      this.updateCarCatalogue();
+    }
+    else if(authHeader !== this.setupCarsSecret){
+
+      throw new UnauthorizedException()
+    }
+    else{
+      this.updateCarCatalogue();
+    }
+    
+   
+  }
+
   private async loginToSAD(): Promise<{token: string}> {
     const response = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
       userName: this.sadApiConfig.username,
       password: this.sadApiConfig.password
     }).toPromise()
     return { token: response.data }
+  }
+
+
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  autoamicGetCarCatalogue(){
+    this.getCarCatalogue('automaticupdate');
   }
 
 };
