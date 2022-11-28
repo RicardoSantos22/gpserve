@@ -157,7 +157,6 @@ export class NewCarController {
 
   @Post('setup')
   async getCarCatalogue(@Headers('Authorization') authHeader: string) {
-    console.log(authHeader);
     return this.service.getCarCatalogue(authHeader)
   }
 
