@@ -194,7 +194,7 @@ export class UsedCarService extends CrudService<UsedCar> {
     return { token: response.data }
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  @Cron(CronExpression.EVERY_DAY_AT_2AM)
   autoamicGetCarCatalogue(){
     this.getUsedCarCatalogue('automaticupdate');
   }

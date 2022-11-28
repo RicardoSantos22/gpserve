@@ -228,8 +228,9 @@ export class NewCarService extends CrudService<NewCar> {
   }
 
 
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  @Cron(CronExpression.EVERY_DAY_AT_2AM)
   autoamicGetCarCatalogue(){
+
     this.getCarCatalogue('automaticupdate');
   }
 
