@@ -110,6 +110,11 @@ export class UsedCarController {
     return this.service.findById(params.id);
   }
 
+  @Get('vin/:vin')
+  async findByvin(@Param('vin') vin: string) {
+    return this.service.getcarbyvin(vin)
+  }
+
   /**
    * #region create
    * 

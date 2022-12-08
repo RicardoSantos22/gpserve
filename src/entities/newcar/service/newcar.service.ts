@@ -113,6 +113,22 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
+  async getcarbyvin(vin : string){
+
+    let CarList = await this.repository.findAll();
+
+    let carfin;
+
+    await CarList.items.forEach(car => {
+
+      if(car.vin === vin)[
+        carfin = car
+      ]
+      
+    })
+    return carfin;
+
+  }
  
   async updateCarCatalogue(){
     const { token } = await this.loginToSAD()
