@@ -4,7 +4,9 @@ WORKDIR /usr/src/app
 
 COPY package.json ./
 
-RUN npm i --force
+RUN npm config set legacy-peer-deps true
+
+RUN npm i 
 
 COPY . .
 
@@ -14,4 +16,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["ls", "npm", "run", "start:prod"]
