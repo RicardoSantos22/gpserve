@@ -1,10 +1,10 @@
-FROM node:14.15.0-alpine
+FROM node:18.12.1-alpine
 
 WORKDIR /usr/src/app
 
 COPY package.json ./
 
-RUN npm i
+RUN npm i --force
 
 COPY . .
 
