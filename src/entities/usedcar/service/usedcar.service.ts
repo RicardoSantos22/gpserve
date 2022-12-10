@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule'
 import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { NewCarsFilters } from '../../newcar/dto/new-cars-filters';
@@ -192,11 +191,6 @@ export class UsedCarService extends CrudService<UsedCar> {
       password: this.sadApiConfig.password
     }).toPromise()
     return { token: response.data }
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
-  autoamicGetCarCatalogue(){
-    this.getUsedCarCatalogue('automaticupdate');
   }
 
   async getcarbyvin(vin : string){
