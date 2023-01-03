@@ -1,8 +1,10 @@
-FROM node:14.15.0-alpine
+FROM node:18.12.1-alpine
 
 WORKDIR /usr/src/app
 
 COPY package.json ./
+
+RUN npm config set legacy-peer-deps true
 
 RUN pnpm i
 
@@ -14,4 +16,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["ls", "npm", "run", "start:prod"]

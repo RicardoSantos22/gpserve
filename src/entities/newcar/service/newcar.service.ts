@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { Cron, CronExpression } from '@nestjs/schedule'
 
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
@@ -238,11 +237,5 @@ export class NewCarService extends CrudService<NewCar> {
     return { token: response.data }
   }
 
-
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
-  autoamicGetCarCatalogue(){
-
-    this.getCarCatalogue('automaticupdate');
-  }
 
 };
