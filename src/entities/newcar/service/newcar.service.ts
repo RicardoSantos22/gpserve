@@ -41,12 +41,7 @@ export class NewCarService extends CrudService<NewCar> {
   }
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
-    const cars = await this.repository.findAll(query)
-    const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-    return {
-      ...cars,
-      items: groupedCars
-    }
+    return this.repository.findAll(query)
   }
 
   async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{cars: NewCar[], colours: string[]}> {
