@@ -6,8 +6,6 @@ COPY package.json ./
 
 RUN npm config set legacy-peer-deps true
 
-RUN curl -fsSL "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" -o /bin/pnpm; chmod +x /bin/pnpm;
-
 RUN npm install -g pnpm
 
 RUN pnpm i
