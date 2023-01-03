@@ -6,7 +6,7 @@ COPY package.json ./
 
 RUN npm config set legacy-peer-deps true
 
-RUN npm i 
+RUN pnpm i
 
 COPY . .
 
