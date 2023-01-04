@@ -1,14 +1,10 @@
-FROM node:18.12.1-alpine
+FROM node:14.15.0-alpine
 
 WORKDIR /usr/src/app
 
 COPY package.json ./
 
-RUN npm config set legacy-peer-deps true
-
-RUN npm install -g pnpm
-
-RUN pnpm i
+RUN npm i
 
 COPY . .
 
