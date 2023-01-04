@@ -7,8 +7,10 @@ import { NewCarGroupFilter } from '../dto/new-car-group-filter';
 
 import { NewCar } from '../model/newcar.model';
 
+let x
+
 @Injectable()
-export class NewCarRepository extends CrudRepository<NewCar> {
+export class NewCarRepository extends CrudRepository<typeof x> {
   constructor(@InjectModel(NewCar) readonly model: ReturnModelType<typeof NewCar>) {
     super(model, 'NewCar');
   }
