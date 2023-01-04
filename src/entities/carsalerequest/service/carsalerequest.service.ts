@@ -7,8 +7,10 @@ import { PaginatedEntities } from '../../../common/models/paginated-entities.mod
 import { CarSaleRequest } from '../model/carsalerequest.model';
 import { CarSaleRequestRepository } from '../repository/carsalerequest.repository';
 
+let x;
+
 @Injectable()
-export class CarSaleRequestService extends CrudService<CarSaleRequest> {
+export class CarSaleRequestService extends CrudService<typeof x> {
   constructor(
     readonly repository: CarSaleRequestRepository,
     readonly config: ConfigService,

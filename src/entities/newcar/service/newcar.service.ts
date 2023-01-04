@@ -13,8 +13,10 @@ import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
 import { NewCarRepository } from '../repository/newcar.repository';
 
+let x;
+
 @Injectable()
-export class NewCarService extends CrudService<NewCar> {
+export class NewCarService extends CrudService<typeof x> {
 
   setupCarsSecret: string
 

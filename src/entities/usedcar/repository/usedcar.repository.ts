@@ -6,8 +6,9 @@ import { CrudRepository } from '../../../common/crud/crud.repository';
 
 import { UsedCar } from '../model/usedcar.model';
 
+let x;
 @Injectable()
-export class UsedCarRepository extends CrudRepository<UsedCar> {
+export class UsedCarRepository extends CrudRepository<typeof x> {
   constructor(@InjectModel(UsedCar) readonly model: ReturnModelType<typeof UsedCar>) {
     super(model, 'UsedCar');
   }

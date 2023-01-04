@@ -8,8 +8,10 @@ import { SADUsedCar } from '../entities/sad-used-car';
 import { UsedCar } from '../model/usedcar.model';
 import { UsedCarRepository } from '../repository/usedcar.repository';
 
+let x;
+
 @Injectable()
-export class UsedCarService extends CrudService<UsedCar> {
+export class UsedCarService extends CrudService<typeof x> {
 
   setupCarsSecret: string
 
