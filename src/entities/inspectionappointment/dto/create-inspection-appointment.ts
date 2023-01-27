@@ -33,11 +33,10 @@ export class CreateInspectionAppointmentDTO {
 
   readonly agencyId: string;
 
-  @ApiProperty({ description: 'The information of the car' })
+  @ApiProperty({ description: 'The id of the car initial assessment' })
 
-  @IsObject()
-
-  readonly carInfo: object;
+  @IsString()
+  readonly initialAssessmentId: string;
 
   @ApiProperty({ description: 'The date of the appointment' })
 

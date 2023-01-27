@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
 import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
@@ -12,8 +13,10 @@ import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
 import { NewCarRepository } from '../repository/newcar.repository';
 
+let x;
+
 @Injectable()
-export class NewCarService extends CrudService<NewCar> {
+export class NewCarService extends CrudService<typeof x> {
 
   setupCarsSecret: string
 
@@ -39,12 +42,7 @@ export class NewCarService extends CrudService<NewCar> {
   }
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
-    const cars = await this.repository.findAll(query)
-    const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-    return {
-      ...cars,
-      items: groupedCars
-    }
+    return this.repository.findAll(query)
   }
 
   async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{cars: NewCar[], colours: string[]}> {
@@ -111,8 +109,24 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
-  async getCarCatalogue(authHeader: string) {
-    if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
+  async getcarbyvin(vin : string){
+
+    let CarList = await this.repository.findAll();
+
+    let carfin;
+
+    await CarList.items.forEach(car => {
+
+      if(car.vin === vin)[
+        carfin = car
+      ]
+      
+    })
+    return carfin;
+
+  }
+ 
+  async updateCarCatalogue(){
     const { token } = await this.loginToSAD()
     const deletedRecords = await this.repository.deleteMany({})
     Logger.debug(`Deleted ${deletedRecords.affected} records`)
@@ -141,7 +155,8 @@ export class NewCarService extends CrudService<NewCar> {
       24, // KIA Hermosillo
       25, // KIA La Paz
       26, // KIA Mochis
-      27, // KIA Obregón
+      27, // KIA Obregó
+      28, // JAC Cualiacán
     ]
     let promises = []
     try {
@@ -201,6 +216,21 @@ export class NewCarService extends CrudService<NewCar> {
     }
   }
 
+  getCarCatalogue(authHeader: string) {
+    if(authHeader === "automaticupdate") {
+      this.updateCarCatalogue();
+    }
+    else if(authHeader !== this.setupCarsSecret){
+
+      throw new UnauthorizedException()
+    }
+    else{
+      this.updateCarCatalogue();
+    }
+    
+   
+  }
+
   private async loginToSAD(): Promise<{token: string}> {
     const response = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
       userName: this.sadApiConfig.username,
@@ -208,5 +238,6 @@ export class NewCarService extends CrudService<NewCar> {
     }).toPromise()
     return { token: response.data }
   }
+
 
 };

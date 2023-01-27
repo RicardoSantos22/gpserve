@@ -76,14 +76,17 @@ export class NewCarController {
     return this.service.getModelsByBrands(brand)
   }
 
-  @Get(':brandUrl/:modelUrl/:seriesUrl/:year')
-  async getByCarGroup(@Param('brandUrl') brandUrl: string, @Param('modelUrl') modelUrl: string, @Param('seriesUrl') seriesUrl: string, @Param('year') year: string,) {
+  @Get(':brandUrl/:modelUrl/:seriesUrl/:year/:transmision/:price')
+  async getByCarGroup(@Param('brandUrl') brandUrl: string, @Param('modelUrl') modelUrl: string, @Param('seriesUrl') seriesUrl: string, @Param('year') year: string, @Param('transmision') transmision: string, @Param('price') price: number) {
     const groupFilter : NewCarGroupFilter = {
       brandUrl,
       modelUrl,
       seriesUrl,
-      year
+      year,
+      transmision,
+      price
     }
+    
     return this.service.getByCarGroup(groupFilter)
   }
 
@@ -120,6 +123,11 @@ export class NewCarController {
   @Get(':id')
   async findById(@Param() params: FindByIdParams) {
     return this.service.findById(params.id);
+  }
+
+  @Get('vin/:vin')
+  async findByvin(@Param('vin') vin: string) {
+    return this.service.getcarbyvin(vin)
   }
 
   /**

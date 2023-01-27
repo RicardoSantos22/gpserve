@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, prop, Severity } from '@typegoose/typegoose';
+import { modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
+import { InitialAssessment } from 'src/entities/initialassessment/model/initial-assessment.model';
 
 import { requestStatus, userType } from '../../shared/enums';
 
@@ -40,12 +41,12 @@ export class InspectionAppointment {
   agencyId: string;
 
   @ApiProperty({
-    description: 'The information of the car',
+    description: 'The initial assessment ID attached to this model',
     readOnly: true,
   })
 
-  @prop()
-  carInfo: object;
+  @prop({ required: true,ref: () => InitialAssessment })
+  initialAssessmentId: Ref<InitialAssessment>;
 
   @ApiProperty({
     description: 'The date of the appointment',

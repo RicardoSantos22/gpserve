@@ -21,6 +21,7 @@ import { NoteModule } from './entities/note/note.module';
 
 import { AsesoresModule } from './entities/asesores/asesores.module';
 import { OrderModule } from './entities/order/order.module';
+import { InitialAssessmentModule } from './entities/initialassessment/initial-assessment.module';
 
 
 @Module({
@@ -50,7 +51,6 @@ import { OrderModule } from './entities/order/order.module';
     CarSaleRequestModule,
     NoteModule,
     AsesoresModule,
-    OrderModule,
   ]
 })
 

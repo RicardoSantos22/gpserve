@@ -8,8 +8,10 @@ import { SADUsedCar } from '../entities/sad-used-car';
 import { UsedCar } from '../model/usedcar.model';
 import { UsedCarRepository } from '../repository/usedcar.repository';
 
+let x;
+
 @Injectable()
-export class UsedCarService extends CrudService<UsedCar> {
+export class UsedCarService extends CrudService<typeof x> {
 
   setupCarsSecret: string
 
@@ -85,8 +87,7 @@ export class UsedCarService extends CrudService<UsedCar> {
     }
   }
 
-  async getUsedCarCatalogue(authHeader: string) {
-    if(authHeader !== this.setupCarsSecret) throw new UnauthorizedException()
+  async updateCarCatalogue(){
     const { token } = await this.loginToSAD()
     const deletedRecords = await this.repository.deleteMany({})
     Logger.debug(`Deleted ${deletedRecords.affected} records`)
@@ -116,6 +117,7 @@ export class UsedCarService extends CrudService<UsedCar> {
       25, // KIA La Paz
       26, // KIA Mochis
       27, // KIA Obregón
+      28, // JAC Cualiacán
     ]
     let promises = []
     try {
@@ -170,12 +172,44 @@ export class UsedCarService extends CrudService<UsedCar> {
     }
   }
 
+  async getUsedCarCatalogue(authHeader: string) {
+    if(authHeader === "automaticupdate") {
+      this.updateCarCatalogue();
+    }
+    else if(authHeader !== this.setupCarsSecret){
+
+      throw new UnauthorizedException()
+    }
+    else{
+      this.updateCarCatalogue();
+    }
+    
+ 
+  }
+
   private async loginToSAD(): Promise<{token: string}> {
     const response = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
       userName: this.sadApiConfig.username,
       password: this.sadApiConfig.password
     }).toPromise()
     return { token: response.data }
+  }
+
+  async getcarbyvin(vin : string){
+
+    let CarList = await this.repository.findAll();
+
+    let carfin;
+
+    await CarList.items.forEach(car => {
+
+      if(car.vin === vin)[
+        carfin = car
+      ]
+      
+    })
+    return carfin;
+
   }
 
 };
