@@ -64,6 +64,14 @@ export class Agency {
   number: number;
 
   @ApiProperty({
+    description: 'The number of the bbva mp node',
+    readOnly: true,
+  })
+
+  @prop()
+  bbva_node: number;
+
+  @ApiProperty({
     description: 'The email of the Agency',
     readOnly: true,
   })

@@ -20,6 +20,7 @@ import { CarSaleRequestModule } from './entities/carsalerequest/carsalerequest.m
 import { NoteModule } from './entities/note/note.module';
 
 import { AsesoresModule } from './entities/asesores/asesores.module';
+import { OrderModule } from './entities/order/order.module';
 import { InitialAssessmentModule } from './entities/initialassessment/initial-assessment.module';
 
 
@@ -34,6 +35,8 @@ import { InitialAssessmentModule } from './entities/initialassessment/initial-as
       useFactory: mongoFactory,
       inject: [ConfigService],
     }),
+    OrderModule,
+    InitialAssessmentModule,
     AdminModule,
     AgencyModule,
     CreditRequestModule,
@@ -50,7 +53,6 @@ import { InitialAssessmentModule } from './entities/initialassessment/initial-as
     CarSaleRequestModule,
     NoteModule,
     AsesoresModule,
-    InitialAssessmentModule
   ]
 })
 

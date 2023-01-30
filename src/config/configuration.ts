@@ -14,6 +14,9 @@ export default () => ({
         user: process.env.LIBRO_AZUL_USER,
         pwd: process.env.LIBRO_AZUL_PASSWORD
     },
+    Multipagos:{
+        privatekey: process.env.MULTIPAGOS_PRIVATE_KEY
+    },
     s3: {
         region: process.env.MEDIA_S3_REGION,
         accessKey: process.env.MEDIA_S3_ACCESS_KEY,
