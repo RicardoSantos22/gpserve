@@ -35,6 +35,8 @@ import { InitialAssessmentModule } from './entities/initialassessment/initial-as
       useFactory: mongoFactory,
       inject: [ConfigService],
     }),
+    OrderModule,
+    InitialAssessmentModule,
     AdminModule,
     AgencyModule,
     CreditRequestModule,
