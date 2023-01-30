@@ -5,7 +5,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit,MessageBody, Su
 import { Server, Socket } from 'socket.io'
 
 
-@WebSocketGateway()
+@WebSocketGateway(80, { cors:{ origin: '*'}, })
 
 @Injectable()
 export class OrdersService {
@@ -18,7 +18,7 @@ export class OrdersService {
         
     }
 
-    @WebSocketServer(80, { cors:{ origin: '*'}, }) server: Server;
+    @WebSocketServer() server: Server;
 
     afterInit(server:any){
         console.log("sockets activos")
