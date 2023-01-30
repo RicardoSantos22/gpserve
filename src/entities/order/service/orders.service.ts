@@ -5,7 +5,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit,MessageBody, Su
 import { Server, Socket } from 'socket.io'
 
 
-@WebSocketGateway()
+@WebSocketGateway(443, { cors:{ origin: '*'}, })
 
 @Injectable()
 export class OrdersService {
