@@ -18,7 +18,7 @@ export class OrdersService {
         
     }
 
-    @WebSocketServer() server: Server;
+    @WebSocketServer(443, { cors:{ origin: '*'}, }) server: Server;
 
     afterInit(server:any){
         console.log("sockets activos")
