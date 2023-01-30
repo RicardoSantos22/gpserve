@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 require('dotenv').config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {cors: true});
   
   const port = process.env.PORT;
   app.setGlobalPrefix('api')
@@ -23,8 +23,6 @@ async function bootstrap() {
   //     forbidUnknownValues: true,
   //   }),
   // );
-
-  app.enableCors();
 
   await app.listen(port || 3000, '0.0.0.0');
 }
