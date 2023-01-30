@@ -14,7 +14,7 @@ export class OrdersService {
 
     constructor(private readonly configService: ConfigService){
 
-        this.bbvakey = this.configService.get<string>('Multipagos.privatekey');
+        this.bbvakey = 'M94eF#-09dKGeDN9u=-b=j2(4&Xe)f3U9+o134i&0y3(75XsSNE0MO6sEe-M!l)7G1%7(d6v$i#Kp-9sFkVo=&lB1#Pm2OL6kf##=kv7R%K9rLjb#3#+R9I&6E#Kh7B#';
         
     }
 
