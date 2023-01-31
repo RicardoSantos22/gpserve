@@ -5,7 +5,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit,MessageBody, Su
 import { Server, Socket } from 'socket.io'
 
 
-@WebSocketGateway()
+@WebSocketGateway({cors: ['*']}, )
 
 @Injectable()
 export class OrdersService {
@@ -58,8 +58,30 @@ export class OrdersService {
 
     async AddNewOrder(Order){
 
+        const Mensaje: string = (await Order.mp_order).toString() + (await Order.mp_reference).toString() + (await Order.mp_amount).toString() + (await Order.mp_authorization).toString(); 
+
+        const hashverificacion = createHmac('sha256', this.bbvakey).update(Mensaje).digest('hex');
+
+        if(Order.mp_signature === hashverificacion){
+            Order.orderDuplicate = 'false'
+        }
+        else{
+            Order.orderDuplicate = 'true'
+        }
+
+        if(Order.mp_authorization > 0){
+
+            Order.apiAuthorization = 'Completado'
+        }
+        else{
+            Order.apiAuthorization = 'Incompletp' 
+        }
+
         
         this.handleIncomingMessage(Order);
+
+
+
         return Order;
     }
 
