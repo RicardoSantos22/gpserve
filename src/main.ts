@@ -23,8 +23,8 @@ async function bootstrap() {
   //     forbidUnknownValues: true,
   //   }),
   // );
-
-  app.enableCors();
+  
+  app.enableCors()
 
   await app.listen(port || 3000, '0.0.0.0');
 }

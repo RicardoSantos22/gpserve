@@ -4,16 +4,16 @@ import { InjectModel } from 'nestjs-typegoose';
 
 import { CrudRepository } from '../../../common/crud/crud.repository';
 
-import { UsedCar } from '../model/usedcar.model';
+import { order } from '../model/order.model';
 
 let x;
 @Injectable()
-export class UsedCarRepository extends CrudRepository<typeof x> {
-  constructor(@InjectModel(UsedCar) readonly model: ReturnModelType<typeof UsedCar>) {
-    super(model, 'UsedCar');
+export class orderRepository extends CrudRepository<typeof x> {
+  constructor(@InjectModel(order) readonly model: ReturnModelType<typeof order>) {
+    super(model, 'order');
   }
 
-  async findByBrands(brands: string[]): Promise<UsedCar[]> {
+  async findByBrands(brands: string[]): Promise<order[]> {
     return this.model.find({brand: { $in: brands }}).select('model').exec()
   }
 

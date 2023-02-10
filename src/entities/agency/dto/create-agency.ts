@@ -94,6 +94,16 @@ export class CreateAgencyDTO {
 
   readonly number: number;
 
+
+  @ApiProperty({
+    description: 'The bbva_node mp_node multipagos of the Agency',
+    example: 1,
+  })
+
+  @IsNumber()
+
+  readonly bbva_node: number;
+
   @ApiProperty({
     description: 'The email of the Agency',
     example: 'email@agency.com',

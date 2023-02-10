@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { Cron, CronExpression } from '@nestjs/schedule'
 
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
@@ -14,8 +13,10 @@ import { NewCarHelps } from '../helpers/newcar.helps';
 import { NewCar } from '../model/newcar.model';
 import { NewCarRepository } from '../repository/newcar.repository';
 
+let x;
+
 @Injectable()
-export class NewCarService extends CrudService<NewCar> {
+export class NewCarService extends CrudService<typeof x> {
 
   setupCarsSecret: string
 
@@ -41,12 +42,7 @@ export class NewCarService extends CrudService<NewCar> {
   }
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
-    const cars = await this.repository.findAll(query)
-    const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-    return {
-      ...cars,
-      items: groupedCars
-    }
+    return this.repository.findAll(query)
   }
 
   async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{cars: NewCar[], colours: string[]}> {
@@ -243,11 +239,5 @@ export class NewCarService extends CrudService<NewCar> {
     return { token: response.data }
   }
 
-
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
-  autoamicGetCarCatalogue(){
-
-    this.getCarCatalogue('automaticupdate');
-  }
 
 };
