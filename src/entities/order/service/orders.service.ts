@@ -64,20 +64,17 @@ export class OrdersService extends CrudService<typeof x>{
             hmac: hash
         }
 
-        let newOrderCreate = await this.repository.create(order)
-
-
-        let respuesta = {
-            "Num_order" : (await N_order).toString(),
-            "Num_referencia" : (await N_referencia).toString(),
-            "Hmac" : hash,
-            "finalamount": (await amount).toString(),
-            "concept": order.concept,
-            "idRegister": newOrderCreate._id
-        }
+        // let respuesta = {
+        //     "Num_order" : (await N_order).toString(),
+        //     "Num_referencia" : (await N_referencia).toString(),
+        //     "Hmac" : hash,
+        //     "finalamount": (await amount).toString(),
+        //     "concept": order.concept,
+        //     "idRegister": '1'
+        // }
         
 
-        return respuesta; 
+        return await this.repository.create(order)
 
     
     }
