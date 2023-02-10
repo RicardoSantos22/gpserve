@@ -32,9 +32,7 @@ export class OrdersService extends CrudService<typeof x>{
     }
 
     async CreateOrder(body){
-
-        console.log(body)
-
+        
         let amount;
         if(body.concept === 1){
         amount = this.getminamount(body.amount);
