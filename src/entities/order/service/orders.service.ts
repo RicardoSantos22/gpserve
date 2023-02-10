@@ -73,7 +73,7 @@ export class OrdersService extends CrudService<typeof x>{
             "Hmac" : hash,
             "finalamount": (await amount).toString(),
             "concept": order.concept,
-            "idRegister": newOrderCreate._id
+            "idRegister": '1'
         }
         
 
