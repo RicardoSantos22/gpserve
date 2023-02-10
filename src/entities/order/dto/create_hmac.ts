@@ -24,6 +24,33 @@ export class HmacDTO {
       readonly amount: string;
 
       @ApiProperty({
+        description: 'amount to reserve or buy the car',
+        example: '15000',
+      })
+    
+      @IsString()
+    
+      readonly userid: string;
+
+      @ApiProperty({
+        description: 'amount to reserve or buy the car',
+        example: '15000',
+      })
+    
+      @IsString()
+    
+      readonly typecar: string;
+
+      @ApiProperty({
+        description: 'amount to reserve or buy the car',
+        example: '15000',
+      })
+    
+      @IsString()
+    
+      readonly idcar: string;
+
+      @ApiProperty({
         description: 'Concept to reserve or buy the car',
         example: '1 = apartado, 2 = compra',
       })
