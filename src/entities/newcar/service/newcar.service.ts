@@ -172,11 +172,36 @@ export class NewCarService extends CrudService<typeof x> {
         )
       }
       const responses = await Promise.all(promises)
+      
       for(let response of responses) {
           if(response.data.success) {
             const sadNewCars = response.data.data as SADNewCar[]
+            
             for(let sc of sadNewCars) {
               if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
+
+                let MetaDescription: string;
+                let h1: string;
+
+                if(sc.chassisType === 'S U V' || sc.chassisType === 'SUV')
+                {
+                  MetaDescription = 'Compra tu Camioneta '+sc.brand+' Nueva '+ sc.model.split(' ')[0]+' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                  h1 =  'Camioneta Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year; 
+                }
+                else if(sc.chassisType === 'PICK-UP')
+                {
+                  MetaDescription = 'Compra tu pickup '+ sc.model.split(' ')[0]+' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                  h1 =  'Pickup Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year; 
+                }
+                else if(sc.chassisType === 'CHASIS CABINA'){
+                  MetaDescription = 'Compra tu Camioneta '+sc.brand+' Nueva '+ sc.model.split(' ')[0]+' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                  h1 = 'Vehiculo de Carga Nuevo' + sc.brand + ' ' + sc.model + ' ' + sc.year;
+                }
+                else
+                {
+                  MetaDescription = 'Compra tu '+sc.brand+' '+ sc.model.split(' ')[0]+' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                  h1 =  'Auto Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year; 
+                }
               //if(true) {
                 let newCar: NewCar = {
                   vin: sc.ID,
@@ -184,6 +209,10 @@ export class NewCarService extends CrudService<typeof x> {
                   brand: sc.brand,
                   model: sc.model,
                   series: sc.version,
+                  chassisType: sc.chassisType,
+                  metaTitulo: ''+sc.brand+ ' ' +sc.model.split(' ')[0]+ ' '+sc.year+' Nuevo En Linea | Estrena tu Auto',
+                  metaDescription: MetaDescription,
+                  h1Title: h1,
                   brandUrl: NewCarHelps.stringToUrl(sc.brand),
                   modelUrl: NewCarHelps.stringToUrl(sc.model),
                   seriesUrl: NewCarHelps.stringToUrl(sc.version),
@@ -204,7 +233,7 @@ export class NewCarService extends CrudService<typeof x> {
       const createdCars = await this.repository.createMany(newCarsArray)
       return {
         count: newCarsArray.length,
-        results: createdCars
+        results:createdCars
       }
     }
     catch(err) {
