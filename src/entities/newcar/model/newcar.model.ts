@@ -52,6 +52,18 @@ export class NewCar {
   model: string;
 
   @prop()
+  chassisType: string;
+
+  @prop()
+  metaTitulo: string;
+
+  @prop()
+  metaDescription: string;
+  
+  @prop()
+  h1Title: string;
+
+  @prop()
   modelUrl: string
 
   @ApiProperty({
