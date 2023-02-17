@@ -185,7 +185,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                 if(sc.chassisType === 'S U V' || sc.chassisType === 'SUV')
                 {
-                  MetaDescription = 'Compra tu Camioneta '+sc.brand+' Nueva '+ sc.model.split(' ')[0]+' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                  MetaDescription = 'Compra tu Camioneta '+sc.brand+' '+ sc.model.split(' ')[0]+' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                   h1 =  'Camioneta Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year; 
                 }
                 else if(sc.chassisType === 'PICK-UP')
@@ -194,7 +194,7 @@ export class NewCarService extends CrudService<typeof x> {
                   h1 =  'Pickup Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year; 
                 }
                 else if(sc.chassisType === 'CHASIS CABINA'){
-                  MetaDescription = 'Compra tu Camioneta '+sc.brand+' Nueva '+ sc.model.split(' ')[0]+' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                  MetaDescription = 'Compra tu Camioneta '+sc.brand+' '+ sc.model.split(' ')[0]+' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                   h1 = 'Vehiculo de Carga Nuevo' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                 }
                 else
