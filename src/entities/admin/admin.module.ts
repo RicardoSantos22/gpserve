@@ -7,9 +7,13 @@ import { UserModule } from '../user/user.module';
 import { Module } from '@nestjs/common';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { PassportModule } from '@nestjs/passport';
+import { NewCarModule } from '../newcar/newcar.module';
+import { UsedCarModule } from '../usedcar/usedcar.module';
 
 @Module({
   imports: [
+    NewCarModule,
+    UsedCarModule,
     UserModule,
     PassportModule,
     TypegooseModule.forFeature([Admin]),

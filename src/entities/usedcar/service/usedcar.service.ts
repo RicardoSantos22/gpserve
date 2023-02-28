@@ -35,6 +35,10 @@ export class UsedCarService extends CrudService<typeof x> {
     this.setupCarsSecret = this.config.get('setupCarsSecret')
   }
 
+  async getallcars(){
+    return await this.repository.findAll();
+  }
+
   async getFiltersValues(): Promise<NewCarsFilters> {
     const allCars = await this.repository.findAll()
     const sets = {

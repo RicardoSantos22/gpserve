@@ -53,7 +53,7 @@ import { InitialAssessmentModule } from './entities/initialassessment/initial-as
     CarSaleRequestModule,
     NoteModule,
     AsesoresModule,
-  ]
+  ],
 })
 
 export class AppModule {}
