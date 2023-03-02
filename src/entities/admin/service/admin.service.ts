@@ -12,11 +12,13 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Inject
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AdminService extends CrudService<Admin> {
+
   constructor(
     readonly repository: AdminRepository,
     readonly config: ConfigService,
@@ -31,6 +33,7 @@ export class AdminService extends CrudService<Admin> {
     }
     return admin;
   }
+
 
   async create(dto: CreateAdminDTO): Promise<Admin> {
     try {

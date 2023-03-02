@@ -14,6 +14,7 @@ import { HttpModule } from '@nestjs/axios';
   ],
   controllers: [NewCarController],
   providers: [NewCarService, NewCarRepository],
+  exports:[NewCarService, NewCarRepository]
 })
 
 export class NewCarModule {}

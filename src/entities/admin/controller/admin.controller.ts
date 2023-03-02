@@ -25,13 +25,22 @@ import { AdminService } from '../service/admin.service';
 import { CreateAdminDTO } from '../dto/create-admin.dto';
 import { FindAllAdminsQuery } from '../dto/find-all-admins-query';
 import { UpdateAdminDTO } from '../dto/update-admin';
+import { Res } from '@nestjs/common/decorators';
+import { SitemapStream, streamToPromise } from 'sitemap';
+import { NewCarService } from 'src/entities/newcar/service/newcar.service';
+import { UsedCarService } from 'src/entities/usedcar/service/usedcar.service';
 
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly service: AdminService) {}
+  constructor(
+    private readonly service: AdminService, 
+    private readonly NewCarService: NewCarService,
+    private readonly UsedCarService: UsedCarService,
+    ) {}
 
   /**
    * #region findAll
+   * 
    * 
    * @param {FindAllQuery} query 
    * @returns
@@ -87,6 +96,43 @@ export class AdminController {
     description: 'There was a database error while trying to fetch the specified Admin',
     type: DatabaseErrorDto,
   })
+
+  @Get('sitemap')
+  async getsitemap(@Res() res){
+
+
+    let newcarslist = await this.NewCarService.getnewcars();
+    let UsedCarlist = await this.UsedCarService.getallcars();
+
+
+    'https://estrenatuauto.com/autos-seminuevos/63fd1870c8d73700125b3393/detalles?transmision=Manual&price=170000&colorhex=%239e0705&colorname=Rojo%20flash'
+    let carslist;
+
+    res.set('Content-Type', 'text/xml');
+
+    const SmStream = new SitemapStream({hostname: 'https://estrenatuauto.com'})
+    SmStream.write({ url: 'https://estrenatuauto.com/',  changefreq: 'monthly', priority: 0.3, img: 'https://estrenatuauto.com/assets/images/home-desktop-lite.jpg'})
+    SmStream.write({ url: 'https://estrenatuauto.com/concesionarias',  changefreq: 'monthly', priority: 0.3})
+    SmStream.write({ url: 'https://estrenatuauto.com/contacto',  changefreq: 'monthly', priority: 0.3})
+    SmStream.write({ url: 'hhttps://estrenatuauto.com/vender-mi-auto',  changefreq: 'monthly', priority: 0.3})
+    SmStream.write({ url: 'https://estrenatuauto.com/autos-nuevos',  changefreq: 'monthly', priority: 0.3})
+     
+    newcarslist.items.forEach((car: any) => {
+      SmStream.write({ url: 'https://estrenatuauto.com/autos-nuevos/'+car.brandUrl+'/'+car.modelUrl+'/'+car.seriesUrl+'/'+car.year+'/detalles?transmision='+car.transmision+'&price='+car.price+'&colorname='+car.baseColour+'',  changefreq: 'monthly', priority: 0.3, img: car.images[1]})
+
+    })
+
+    UsedCarlist.items.forEach((car: any) =>{
+      console.log(car._id)
+      SmStream.write({ url: 'https://estrenatuauto.com/autos-seminuevos/'+car._id+'/detalles?transmision='+car.transmision+'&price='+car.price+'colorname='+car.colours+'',  changefreq: 'monthly', priority: 0.3, img: car.images[1]})
+    })
+
+    
+    SmStream.end()
+    streamToPromise(SmStream).then(xml => {
+      res.send(xml);
+    })
+  }
 
   // #endregion findById
 
