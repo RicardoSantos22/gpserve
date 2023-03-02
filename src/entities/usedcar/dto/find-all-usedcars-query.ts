@@ -1,48 +1,48 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import {ApiProperty, PartialType} from '@nestjs/swagger';
 
-import { IsOptional } from 'class-validator';
+import {IsOptional} from 'class-validator';
 
-import { CreateUsedCarDTO } from './create-usedcar';
+import {CreateUsedCarDTO} from './create-usedcar';
 
-import { FindAllQuery } from '../../../common/models/dto/query/find-all-query.dto';
-import { Expose } from 'class-transformer';
+import {FindAllQuery} from '../../../common/models/dto/query/find-all-query.dto';
+import {Expose} from 'class-transformer';
 
 export class FindAllUsedCarsQuery extends PartialType(FindAllQuery) implements Partial<CreateUsedCarDTO> {
-  id: any;
+    id: any;
 
-  @ApiProperty({
-    description: 'The agency ID attached to this model',
-    example: '002',
-    readOnly: true,
-  })
+    @ApiProperty({
+        description: 'The agency ID attached to this model',
+        example: '002',
+        readOnly: true,
+    })
 
-  @IsOptional()
+    @IsOptional()
 
-  agencyId: any;
+    agencyId: any;
 
-  @ApiProperty({
-    description: "The car's brand",
-    example: 'Mercedes',
-    readOnly: true,
-  })
+    @ApiProperty({
+        description: "The car's brand",
+        example: 'Mercedes',
+        readOnly: true,
+    })
 
-  @IsOptional()
+    @IsOptional()
 
-  brand: any;
+    brand: any;
 
-  @ApiProperty({
-    description: "The car's model",
-    example: 'Some car model',
-    readOnly: true,
-  })
+    @ApiProperty({
+        description: "The car's model",
+        example: 'Some car model',
+        readOnly: true,
+    })
 
-  @IsOptional()
+    @IsOptional()
 
-  model: any;
+    model: any;
 
-  @IsOptional()
+    @IsOptional()
 
-  @Expose({name: 'colours'})
+    @Expose({name: 'colours'})
 
-  baseColour: any;
-};
+    baseColour: any;
+}

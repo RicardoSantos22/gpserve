@@ -4,4 +4,5 @@ export interface NewCarsFilters {
     transmision: Array<string>
     colours: Array<string>
     prices: Array<number>
+    km: Array<number>
 }

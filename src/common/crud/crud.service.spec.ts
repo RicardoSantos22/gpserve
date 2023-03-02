@@ -17,7 +17,7 @@ describe('CrudService', () => {
   beforeEach(() => {
     (CrudService as any).mockClear();
   });
-  it('should call the CrudService contructor when instantiating a child service', () => {
+  it('should call the CrudService constructor when instantiating a child service', () => {
     const service = new CrudChildService();
     expect(CrudService).toHaveBeenCalled();
   });
