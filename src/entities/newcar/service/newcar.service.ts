@@ -45,6 +45,10 @@ export class NewCarService extends CrudService<typeof x> {
         return this.repository.findAll(query)
     }
 
+    async getNewCars() {
+        return this.repository.findAll();
+    }
+
     async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{ cars: NewCar[], colours: string[] }> {
         const cars = await this.repository.findByGroup(groupFilter)
         let coloursSet = new Set<string>()

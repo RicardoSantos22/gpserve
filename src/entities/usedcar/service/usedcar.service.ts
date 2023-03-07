@@ -86,6 +86,10 @@ export class UsedCarService extends CrudService<typeof x> {
 
     }
 
+    async getallcars() {
+        return await this.repository.findAll();
+    }
+
     async getModelsByBrands(brands: string[]): Promise<{ models: string[] }> {
         const cars = await this.repository.findByBrands(brands)
         const modelsSet = new Set<string>()
