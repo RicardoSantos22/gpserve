@@ -8,6 +8,9 @@ import { SADUsedCar } from '../entities/sad-used-car';
 import { UsedCar } from '../model/usedcar.model';
 import { UsedCarRepository } from '../repository/usedcar.repository';
 
+import { Cron } from '@nestjs/schedule'
+import { CronExpression } from '@nestjs/schedule/dist';
+
 let x;
 
 @Injectable()
@@ -92,9 +95,10 @@ export class UsedCarService extends CrudService<typeof x> {
   }
 
   async updateCarCatalogue(){
+    let updateitem = 0;
     const { token } = await this.loginToSAD()
-    const deletedRecords = await this.repository.deleteMany({})
-    Logger.debug(`Deleted ${deletedRecords.affected} records`)
+    // const deletedRecords = await this.repository.deleteMany({})
+    // Logger.debug(`Deleted ${deletedRecords.affected} records`)
     let usedCarsArray : UsedCar[] = []
     let agencyIds = [
       1, // Hyundai Culiacán
@@ -137,10 +141,22 @@ export class UsedCarService extends CrudService<typeof x> {
         )
       }
       const responses = await Promise.all(promises)
+      let carlist = await this.repository.findAll();
       for(let response of responses) {
         if(response.data.success) {
           const sadNewCars = response.data.data as SADUsedCar[]
           for(let sc of sadNewCars) {
+
+
+            let BDID: string = '';
+            carlist.items.forEach((car:any) =>{
+
+              if(sc.ID === car.vin)
+              {
+                BDID = car._id;
+              }
+            })
+
             if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
             //if(true) {
               let usedCar: UsedCar = {
@@ -160,7 +176,14 @@ export class UsedCarService extends CrudService<typeof x> {
                 location: sc.agencyCity.trim(),
                 specs: sc.specs
               }
-              usedCarsArray.push(usedCar)
+              if(BDID !== ''){
+
+                await this.repository.update(BDID, usedCar)
+                updateitem++
+              }
+              else{
+                usedCarsArray.push(usedCar)
+              }
             }
           }
         }
@@ -173,6 +196,7 @@ export class UsedCarService extends CrudService<typeof x> {
     }
     finally {
       Logger.debug(`Inserted ${usedCarsArray.length} records`)
+      Logger.debug(`Update ${updateitem} records`)
     }
   }
 
@@ -215,5 +239,13 @@ export class UsedCarService extends CrudService<typeof x> {
     return carfin;
 
   }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async updatecatalogue()
+  {
+    await this.updateCarCatalogue();
+
+  }
+
 
 };

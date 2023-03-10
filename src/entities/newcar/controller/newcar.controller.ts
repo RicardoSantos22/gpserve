@@ -65,6 +65,12 @@ export class NewCarController {
     return this.service.findAll(query);
   };
 
+  @Get('updatecarlist')
+  async updateCarList(){
+    return await this.service.updateCarCatalogue();
+  }
+
+
   @Get('filters')
   async getFiltersValues() {
     return this.service.getFiltersValues()
@@ -153,6 +159,7 @@ export class NewCarController {
     type: DatabaseErrorDto,
   })
 
+
   // #endregion create
 
   @Post()
@@ -162,8 +169,10 @@ export class NewCarController {
 
   @Post('setup')
   async getCarCatalogue(@Headers('Authorization') authHeader: string) {
-    return this.service.getCarCatalogue(authHeader)
+    // return this.service.getCarCatalogue(authHeader)
+    return 'Desabilitado'
   }
+
 
   /**
    * #region update

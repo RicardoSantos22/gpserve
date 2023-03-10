@@ -2,6 +2,10 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { Cron } from '@nestjs/schedule'
+import { CronExpression } from '@nestjs/schedule/dist';
+import { int } from 'aws-sdk/clients/datapipeline';
+
 
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
@@ -42,7 +46,14 @@ export class NewCarService extends CrudService<typeof x> {
   }
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
-    return this.repository.findAll(query)
+
+    const cars = await this.repository.findAll(query);
+
+    let group: NewCarGroupFilter;
+
+    const carsgroup = await this.repository.findByGroup(group)
+console.log(carsgroup)
+    return cars
   }
 
   async getnewcars(){
@@ -132,9 +143,10 @@ export class NewCarService extends CrudService<typeof x> {
   }
  
   async updateCarCatalogue(){
+    let updateitem: int = 0;
     const { token } = await this.loginToSAD()
-    const deletedRecords = await this.repository.deleteMany({})
-    Logger.debug(`Deleted ${deletedRecords.affected} records`)
+    // const deletedRecords = await this.repository.deleteMany({})
+    // Logger.debug(`Deleted ${deletedRecords.affected} records`)
     let newCarsArray : NewCar[] = []
     let agencyIds = [
       1, // Hyundai Culiacán
@@ -177,13 +189,26 @@ export class NewCarService extends CrudService<typeof x> {
         )
       }
       const responses = await Promise.all(promises)
+
+      let carlist = await this.repository.findAll();
       
       for(let response of responses) {
           if(response.data.success) {
             const sadNewCars = response.data.data as SADNewCar[]
             
             for(let sc of sadNewCars) {
-              if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
+
+              let BDID: string = '';
+
+              carlist.items.forEach((car: any) => {
+                if(sc.ID === car.vin)
+                {
+                  BDID = car._id;
+                }
+              })
+
+
+              if(sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
 
                 let MetaDescription: string;
                 let h1: string;
@@ -230,7 +255,16 @@ export class NewCarService extends CrudService<typeof x> {
                   baseColour: NewCarHelps.getBaseColour(sc.color),
                   specs: sc.specs
                 }
-                newCarsArray.push(newCar)
+                if(BDID !== ''){
+
+                  await this.repository.update(BDID, newCar)
+                  updateitem++
+                }
+                else{
+                  newCarsArray.push(newCar)
+                }
+
+                
               }
             }
         }
@@ -247,6 +281,7 @@ export class NewCarService extends CrudService<typeof x> {
     }
     finally {
       Logger.debug(`Inserted ${newCarsArray.length} records`)
+      Logger.debug(`Update ${updateitem} records`)
     }
   }
 
@@ -273,5 +308,8 @@ export class NewCarService extends CrudService<typeof x> {
     return { token: response.data }
   }
 
-
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async updatecatalogue(){
+    await this.updateCarCatalogue();
+  }
 };
