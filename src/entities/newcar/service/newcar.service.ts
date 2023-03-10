@@ -2,6 +2,10 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { Cron } from '@nestjs/schedule'
+import { CronExpression } from '@nestjs/schedule/dist';
+import { int } from 'aws-sdk/clients/datapipeline';
+
 
 import { CrudService } from '../../../common/crud/crud.service';
 import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
@@ -139,9 +143,10 @@ console.log(carsgroup)
   }
  
   async updateCarCatalogue(){
+    let updateitem: int = 0;
     const { token } = await this.loginToSAD()
-    const deletedRecords = await this.repository.deleteMany({})
-    Logger.debug(`Deleted ${deletedRecords.affected} records`)
+    // const deletedRecords = await this.repository.deleteMany({})
+    // Logger.debug(`Deleted ${deletedRecords.affected} records`)
     let newCarsArray : NewCar[] = []
     let agencyIds = [
       1, // Hyundai Culiacán
@@ -184,13 +189,26 @@ console.log(carsgroup)
         )
       }
       const responses = await Promise.all(promises)
+
+      let carlist = await this.repository.findAll();
       
       for(let response of responses) {
           if(response.data.success) {
             const sadNewCars = response.data.data as SADNewCar[]
             
             for(let sc of sadNewCars) {
-              if(sc.isAvailable === 'S' && sc.isReserved === 'N') {
+
+              let BDID: string = '';
+
+              carlist.items.forEach((car: any) => {
+                if(sc.ID === car.vin)
+                {
+                  BDID = car._id;
+                }
+              })
+
+
+              if(sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
 
                 let MetaDescription: string;
                 let h1: string;
@@ -237,7 +255,16 @@ console.log(carsgroup)
                   baseColour: NewCarHelps.getBaseColour(sc.color),
                   specs: sc.specs
                 }
-                newCarsArray.push(newCar)
+                if(BDID !== ''){
+
+                  await this.repository.update(BDID, newCar)
+                  updateitem++
+                }
+                else{
+                  newCarsArray.push(newCar)
+                }
+
+                
               }
             }
         }
@@ -254,6 +281,7 @@ console.log(carsgroup)
     }
     finally {
       Logger.debug(`Inserted ${newCarsArray.length} records`)
+      Logger.debug(`Update ${updateitem} records`)
     }
   }
 
@@ -280,5 +308,8 @@ console.log(carsgroup)
     return { token: response.data }
   }
 
-
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async updatecatalogue(){
+    await this.updateCarCatalogue();
+  }
 };
