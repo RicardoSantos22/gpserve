@@ -47,13 +47,7 @@ export class NewCarService extends CrudService<typeof x> {
 
   async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
-    const cars = await this.repository.findAll(query);
-
-    let group: NewCarGroupFilter;
-
-    const carsgroup = await this.repository.findByGroup(group)
-console.log(carsgroup)
-    return cars
+    return this.repository.findAll(query);
   }
 
   async getnewcars(){
