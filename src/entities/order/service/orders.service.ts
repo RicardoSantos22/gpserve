@@ -2,18 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { createHmac } from 'crypto'
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit,MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io'
 import { orderRepository } from '../repository/order.repository'
 import { order } from '../model/order.model'
 
 let x;
 
-@WebSocketGateway({cors: ['*']}, )
-
 @Injectable()
 export class OrdersService extends CrudService<typeof x>{
-    private readonly bbvakey: string = 'M94eF#-09dKGeDN9u=-b=j2(4&Xe)f3U9+o134i&0y3(75XsSNE0MO6sEe-M!l)7G1%7(d6v$i#Kp-9sFkVo=&lB1#Pm2OL6kf##=kv7R%K9rLjb#3#+R9I&6E#Kh7B#';
+    private readonly bbvakey: string = '6x8S&74!45m&1=n!!Ffv!#6aQP-i1l8!-=0W!3H1mj3sM8Ty8dpWf45A4)u-#Jm=-(&mqUJt5t-!G7WIH%Wa9m2+o068b4&R(t63m83vH%%xC$LQZ#CQ2$eSUv#TEjTA';
 
 
     constructor(
@@ -21,15 +18,6 @@ export class OrdersService extends CrudService<typeof x>{
         readonly config: ConfigService,
         ){super(repository, 'UsedCar', config);}
 
-    @WebSocketServer() server: Server;
-
-    afterInit(server:any){
-        console.log("sockets activos")
-    }
-    handleConnection( client: any, ...args: any[]){
-        console.log("alguien inicio una compra")
-
-    }
 
     async CreateOrder(body){
         
@@ -113,9 +101,6 @@ export class OrdersService extends CrudService<typeof x>{
             Order.apiAuthorization = 'Incompletp' 
         }
 
-        
-        this.handleIncomingMessage(Order);
-
 
 
         return Order;
@@ -156,20 +141,5 @@ export class OrdersService extends CrudService<typeof x>{
 
         return listuserregister;
     }
-
-
-    @SubscribeMessage('client_join')
-    handleJoinRoom(client: Socket){
-        console.log('alguien ingreso');
-    }
-    handleIncomingMessage(payload:any){
-        this.server.emit('event_message', payload)
-    }
-
-
-    @SubscribeMessage('events')
-    handleEvent(@MessageBody() data: string): string {
-        return data;
-}
     
 }

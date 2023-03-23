@@ -64,6 +64,12 @@ export class UsedCarController {
     return this.service.findAll(query);
   };
 
+  @Get('updatecarlist')
+  async updateCarList(){
+    return await this.service.updateCarCatalogue();
+  }
+
+
   @Get('filters')
   async getFiltersValues() {
     return this.service.getFiltersValues()
@@ -147,7 +153,8 @@ export class UsedCarController {
 
   @Post('setup')
   async getUsedCarCatalogue(@Headers('Authorization') authHeader: string) {
-    return this.service.getUsedCarCatalogue(authHeader)
+    // return this.service.getUsedCarCatalogue(authHeader)
+    return 'Desabilitado'
   }
 
   /**

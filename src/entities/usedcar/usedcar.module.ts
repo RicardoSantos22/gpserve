@@ -6,9 +6,11 @@ import { UsedCarController } from './controller/usedcar.controller';
 import { UsedCarService } from './service/usedcar.service';
 import { UsedCarRepository } from './repository/usedcar.repository';
 import { HttpModule } from '@nestjs/axios';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     TypegooseModule.forFeature([UsedCar]),
     HttpModule.register({timeout: 20000, maxRedirects: 5})
   ],
