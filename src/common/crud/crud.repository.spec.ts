@@ -13,7 +13,7 @@ describe('CrudRepository', () => {
   beforeEach(() => {
     (CrudRepository as any).mockClear();
   });
-  it('should call the CrudRepository contructor when instantiating a child repository', () => {
+  it('should call the CrudRepository constructor when instantiating a child repository', () => {
     const service = new CrudChildRepository();
     expect(CrudRepository).toHaveBeenCalled();
   });
