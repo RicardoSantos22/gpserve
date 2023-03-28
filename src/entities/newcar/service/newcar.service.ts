@@ -50,7 +50,7 @@ export class NewCarService extends CrudService<typeof x> {
         return this.repository.findAll(query);
     }
 
-    async getnewcars() {
+    async getNewCars() {
 
         return this.repository.findAll();
     }
