@@ -23,10 +23,10 @@ export class OrdersService extends CrudService<typeof x>{
         
         let amount;
         if(body.concept === 1){
-        amount = this.getminamount(body.amount);
+        amount = 12;
         }
         else if(body.concept === 2){
-            amount = body.amount
+            amount = 12
         }
 
         
