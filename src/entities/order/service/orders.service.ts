@@ -23,12 +23,18 @@ export class OrdersService extends CrudService<typeof x>{
         
         let amount;
         if(body.concept === 1){
-        amount = 12;
+        amount = (body.amount / 100) * 50;
         }
         else if(body.concept === 2){
-            amount = 12
+            amount = body.amount;
         }
 
+        // if(body.concept === 1){
+        // amount = this.getminamount(body.amount);
+        // }
+        // else if(body.concept === 2){
+        //     amount = body.amount
+        // }
         
         const N_order = this.CreateRamdomNum();
 
