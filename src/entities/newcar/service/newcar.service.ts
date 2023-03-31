@@ -16,6 +16,9 @@ import {SADNewCar} from '../entities/sad-newcar';
 import {NewCarHelps} from '../helpers/newcar.helps';
 import {NewCar} from '../model/newcar.model';
 import {NewCarRepository} from '../repository/newcar.repository';
+import { Car as finishecar } from '../model/finishedcars.model';
+import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
+
 
 let x;
 
@@ -33,7 +36,9 @@ export class NewCarService extends CrudService<typeof x> {
     constructor(
         readonly repository: NewCarRepository,
         readonly config: ConfigService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private finishedcar:FinishedcarsService,
+        
     ) {
         super(repository, 'NewCar', config);
         this.sadApiConfig = {
@@ -189,6 +194,8 @@ export class NewCarService extends CrudService<typeof x> {
 
             let carlist = await this.repository.findAll();
 
+            let carinlist = [];
+
             for (let response of responses) {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
@@ -200,6 +207,7 @@ export class NewCarService extends CrudService<typeof x> {
                         carlist.items.forEach((car: any) => {
                             if (sc.ID === car.vin) {
                                 BDID = car._id;
+                                carinlist.push(sc.ID)
                             }
                         })
 
@@ -233,6 +241,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
                                 h1Title: h1,
+                                status: 'online',
                                 brandUrl: NewCarHelps.stringToUrl(sc.brand),
                                 modelUrl: NewCarHelps.stringToUrl(sc.model),
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
@@ -258,7 +267,43 @@ export class NewCarService extends CrudService<typeof x> {
                     }
                 }
             }
+
+            
             const createdCars = await this.repository.createMany(newCarsArray)
+
+            if(carinlist.length > 0){
+                carlist.items.forEach((car: any) => {
+                    
+                    if(carinlist.includes(car.vin)){}
+                    else{
+                        let updateCar: finishecar = {
+                            id: car._id,
+                            vin: car.vin,
+                            agencyId: car.agencyId,
+                            brand: car.brand,
+                            model: car.model,
+                            series: car.series,
+                            chassisType: car.chassisType,
+                            status: 'offline',
+                            brandUrl: car.brandUrl,
+                            modelUrl: car.modelUrl,
+                            seriesUrl: car.seriesUrl,
+                            price: car.price,
+                            year: car.year,
+                            images: car.images,
+                            transmision: car.transmision,
+                            fuel: car.fuel,
+                            colours: car.colours,
+                            baseColour: car.baseColour,
+                            specs: car.specs,
+                            cartype: 'new',
+                            km: 0,
+                        }
+                        this.finishedcar.create(updateCar)
+                        this.repository.delete(car._id)
+                    }
+                });
+            }
             return {
                 count: newCarsArray.length,
                 results: createdCars

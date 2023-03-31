@@ -6,10 +6,12 @@ import {NewCarsFilters} from '../../newcar/dto/new-cars-filters';
 import {NewCarHelps} from '../../newcar/helpers/newcar.helps';
 import {SADUsedCar} from '../entities/sad-used-car';
 import {UsedCar} from '../model/usedcar.model';
+import {Car as finishecar} from '../model/finishedcars.model';
 import {UsedCarRepository} from '../repository/usedcar.repository';
 
 import {Cron} from '@nestjs/schedule'
 import {CronExpression} from '@nestjs/schedule/dist';
+import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
 
 let x;
 
@@ -27,6 +29,7 @@ export class UsedCarService extends CrudService<typeof x> {
     constructor(
         readonly repository: UsedCarRepository,
         readonly config: ConfigService,
+        private finishedcar:FinishedcarsService,
         private httpService: HttpService
     ) {
         super(repository, 'UsedCar', config);
@@ -145,10 +148,13 @@ export class UsedCarService extends CrudService<typeof x> {
             }
             const responses = await Promise.all(promises)
             let carlist = await this.repository.findAll();
+            let carinlist = [];
             for (let response of responses) {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADUsedCar[]
                     for (let sc of sadNewCars) {
+
+                     
 
 
                         let BDID: string = '';
@@ -156,6 +162,8 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             if (sc.ID === car.vin) {
                                 BDID = car._id;
+                                carinlist.push(sc.ID)
+
                             }
                         })
 
@@ -188,6 +196,40 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                     }
                 }
+            }
+
+            if(carinlist.length > 0){
+                carlist.items.forEach((car: any) => {
+                    
+                    if(carinlist.includes(car.vin)){}
+                    else{
+                        let updateCar: finishecar = {
+                            id: car._id,
+                            vin: car.vin,
+                            agencyId: car.agencyId,
+                            brand: car.brand,
+                            model: car.model,
+                            series: car.series,
+                            chassisType: car.chassisType || '',
+                            status: 'offline',
+                            brandUrl: car.brandUrl,
+                            modelUrl: car.modelUrl,
+                            seriesUrl: car.seriesUrl,
+                            price: car.price,
+                            year: car.year,
+                            images: car.images,
+                            transmision: car.transmision,
+                            fuel: car.fuel,
+                            colours: car.colours,
+                            baseColour: car.baseColour,
+                            specs: car.specs,
+                            cartype: 'used',
+                            km: car.km,
+                        }
+                        this.finishedcar.create(updateCar)
+                        this.repository.delete(car._id)
+                    }
+                });
             }
             return this.repository.createMany(usedCarsArray)
         } catch (err) {

@@ -8,18 +8,18 @@ import { modelOptions, prop, Severity } from '@typegoose/typegoose';
   }
 })
 
-export class NewCar {
+export class Car {
   constructor(data?: any) {
     Object.assign(this, data);
   }
 
-  // @ApiProperty({
-  //   description: "The model's identifier",
-  //   readOnly: true,
-  // })
+  @ApiProperty({
+    description: "The model's identifier",
+    readOnly: true,
+  })
 
-  // @prop()
-  // _id: string;
+  @prop()
+  id: string;
 
   @prop()
   vin: string
@@ -53,15 +53,6 @@ export class NewCar {
 
   @prop()
   chassisType: string;
-
-  @prop()
-  metaTitulo: string;
-
-  @prop()
-  metaDescription: string;
-  
-  @prop()
-  h1Title: string;
 
   @prop()
   modelUrl: string
@@ -131,5 +122,19 @@ export class NewCar {
 
   @prop()
   baseColour: string
+
+  @ApiProperty({
+    description: "The car's kilometers",
+    readOnly: true,
+  })
+  @prop()
+  km: number;
+
+  @ApiProperty({
+    description: "cartype new or others",
+    readOnly: true,
+  })
+  @prop()
+  cartype: string;
   
 }
