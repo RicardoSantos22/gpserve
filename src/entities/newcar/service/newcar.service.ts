@@ -274,7 +274,9 @@ export class NewCarService extends CrudService<typeof x> {
             if(carinlist.length > 0){
                 carlist.items.forEach((car: any) => {
                     
-                    if(carinlist.includes(car.vin)){}
+                    let bmwidlist = ['901', '902', '903', '904','905','906','907']
+                    
+                    if(carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)){}
                     else{
                         let updateCar: finishecar = {
                             id: car._id,

@@ -200,8 +200,10 @@ export class UsedCarService extends CrudService<typeof x> {
 
             if(carinlist.length > 0){
                 carlist.items.forEach((car: any) => {
+
+                    let bmwidlist = ['901', '902', '903', '904','905','906','907']
                     
-                    if(carinlist.includes(car.vin)){}
+                    if(carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)){}
                     else{
                         let updateCar: finishecar = {
                             id: car._id,
@@ -219,7 +221,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             year: car.year,
                             images: car.images,
                             transmision: car.transmision,
-                            fuel: car.fuel,
+                            fuel: car.fuel, 
                             colours: car.colours,
                             baseColour: car.baseColour,
                             specs: car.specs,
