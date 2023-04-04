@@ -7,9 +7,11 @@ import { UsedCarService } from './service/usedcar.service';
 import { UsedCarRepository } from './repository/usedcar.repository';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
+import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
 
 @Module({
   imports: [
+    FinishedcarsModule,
     ScheduleModule.forRoot(),
     TypegooseModule.forFeature([UsedCar]),
     HttpModule.register({timeout: 20000, maxRedirects: 5})

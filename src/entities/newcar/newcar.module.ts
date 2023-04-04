@@ -8,8 +8,11 @@ import { NewCarRepository } from './repository/newcar.repository';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
 
+import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
+
 @Module({
   imports: [
+    FinishedcarsModule,
     ScheduleModule.forRoot(),
     TypegooseModule.forFeature([NewCar]),
     HttpModule.register({timeout: 60000, maxRedirects: 5})

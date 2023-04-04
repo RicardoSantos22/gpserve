@@ -2,14 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { createHmac } from 'crypto'
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit,MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io'
 import { orderRepository } from '../repository/order.repository'
 import { order } from '../model/order.model'
 
 let x;
-
-@WebSocketGateway({cors: ['*']}, )
 
 @Injectable()
 export class OrdersService extends CrudService<typeof x>{
@@ -21,26 +18,23 @@ export class OrdersService extends CrudService<typeof x>{
         readonly config: ConfigService,
         ){super(repository, 'UsedCar', config);}
 
-    @WebSocketServer() server: Server;
-
-    afterInit(server:any){
-        console.log("sockets activos")
-    }
-    handleConnection( client: any, ...args: any[]){
-        console.log("alguien inicio una compra")
-
-    }
 
     async CreateOrder(body){
         
         let amount;
         if(body.concept === 1){
-        amount = this.getminamount(body.amount);
+        amount = (body.amount / 100) * 50;
         }
         else if(body.concept === 2){
-            amount = body.amount
+            amount = body.amount;
         }
 
+        // if(body.concept === 1){
+        // amount = this.getminamount(body.amount);
+        // }
+        // else if(body.concept === 2){
+        //     amount = body.amount
+        // }
         
         const N_order = this.CreateRamdomNum();
 
@@ -113,9 +107,6 @@ export class OrdersService extends CrudService<typeof x>{
             Order.apiAuthorization = 'Incompletp' 
         }
 
-        
-        this.handleIncomingMessage(Order);
-
 
 
         return Order;
@@ -156,20 +147,5 @@ export class OrdersService extends CrudService<typeof x>{
 
         return listuserregister;
     }
-
-
-    @SubscribeMessage('client_join')
-    handleJoinRoom(client: Socket){
-        console.log('alguien ingreso');
-    }
-    handleIncomingMessage(payload:any){
-        this.server.emit('event_message', payload)
-    }
-
-
-    @SubscribeMessage('events')
-    handleEvent(@MessageBody() data: string): string {
-        return data;
-}
     
 }
