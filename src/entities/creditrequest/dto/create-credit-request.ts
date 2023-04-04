@@ -30,7 +30,7 @@ export class CreateCreditRequestDTO {
     description: 'The asesor ID attached to this model',
     example: '001',
   })
-  asesorid: string;
+  asesorid: '642c7014748df7747ed7b677';
 
   @IsString()
   @IsNotEmpty()
