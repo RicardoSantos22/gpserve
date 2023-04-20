@@ -168,8 +168,35 @@ export class UsedCarService extends CrudService<typeof x> {
                         })
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
+
+                            
+                            let MetaDescription: string;
+                            let h1: string;
+                            let chasystype: string;
+
+                            if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
+                                MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                                h1 = 'Camioneta Seminueva ' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
+                                chasystype = 'SUV';
+                            } else if (sc.chassisType === 'PICK-UP') {
+                                MetaDescription = 'Compra tu pickup ' + sc.brand.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                                h1 = 'Pickup Seminueva' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
+                                chasystype = sc.chassisType;
+                            } else if (sc.chassisType === 'CHASIS CABINA') {
+                                MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                                h1 = 'Vehiculo de Carga Seminuevo' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
+                                chasystype = sc.chassisType;
+                            } else {
+                                MetaDescription = 'Compra tu ' + sc.brand.trim()+ ' ' + sc.model.trim() + ' Seminuevo en línea, y te lo llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                                h1 = 'Auto Seminuevo ' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
+                                chasystype = sc.chassisType;
+                            }
                             //if(true) {
                             let usedCar: UsedCar = {
+                                chassisType: chasystype,
+                                metaTitulo: ''+sc.brand.trim()+' '+sc.model.trim()+' '+ sc.year.trim()+' Seminuevo en Línea | Estrena tu Auto',
+                                metaDescription: MetaDescription,
+                                h1Title: h1,
                                 vin: sc.ID,
                                 agencyId: sc.agencyID.toString(),
                                 brand: sc.brand.trim(),

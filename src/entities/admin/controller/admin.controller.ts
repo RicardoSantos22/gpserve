@@ -92,7 +92,7 @@ export class AdminController {
         let UsedCarlist = await this.UsedCarService.getallcars();
 
 
-        'https://estrenatuauto.com/autos-seminuevos/63fd1870c8d73700125b3393/detalles?transmision=Manual&price=170000&colorhex=%239e0705&colorname=Rojo%20flash'
+        'https://estrenatuauto.com/seminuevo/bmw-x1-sdrive20ia-2020-64270e38f11fd1001287e167'
         let carslist;
 
         res.set('Content-Type', 'text/xml');
@@ -111,7 +111,7 @@ export class AdminController {
 
         newcarslist.items.forEach((car: any) => {
             SmStream.write({
-                url: 'https://estrenatuauto.com/autos-nuevos/' + car.brandUrl + '/' + car.modelUrl + '/' + car.seriesUrl + '/' + car.year + '/detalles?transmision=' + car.transmision + '&price=' + car.price + '&colorname=' + car.baseColour + '',
+                url: 'https://estrenatuauto.com/nuevo/' + car.brandUrl + '-' + car.modelUrl + '-' + car.year + '-' +car._id+ '',
                 changefreq: 'monthly',
                 priority: 0.3,
                 img: car.images[1]
@@ -122,7 +122,7 @@ export class AdminController {
         UsedCarlist.items.forEach((car: any) => {
             console.log(car._id)
             SmStream.write({
-                url: 'https://estrenatuauto.com/autos-seminuevos/' + car._id + '/detalles?transmision=' + car.transmision + '&price=' + car.price + 'colorname=' + car.colours + '',
+                url: 'https://estrenatuauto.com/seminuevo/' + car.brand.toLowerCase() + '-' + car.model.toLowerCase().replace(/\s+/g, '-')+ '-' +car.year+ '-'+ car._id + '',
                 changefreq: 'monthly',
                 priority: 0.3,
                 img: car.images[1]

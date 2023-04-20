@@ -114,4 +114,18 @@ export class UsedCar {
   @prop()
   baseColour: string
 
+  @prop()
+  metaTitulo: string
+
+  @prop()
+  metaDescription: string
+
+  @prop()
+  h1Title: string
+
+  @prop()
+  chassisType: string
+
+
+
 }

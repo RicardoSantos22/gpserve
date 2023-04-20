@@ -211,24 +211,28 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                         })
 
-
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
 
                             let MetaDescription: string;
                             let h1: string;
+                            let chasystype: string;
 
                             if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Camioneta Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
+                                chasystype = 'SUV';
                             } else if (sc.chassisType === 'PICK-UP') {
                                 MetaDescription = 'Compra tu pickup ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Pickup Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
+                                chasystype = sc.chassisType;
                             } else if (sc.chassisType === 'CHASIS CABINA') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Vehiculo de Carga Nuevo' + sc.brand + ' ' + sc.model + ' ' + sc.year;
+                                chasystype = sc.chassisType;
                             } else {
                                 MetaDescription = 'Compra tu ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
+                                chasystype = sc.chassisType
                             }
                             //if(true) {
                             let newCar: NewCar = {
@@ -237,7 +241,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 brand: sc.brand,
                                 model: sc.model,
                                 series: sc.version,
-                                chassisType: sc.chassisType,
+                                chassisType: chasystype,
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
                                 h1Title: h1,
