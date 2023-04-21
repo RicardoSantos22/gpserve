@@ -241,10 +241,6 @@ export class NewCarService extends CrudService<typeof x> {
                                 {
                                     chasystype = 'HATCHBACK';
                                 }
-                                else if(sc.chassisType === 'VAN' || sc.chassisType === 'MINIVAN')
-                                {
-                                    chasystype = 'VAN'
-                                }
                                 else
                                 {
                                     chasystype = sc.chassisType;
