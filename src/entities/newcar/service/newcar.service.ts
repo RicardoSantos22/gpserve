@@ -80,7 +80,8 @@ export class NewCarService extends CrudService<typeof x> {
             transmision: new Set<string>(),
             colours: new Set<string>(),
             prices: new Set<number>(),
-            km: new Set<number>()
+            km: new Set<number>(),
+            chassistype: new Set<string>()
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -92,6 +93,7 @@ export class NewCarService extends CrudService<typeof x> {
             sets.colours.add(car.baseColour as string)
             maxPrice = Math.max(maxPrice, +car.price)
             minPrice = Math.min(minPrice, +car.price)
+            sets.chassistype.add(car.chassisType)
         }
         //Logger.debug({minPrice, maxPrice})
         sets.prices.add(minPrice)
@@ -103,7 +105,8 @@ export class NewCarService extends CrudService<typeof x> {
             transmision: [...sets.transmision],
             colours: [...sets.colours],
             prices: [...sets.prices],
-            km: [...sets.km]
+            km: [...sets.km],
+            chassisType: [...sets.chassistype]
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
@@ -221,18 +224,31 @@ export class NewCarService extends CrudService<typeof x> {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Camioneta Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                                 chasystype = 'SUV';
-                            } else if (sc.chassisType === 'PICK-UP') {
+                            } else if (sc.chassisType === 'PICK-UP' || sc.chassisType === 'DOBLE CABINA') {
                                 MetaDescription = 'Compra tu pickup ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Pickup Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                                 chasystype = sc.chassisType;
-                            } else if (sc.chassisType === 'CHASIS CABINA') {
+                            } else if (sc.chassisType === 'CHASIS CABINA' || sc.chassisType === 'CHASIS') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Vehiculo de Carga Nuevo' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                                 chasystype = sc.chassisType;
                             } else {
                                 MetaDescription = 'Compra tu ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
-                                chasystype = sc.chassisType
+                                
+
+                                if(sc.chassisType === 'HATCH BACK' || sc.chassisType === 'HATCHBACK' )
+                                {
+                                    chasystype = 'HATCHBACK';
+                                }
+                                else if(sc.chassisType === 'VAN' || sc.chassisType === 'MINIVAN')
+                                {
+                                    chasystype = 'VAN'
+                                }
+                                else
+                                {
+                                    chasystype = sc.chassisType;
+                                }
                             }
                             //if(true) {
                             let newCar: NewCar = {

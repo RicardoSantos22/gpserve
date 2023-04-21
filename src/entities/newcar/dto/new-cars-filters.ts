@@ -5,4 +5,5 @@ export interface NewCarsFilters {
     colours: Array<string>
     prices: Array<number>
     km: Array<number>
+    chassisType: Array<string>
 }

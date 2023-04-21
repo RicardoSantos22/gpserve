@@ -53,7 +53,8 @@ export class UsedCarService extends CrudService<typeof x> {
             transmision: new Set<string>(),
             colours: new Set<string>(),
             prices: new Set<number>(),
-            km: new Set<number>()
+            km: new Set<number>(),
+            chassistype: new Set<string>()
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -65,6 +66,7 @@ export class UsedCarService extends CrudService<typeof x> {
             sets.colours.add(car.baseColour as string)
             maxPrice = Math.max(maxPrice, +car.price)
             minPrice = Math.min(minPrice, +car.price)
+            sets.chassistype.add(car.chassisType)
         }
         //Logger.debug({minPrice, maxPrice})
         sets.prices.add(minPrice)
@@ -77,6 +79,7 @@ export class UsedCarService extends CrudService<typeof x> {
             colours: [...sets.colours],
             prices: [...sets.prices],
             km: [...sets.km],
+            chassisType: [...sets.chassistype]
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
@@ -177,19 +180,33 @@ export class UsedCarService extends CrudService<typeof x> {
                             if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Camioneta Seminueva ' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
+                                console.log(sc.chassisType)
                                 chasystype = 'SUV';
-                            } else if (sc.chassisType === 'PICK-UP') {
+                            } else if (sc.chassisType === 'PICK-UP' || sc.chassisType === 'DOBLE CABINA') {
                                 MetaDescription = 'Compra tu pickup ' + sc.brand.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Pickup Seminueva' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
                                 chasystype = sc.chassisType;
-                            } else if (sc.chassisType === 'CHASIS CABINA') {
+                            } else if (sc.chassisType === 'CHASIS CABINA' || sc.chassisType === 'CHASIS') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Vehiculo de Carga Seminuevo' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
                                 chasystype = sc.chassisType;
                             } else {
                                 MetaDescription = 'Compra tu ' + sc.brand.trim()+ ' ' + sc.model.trim() + ' Seminuevo en línea, y te lo llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Seminuevo ' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
-                                chasystype = sc.chassisType;
+                                
+
+                                if(sc.chassisType === 'HATCH BACK' || sc.chassisType === 'HATCHBACK' )
+                                {
+                                    chasystype = 'HATCHBACK';
+                                }
+                                else if(sc.chassisType === 'VAN' || sc.chassisType === 'MINIVAN')
+                                {
+                                    chasystype = 'VAN'
+                                }
+                                else
+                                {
+                                    chasystype = sc.chassisType;
+                                }
                             }
                             //if(true) {
                             let usedCar: UsedCar = {
