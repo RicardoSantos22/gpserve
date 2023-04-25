@@ -274,9 +274,13 @@ export class UsedCarService extends CrudService<typeof x> {
             }
             return this.repository.createMany(usedCarsArray)
         } catch (err) {
+            console.log('error en update usedcar: ' + err)
             Logger.error(err)
             throw err
         } finally {
+            let hh = new Date().toLocaleString()
+            console.log('se termino una actualizacion de catalogo usedcar a las: ' + hh)
+
             Logger.debug(`Inserted ${usedCarsArray.length} records`)
             Logger.debug(`Update ${updateitem} records`)
         }

@@ -52,7 +52,12 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
-        return this.repository.findAll(query);
+        let r = await this.repository.findAll(query);
+
+        let b = this.repository.findAll();
+        console.log(b)
+
+        return r
     }
 
     async getNewCars() {
@@ -73,6 +78,8 @@ export class NewCarService extends CrudService<typeof x> {
     }
 
     async getFiltersValues(): Promise<NewCarsFilters> {
+        let hh = new Date().toLocaleString()
+        console.log('se obtuvieron filtros del catalogo usedcar a las: ' + hh)
         const allCars = await this.repository.findAll()
         const sets = {
             brand: new Set<string>(),
@@ -322,17 +329,23 @@ export class NewCarService extends CrudService<typeof x> {
                     }
                 });
             }
+        
             return {
                 count: newCarsArray.length,
                 results: createdCars
             }
         } catch (err) {
+            console.log('error en update newcar: ' + err)
             Logger.error(err)
             throw err
         } finally {
+            let hh = new Date().toLocaleString()
+            console.log('se termino una actualizacion de catalogo usedcar a las: ' + hh)
             Logger.debug(`Inserted ${newCarsArray.length} records`)
             Logger.debug(`Update ${updateitem} records`)
         }
+
+
     }
 
     getCarCatalogue(authHeader: string) {

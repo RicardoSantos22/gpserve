@@ -9,7 +9,8 @@ import {
   Post,
   Query,
   UsePipes,
-  ValidationPipe
+  ValidationPipe,
+  Req
 } from '@nestjs/common';
 
 import {
@@ -30,7 +31,7 @@ import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
 import { UpdateNewCarDTO } from '../dto/update-newcar';
 import { NewCarGroupFilter } from '../dto/new-car-group-filter';
 import { ModelsByBrandsQuery } from '../dto/models-by-brands.query';
-
+import { Request } from 'express';
 @Controller('newcar')
 export class NewCarController {
   constructor(private readonly service: NewCarService) {}
@@ -61,12 +62,19 @@ export class NewCarController {
   // #endregion findAll
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
-  async findAll(@Query() query: FindAllNewCarsQuery) {
+  async findAll(@Query() query: FindAllNewCarsQuery, @Req() req: Request) {
+
+    let hh = new Date().toLocaleString()
+    const userAgent = req.headers['user-agent'];
+    console.log('se requirio de catalogo newcar a las: ' + hh + ' Por: ' + userAgent)
     return this.service.findAll(query);
   };
 
   @Get('updatecarlist')
-  async updateCarList(){
+  async updateCarList(@Req() req: Request){
+    let hh = new Date().toLocaleString()
+    const userAgent = req.headers['user-agent'];
+    console.log('se inicio una actualizacion de catalogo newcar a las: ' + hh + ' Por: ' + userAgent )
     return await this.service.updateCarCatalogue();
   }
 
