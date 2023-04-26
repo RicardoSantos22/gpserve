@@ -52,12 +52,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
-        let r = await this.repository.findAll(query);
-
-        let b = this.repository.findAll();
-        console.log(b)
-
-        return r
+        return this.repository.findAll(query);
     }
 
     async getNewCars() {
