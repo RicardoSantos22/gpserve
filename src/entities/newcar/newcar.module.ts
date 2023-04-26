@@ -1,6 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { TypegooseModule } from 'nestjs-typegoose';
-
 import { NewCar } from './model/newcar.model';
 import { NewCarController } from './controller/newcar.controller';
 import { NewCarService } from './service/newcar.service';
@@ -15,7 +14,10 @@ import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
     FinishedcarsModule,
     ScheduleModule.forRoot(),
     TypegooseModule.forFeature([NewCar]),
-    HttpModule.register({timeout: 60000, maxRedirects: 5})
+    HttpModule.register({timeout: 60000, maxRedirects: 5}),
+    CacheModule.register({
+      isGlobal: true,
+    })
   ],
   controllers: [NewCarController],
   providers: [NewCarService, NewCarRepository],

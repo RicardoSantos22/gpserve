@@ -10,7 +10,11 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  Req
+  Req,
+  UseInterceptors,
+  CacheTTL,
+  CacheKey,
+  CacheInterceptor
 } from '@nestjs/common';
 
 import {
@@ -60,6 +64,9 @@ export class NewCarController {
   })
 
   // #endregion findAll
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('newcars')
+  @CacheTTL(30)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   async findAll(@Query() query: FindAllNewCarsQuery, @Req() req: Request) {

@@ -1,11 +1,10 @@
 import {HttpService} from '@nestjs/axios';
-import {Injectable, Logger, UnauthorizedException} from '@nestjs/common';
+import {Injectable, Logger, UnauthorizedException, Inject, CACHE_MANAGER} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 
 import {Cron} from '@nestjs/schedule'
 import {CronExpression} from '@nestjs/schedule/dist';
 import {int} from 'aws-sdk/clients/datapipeline';
-
 
 import {CrudService} from '../../../common/crud/crud.service';
 import {PaginatedEntities} from '../../../common/models/paginated-entities.model';
@@ -24,6 +23,7 @@ let x;
 
 @Injectable()
 export class NewCarService extends CrudService<typeof x> {
+
 
     setupCarsSecret: string
 
@@ -52,7 +52,19 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
-        return this.repository.findAll(query);
+
+        const cars = await this.repository.findAll(query)
+        const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+
+       
+  
+        const response = {
+            ...cars,
+            items: groupedCars
+          }
+    
+
+        return response
     }
 
     async getNewCars() {
