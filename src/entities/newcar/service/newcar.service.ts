@@ -56,15 +56,19 @@ export class NewCarService extends CrudService<typeof x> {
         const cars = await this.repository.findAll(query)
         const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
 
-       
   
         const response = {
             ...cars,
-            items: groupedCars
+            items: groupedCars,
+          }
+          
+        const r = {
+            count: cars.count,
+            items: response.items
           }
     
 
-        return response
+        return r
     }
 
     async getNewCars() {
