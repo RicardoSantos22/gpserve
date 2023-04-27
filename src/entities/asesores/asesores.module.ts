@@ -5,9 +5,10 @@ import { Asesorescontroller } from './controller/asesores.controller'
 import { asesoresservice } from './service/asesores.service'
 import { asesorsrespository } from './repository/asesores.repository'
 import { BucketModule } from '../../bucket/bucket.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports:[TypegooseModule.forFeature([ Asesores ]), BucketModule],
+  imports:[TypegooseModule.forFeature([ Asesores ]), BucketModule, HttpModule.register({})],
   controllers: [ Asesorescontroller ],
   providers: [asesoresservice, asesorsrespository],
   exports:[ asesoresservice]
