@@ -109,7 +109,7 @@ export class asesoresservice extends CrudService<Asesores> {
           let karbotstruture: KarbotModel = response.data
 
         
-          return karbotstruture.session.access_token
+          return ({token: karbotstruture.session.access_token})
         }
         catch(e)
         {
