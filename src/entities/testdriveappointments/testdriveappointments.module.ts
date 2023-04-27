@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypegooseModule } from 'nestjs-typegoose';
 
+import { HttpModule } from '@nestjs/axios';
+
 import { TestDriveAppointments } from './models/testdriveappointments.model';
 import { TestDriveAppointmentController } from './controllers/testdriveappointment.controller';
 import { TestDriveAppointmentsService } from './service/testdriveappointments.service';
@@ -14,7 +16,7 @@ import { BucketModule } from '../../bucket/bucket.module';
 
 
 @Module({
-  imports: [TypegooseModule.forFeature([TestDriveAppointments, Asesores]), BucketModule],
+  imports: [TypegooseModule.forFeature([TestDriveAppointments, Asesores]), BucketModule, HttpModule.register({})],
   controllers: [TestDriveAppointmentController],
   providers: [TestDriveAppointmentsService, TestDriveAppointmentRepository, asesoresservice, asesorsrespository],
 })

@@ -21,6 +21,7 @@ import { CreateAsesorDTO } from '../dto/create_asesor'
 
 import { asesoresservice } from '../service/asesores.service'
 import { FindByIdParams } from 'src/common/models/dto/params';
+import { karbotCreateLead } from '../model/Karbot.response';
 
 @Controller('asesores')
 export class Asesorescontroller {
@@ -38,6 +39,19 @@ export class Asesorescontroller {
        async findAll(@Query() query: FindAllAsesoresDto) {
          return this.service.getAsesores(query);
        };
+
+       @Get('/karbotlogin')
+       async karbotLogin(){
+        return this.service.login();
+       }
+
+       @Post('/Createlead')
+       async Createlead(@Body() karbotSesion: any){
+
+        return this.service.createLead(karbotSesion)
+       }
+
+       
       
        @Get('/all')
        async findAllAdvisors(@Query() query: FindAllAsesoresDto) {
