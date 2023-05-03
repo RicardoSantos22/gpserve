@@ -23,9 +23,6 @@ export class NewCarHelps {
           }
           else {
             uniqueHashes++
-            if(!Array.isArray(car.colours)) {
-              car.colours = [car.colours]
-            }
             carsHashMap.set(key, car)
           }
         }
