@@ -15,14 +15,12 @@ export class NewCarHelps {
           if(existingHash) {
             repeatedHashes++
             let temp = existingHash
-            if(Array.isArray(temp.colours)) {
-              const currentColor = car.colours as string
-              if(temp.colours.indexOf(currentColor) === -1) temp.colours.push(currentColor)
-            }
-            carsHashMap.set(key, temp)
+          
+            carsHashMap.set(key, car)
           }
           else {
             uniqueHashes++
+          
             carsHashMap.set(key, car)
           }
         }
