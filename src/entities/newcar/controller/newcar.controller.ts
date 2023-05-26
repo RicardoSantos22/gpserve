@@ -64,7 +64,9 @@ export class NewCarController {
   })
 
   // #endregion findAll
-  @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('newcars')
+  @CacheTTL(30)
   @Get()
   async findAll(@Query() query: FindAllNewCarsQuery, @Req() req: Request) {
 
