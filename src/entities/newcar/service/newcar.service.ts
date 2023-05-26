@@ -53,6 +53,7 @@ export class NewCarService extends CrudService<typeof x> {
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
 
+        console.log('nuevos controles')
         const cars = await this.repository.findAll(query)
         const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
 
@@ -254,6 +255,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 MetaDescription = 'Compra tu ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                                 
+                                
 
                                 if(sc.chassisType === 'HATCH BACK' || sc.chassisType === 'HATCHBACK' )
                                 {
@@ -290,7 +292,7 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                             if (BDID !== '') {
 
-                                await this.repository.update(BDID, newCar)
+                                // await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
                                 newCarsArray.push(newCar)
@@ -302,8 +304,9 @@ export class NewCarService extends CrudService<typeof x> {
                 }
             }
 
+            const createdCars = newCarsArray;
             
-            const createdCars = await this.repository.createMany(newCarsArray)
+            // const createdCars = await this.repository.createMany(newCarsArray)
 
             if(carinlist.length > 0){
                 carlist.items.forEach((car: any) => {
@@ -335,8 +338,8 @@ export class NewCarService extends CrudService<typeof x> {
                             cartype: 'new',
                             km: 0,
                         }
-                        this.finishedcar.create(updateCar)
-                        this.repository.delete(car._id)
+                        // this.finishedcar.create(updateCar)
+                        // this.repository.delete(car._id)
                     }
                 });
             }
