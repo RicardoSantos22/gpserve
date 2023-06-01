@@ -31,12 +31,12 @@ export class NeworderController {
 
         if(validation.orderDuplicate){
             return {
-                url: 'https://4200-kalyptio-premierautomot-vmgf9k9iqbz.ws-us86.gitpod.io/Proceso-de-Pago?order=true' + validation.fronturl
+                url: 'https://estrenatuauto.com/Proceso-de-Pago?order=true' + validation.fronturl
             }
         }
         else{
             return {
-                url: 'https://4200-kalyptio-premierautomot-vmgf9k9iqbz.ws-us86.gitpod.io/Proceso-de-Pago?order=false' + validation.fronturl
+                url: 'https://estrenatuauto.com/Proceso-de-Pago?order=false' + validation.fronturl
             }
         }
          
