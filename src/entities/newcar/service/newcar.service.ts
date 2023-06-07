@@ -223,8 +223,11 @@ export class NewCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
+                    
+
                     for (let sc of sadNewCars) {
 
+          
                         let BDID: string = '';
 
                         carlist.items.forEach((car: any) => {
@@ -293,7 +296,7 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                             if (BDID !== '') {
 
-                                // await this.repository.update(BDID, newCar)
+                                await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
                                 newCarsArray.push(newCar)
@@ -305,9 +308,9 @@ export class NewCarService extends CrudService<typeof x> {
                 }
             }
 
-            const createdCars = newCarsArray;
+            // const createdCars = newCarsArray;
             
-            // const createdCars = await this.repository.createMany(newCarsArray)
+            const createdCars = await this.repository.createMany(newCarsArray)
 
             if(carinlist.length > 0){
                 carlist.items.forEach((car: any) => {
@@ -339,8 +342,8 @@ export class NewCarService extends CrudService<typeof x> {
                             cartype: 'new',
                             km: 0,
                         }
-                        // this.finishedcar.create(updateCar)
-                        // this.repository.delete(car._id)
+                        this.finishedcar.create(updateCar)
+                        this.repository.delete(car._id)
                     }
                 });
             }
