@@ -197,6 +197,7 @@ export class NewCarService extends CrudService<typeof x> {
             27, // KIA Obregó
             28, // JAC Cualiacán
             29, // Chirey Culiacan
+            30, 
         ]
         let promises = []
         try {

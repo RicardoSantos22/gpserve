@@ -6,6 +6,7 @@ import { createHmac } from 'crypto'
 import { orderRepository } from '../repository/order.repository'
 import { order } from '../model/order.model'
 import { NewCarRepository } from 'src/entities/newcar/repository/newcar.repository';
+import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
 
 let x;
 
@@ -28,6 +29,7 @@ export class OrdersService extends CrudService<typeof x>{
         readonly config: ConfigService,
         private httpService: HttpService,
         private NewCarRepository: NewCarRepository,
+        private usedcarRepository: UsedCarRepository
     ) { 
         super(repository, 'UsedCar', config); 
         this.sadApiConfig = {
@@ -41,8 +43,23 @@ export class OrdersService extends CrudService<typeof x>{
 
     async CreateOrder(body) {
 
+        console.log(body)
 
-       let car = await this.NewCarRepository.findById(body.idcar)
+        let car: any;
+
+        if(body.typecar === 'true')
+        {
+
+            car = await this.NewCarRepository.findById(body.idcar)
+            
+        }
+        else
+        {
+            car = await this.usedcarRepository.findById(body.idcar)
+        }
+
+
+        
 
         let amount;
         if (body.concept === 1) {
@@ -89,9 +106,15 @@ export class OrdersService extends CrudService<typeof x>{
         //     "concept": order.concept,
         //     "idRegister": '1'
         // }
+        const responsetoken = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
+            userName: this.sadApiConfig.username,
+            password: this.sadApiConfig.password
+        }).toPromise()
+
+        console.log(responsetoken.data)
 
 
-       let reponseControl = await this.ReserveZAD(car, 1)
+       let reponseControl = await this.ReserveZAD(car, 1, responsetoken.data)
 
 
         return await this.repository.create(order)
@@ -100,6 +123,11 @@ export class OrdersService extends CrudService<typeof x>{
     }
 
     async AddNewOrder(Order) {
+
+        const responsetoken = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
+            userName: this.sadApiConfig.username,
+            password: this.sadApiConfig.password
+        }).toPromise()
 
         console.log(Order)
 
@@ -127,7 +155,7 @@ export class OrdersService extends CrudService<typeof x>{
             Order.apiAuthorization = 'Completado'
             let car = await this.NewCarRepository.findById(Order.carID)
 
-            this.paymetsZAD(Order, car.vin)
+            this.paymetsZAD(Order, car.vin, responsetoken.data)
 
             this.repository.update(Order.apiRegister, updateorder)
 
@@ -179,59 +207,88 @@ export class OrdersService extends CrudService<typeof x>{
     }
 
 
-    private async paymetsZAD(body, vin) {
+    private async paymetsZAD(body, vin, token) {
 
         let hh = new Date();
 
-        const response = await this.httpService.post(`${this.sadApiConfig.baseUrl}/Payments`, {
+        const response = await this.httpService.post(`http://201.116.249.45:1089/api/Payments`, {
             agencyID: body.agencyId,
             vehicleSerialNumber: vin,
             vehicleIsNew: body.isnewcar,
             customer: {
-                lastName: body.lastName,
-                secondLastName: body.secondLastName,
-                firstName: body.firstName,
-                phone: body.phone,
-                email: body.email,
-                contactMethod: body.contactMethod,
-                city: body.state,
+                lastName: 'santos',
+                secondLastName: 'kumul',
+                firstName: 'ricardo',
+                phone: "9988307729",
+                email: 'ricardo@kalyptio.com',
+                contactMethod: 'whatsapp',
+                city: 'Benito Juarez',
                 address: {
-                    street: body.street || '',
-                    noExt: body.noExt || '',
-                    noInt: body.noInt || '',
-                    suburb: body.suburb || '',
-                    postalCode: body.zipCode
+                    street: '12',
+                    noExt: '12',
+                    noInt: '12',
+                    suburb: '12',
+                    postalCode: '77517'
                 },
-                regimenFiscal: body.regimenFiscal,
-                usoCFDI: body.usoCFDI,
-                RFC: body.rfc,
+                regimenFiscal: "601",
+                usoCFDI:'p01',
+                RFC: 'XAXX010101000',
 
             },
-            sellerID: '',
+            sellerID: '1',
             paymentDate: hh,
             paymentAmount: body.mp_amount,
-            paymentMethod: body.bbvamethod,
-            paymentID: body.mp_order
+            paymentMethod: 'Credit',
+            paymentID: '675179'
 
 
+        },
+        {
+            headers: {
+                'Authorization': 'Bearer ' + token.trim()
+            }
         }).toPromise()
-        return response.data
+        .then(res => {console.log(res)})
+        .catch(e => {console.log(e)})
+        return 0
     }
 
 
-    private async ReserveZAD(Reserve, status: number) {
+    private async ReserveZAD(Reserve, status: number, token) {
+
+        let agencyID: number = parseInt(Reserve.agencyId); 
+
+   
 
 
+        const response = await this.httpService.post(`http://201.116.249.45:1089/api/Reserves/Vehicles`, {
 
-        const response = await this.httpService.post(`${this.sadApiConfig.baseUrl}/Reserves/Vehicles`, {
-
-            agencyID: Reserve.agencyId,
+            agencyID: agencyID,
             vehicleSerialNumber: Reserve.vin,
             reservedStatus: status
 
+        },
+        {
+            headers: {
+                'Authorization': 'Bearer ' + token.trim()
+            }
         }).toPromise()
-        .then(res => {return res})
-        .catch(e => { return 400})
+        .then(res => {console.log(res)})
+        .catch(e => {console.log(e)})
+
+
+        console.log(response)
+
+        return 0
+
+    }
+
+    private getaccesetoken(){
+        
+    }
+
+
+    private disponibilidad(){
 
     }
 
