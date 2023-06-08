@@ -84,7 +84,7 @@ export class OrdersService extends CrudService<typeof x>{
 
         const hash = createHmac('sha256', this.bbvakey).update(Mensaje).digest('hex');
 
-
+        let token = await this.getaccesetoken();
 
         let order: order = {
             carid: body.idcar,
@@ -106,28 +106,18 @@ export class OrdersService extends CrudService<typeof x>{
         //     "concept": order.concept,
         //     "idRegister": '1'
         // }
-        const responsetoken = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
-            userName: this.sadApiConfig.username,
-            password: this.sadApiConfig.password
-        }).toPromise()
-
-        console.log(responsetoken.data)
+     
 
 
-       let reponseControl = await this.ReserveZAD(car, 1, responsetoken.data)
+       let reponseControl = await this.ReserveZAD(car, 1, token)
 
+       let createResponse = await this.repository.create(order);
 
-        return await this.repository.create(order)
-
+        return [createResponse, {SesionToken: token}]
 
     }
 
     async AddNewOrder(Order) {
-
-        const responsetoken = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
-            userName: this.sadApiConfig.username,
-            password: this.sadApiConfig.password
-        }).toPromise()
 
         console.log(Order)
 
@@ -155,7 +145,7 @@ export class OrdersService extends CrudService<typeof x>{
             Order.apiAuthorization = 'Completado'
             let car = await this.NewCarRepository.findById(Order.carID)
 
-            this.paymetsZAD(Order, car.vin, responsetoken.data)
+            this.paymetsZAD(Order, car.vin, Order.token)
 
             this.repository.update(Order.apiRegister, updateorder)
 
@@ -274,21 +264,25 @@ export class OrdersService extends CrudService<typeof x>{
             }
         }).toPromise()
         .then(res => {console.log(res)})
-        .catch(e => {console.log(e)})
+        .catch(e => {console.log(e.data)})
 
-
-        console.log(response)
 
         return 0
 
     }
 
-    private getaccesetoken(){
-        
+    private async getaccesetoken(){
+
+        const responsetoken = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
+            userName: this.sadApiConfig.username,
+            password: this.sadApiConfig.password
+        }).toPromise()
+
+        return responsetoken.data
     }
 
 
-    private disponibilidad(){
+    private async disponibilidad(){
 
     }
 
