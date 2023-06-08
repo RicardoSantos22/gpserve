@@ -18,7 +18,7 @@ import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
   ],
   controllers: [UsedCarController],
   providers: [UsedCarService, UsedCarRepository],
-  exports: [UsedCarService]
+  exports: [UsedCarService, UsedCarRepository]
 })
 
 export class UsedCarModule {}
