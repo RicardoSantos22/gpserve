@@ -1,7 +1,7 @@
 definitions:
   services:
    docker:
-    memory: 4096
+    memory: 1024
     push-image: &push-image
       name: Build and Push Docker Image
       image: atlassian/pipelines-awscli
