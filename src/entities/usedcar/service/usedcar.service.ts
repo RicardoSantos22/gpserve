@@ -176,6 +176,18 @@ export class UsedCarService extends CrudService<typeof x> {
                             let MetaDescription: string;
                             let h1: string;
                             let chasystype: string;
+                            let newmodel: string;
+                            
+                            let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
+
+                            banModelList.forEach((stringindex) =>  { 
+
+                            if(sc.model.includes(stringindex) && sc.model.includes('HB20')){
+
+                                newmodel = sc.model.replace(stringindex, '').trim()
+                            }
+
+                           })
 
                             if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';

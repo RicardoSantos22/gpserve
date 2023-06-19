@@ -216,6 +216,8 @@ export class NewCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
+                     
+
                     
 
                     for (let sc of sadNewCars) {
@@ -232,9 +234,26 @@ export class NewCarService extends CrudService<typeof x> {
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
 
+                            
+                            let newmodel: string;
                             let MetaDescription: string;
                             let h1: string;
                             let chasystype: string;
+
+                            let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
+
+
+                            banModelList.forEach((stringindex) =>  { 
+
+                            if(sc.model.includes(stringindex) && sc.model.includes('HB20')){
+
+                                console.log(sc.ID)
+
+                                newmodel = sc.model.replace(stringindex, '').trim()
+                                
+                            }
+
+                           })
 
                             if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
@@ -268,7 +287,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 vin: sc.ID,
                                 agencyId: sc.agencyID.toString(),
                                 brand: sc.brand,
-                                model: sc.model,
+                                model: newmodel,
                                 series: sc.version,
                                 chassisType: chasystype,
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
@@ -301,9 +320,9 @@ export class NewCarService extends CrudService<typeof x> {
                 }
             }
 
-            // const createdCars = newCarsArray;
+            const createdCars = newCarsArray;
             
-            const createdCars = await this.repository.createMany(newCarsArray)
+            // const createdCars = await this.repository.createMany(newCarsArray)
 
             if(carinlist.length > 0){
                 carlist.items.forEach((car: any) => {
