@@ -230,6 +230,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 BDID = car._id;
                                 carinlist.push(sc.ID)
                             }
+
                         })
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
@@ -247,10 +248,11 @@ export class NewCarService extends CrudService<typeof x> {
 
                             if(sc.model.includes(stringindex) && sc.model.includes('HB20')){
 
-                                console.log(sc.ID)
-
                                 newmodel = sc.model.replace(stringindex, '').trim()
                                 
+                            }
+                            else{
+                                newmodel = sc.model
                             }
 
                            })

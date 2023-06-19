@@ -177,7 +177,6 @@ export class UsedCarService extends CrudService<typeof x> {
                             let h1: string;
                             let chasystype: string;
                             let newmodel: string;
-                            
                             let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
                             banModelList.forEach((stringindex) =>  { 
@@ -185,6 +184,9 @@ export class UsedCarService extends CrudService<typeof x> {
                             if(sc.model.includes(stringindex) && sc.model.includes('HB20')){
 
                                 newmodel = sc.model.replace(stringindex, '').trim()
+                            }
+                            else {
+                                newmodel = sc.model
                             }
 
                            })
