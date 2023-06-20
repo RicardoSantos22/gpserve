@@ -282,6 +282,8 @@ export class UsedCarService extends CrudService<typeof x> {
                             km: car.km,
                         }
                         this.finishedcar.create(updateCar)
+
+                        console.log(car.vin)
                         this.repository.delete(car._id)
                     }
                 });
