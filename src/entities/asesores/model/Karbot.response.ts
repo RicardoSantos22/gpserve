@@ -48,6 +48,7 @@ export interface karbotCreateLead{
     user_nombre : string;
     user_apellido: string;
     product: string;
+    vin: string;
 
 
 }

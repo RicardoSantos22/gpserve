@@ -229,13 +229,13 @@ export class NewCarService extends CrudService<typeof x> {
                             if (sc.ID === car.vin) {
                                 BDID = car._id;
                                 carinlist.push(sc.ID)
+
                             }
 
                         })
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
 
-                            
                             let newmodel: string;
                             let MetaDescription: string;
                             let h1: string;
@@ -357,7 +357,7 @@ export class NewCarService extends CrudService<typeof x> {
                             km: 0,
                         }
                         this.finishedcar.create(updateCar)
-                        console.log(car.vin)
+                        console.log(car._id)
                         this.repository.delete(car._id)
                     }
                 });

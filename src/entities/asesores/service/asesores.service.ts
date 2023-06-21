@@ -57,6 +57,7 @@ export class asesoresservice extends CrudService<Asesores> {
       }
 
       async createLead(payload:karbotCreateLead){
+
         
        try
        {
@@ -74,11 +75,12 @@ export class asesoresservice extends CrudService<Asesores> {
             nombre: payload.user_nombre,
             apellido: payload.user_apellido
           },
-          customerInterest: payload.product
+          customerInterest: payload.product,
+          additionalData1: payload.vin,
           },
           {
             headers: {
-              'Authorization': 'Bearer ' + payload.token.trim()
+              'Authorization': 'Bearer ' + payload.token
             }
           }).toPromise()
 
