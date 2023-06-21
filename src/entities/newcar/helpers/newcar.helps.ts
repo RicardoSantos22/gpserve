@@ -9,7 +9,7 @@ export class NewCarHelps {
         let repeatedHashes = 0
         let uniqueHashes = 0
         for(let car of cars) {
-          const params = `${car.brand}${car.model}${car.year.toString()}${car.price.toString()}`
+          const params = `${car.brand}${car.model}${car.year.toString()}${car.price.toString()}${car.colours}`
           const key = this.createSha256(params)
           const existingHash = carsHashMap.get(key)
           if(existingHash) {

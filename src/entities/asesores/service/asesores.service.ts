@@ -58,6 +58,7 @@ export class asesoresservice extends CrudService<Asesores> {
 
       async createLead(payload:karbotCreateLead){
 
+        console.log(payload)
         
        try
        {
