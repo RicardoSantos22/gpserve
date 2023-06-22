@@ -161,6 +161,17 @@ export class UsedCarController {
     return this.service.create({ ...body });
   }
 
+  @Post('BMW')
+  async BMW(@Body() body: CreateUsedCarDTO) {
+    
+    let code = await this.service.carModelVerification(body)
+
+    if(code === 200){return this.service.create({ ...body });}
+    else { return code }
+
+    
+  }
+
   @Post('setup')
   async getUsedCarCatalogue(@Headers('Authorization') authHeader: string) {
     // return this.service.getUsedCarCatalogue(authHeader)

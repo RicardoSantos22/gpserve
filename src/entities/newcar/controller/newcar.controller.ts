@@ -178,9 +178,21 @@ export class NewCarController {
 
   @Post()
   async create(@Body() body: CreateNewCarDTO) {
+    
     return this.service.create({ ...body });
   }
 
+  @Post('BMW')
+  async bmw(@Body() body: CreateNewCarDTO) {
+
+    let code = await this.service.carModelVerification(body)
+
+    if(code === 200){return this.service.create({ ...body });}
+    else { return code }
+
+    
+    
+  }
   @Post('setup')
   async getCarCatalogue(@Headers('Authorization') authHeader: string) {
     // return this.service.getCarCatalogue(authHeader)

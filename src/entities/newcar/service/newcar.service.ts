@@ -17,6 +17,7 @@ import {NewCar} from '../model/newcar.model';
 import {NewCarRepository} from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
 import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
+import { CreateNewCarDTO } from '../dto/create-newcar';
 
 
 let x;
@@ -68,6 +69,25 @@ export class NewCarService extends CrudService<typeof x> {
     async getNewCars() {
 
         return this.repository.findAll();
+    }
+
+    async carModelVerification(car){
+
+        if(car.vin === '' || car.vin === null || car.vin.length !== 17){           return [{error: 'error en vin, no cumple con las condiciones == no nulo, no vacio, vin incompleto (17 caracteres) =='}, {car}]}
+        if(car.agencyID === '' || car.agencyID === null){                          return [{error: 'sin agencyID'}, {car}]}
+        if(car.brand === '' || car.brand === null){                                return [{error: 'sin brand'}, {car}]}
+        if(car.model === '' || car.model === null || car.model.includes('/')){     return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
+        if(car.series === '' || car.series === null || car.series.includes('/')){  return [{error: 'serie vacia o con caracteres especiales'}, {car}]}
+        if(car.price === '' || car.price === null) {                               return [{error: 'sin precio'}, {car}]}
+        if(car.chassisType === '' || car.chassisType === null){                    return [{error: 'sin segmento'}, {car}]}
+        if(car.year === '' || car.year === null){                                  return [{error: 'sin año, verifique los datos ingresados'}, {car}]}
+        if(car.transmision === '' || car.transmision === null){                    return [{error: 'sin transmision, verifique los datos'}, {car}]}
+        if(car.fuel === '' || car.fuel === null){                                  return [{error: 'sin fuel'}, {car}]}
+        if(car.colours === '' || car.colours === null){                            return [{error: 'sin colour'}, {car}]}
+        if(car.baseColour === '' || car.baseColour === null) {                     return [{error: 'sin colour'}, {car}]}
+
+        return 200
+    
     }
 
     async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{ cars: NewCar[], colours: string[] }> {
