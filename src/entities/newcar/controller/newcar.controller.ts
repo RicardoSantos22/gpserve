@@ -182,7 +182,7 @@ export class NewCarController {
     return this.service.create({ ...body });
   }
 
-  @Post('BMW')
+  @Post('bmw')
   async bmw(@Body() body: CreateNewCarDTO) {
 
     let code = await this.service.carModelVerification(body)
