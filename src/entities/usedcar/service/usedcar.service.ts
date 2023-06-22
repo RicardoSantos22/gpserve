@@ -164,6 +164,11 @@ export class UsedCarService extends CrudService<typeof x> {
                         carlist.items.forEach((car: any) => {
 
                             if (sc.ID === car.vin) {
+
+                                if(sc.ID === '5XYPG4A32JG394249')
+                                {
+                                    console.log(sc)
+                                }
                                 BDID = car._id;
                                 carinlist.push(sc.ID)
 
@@ -172,7 +177,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
 
-                            
                             let MetaDescription: string;
                             let h1: string;
                             let chasystype: string;
@@ -247,17 +251,35 @@ export class UsedCarService extends CrudService<typeof x> {
                                 usedCarsArray.push(usedCar)
                             }
                         }
+                        else {
+
+                            carlist.items.forEach((car: any) => {
+
+                                if (sc.ID === car.vin) {
+
+                                    this.finishedcar.create(car)
+
+                                    console.log( 'auto descartado: ', car.vin)
+                                    this.repository.delete(car._id)
+                                }
+                            })
+
+                        }
                     }
                 }
             }
 
             if(carinlist.length > 0){
+
+                
                 carlist.items.forEach((car: any) => {
 
                     let bmwidlist = ['901', '902', '903', '904','905','906','907']
-                    
-                    if(carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)){}
-                    else{
+
+             
+                    if(carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)){
+                    }
+                    else{ 
                         let updateCar: finishecar = {
                             id: car._id,
                             vin: car.vin,
@@ -283,7 +305,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         this.finishedcar.create(updateCar)
 
-                        console.log(car.vin)
+                        console.log( 'auto descartado: ', car.vin)
                         this.repository.delete(car._id)
                     }
                 });
