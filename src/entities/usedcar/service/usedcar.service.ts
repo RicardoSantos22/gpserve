@@ -46,12 +46,15 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async carModelVerification(car){
+        let carID = '';
+        if(car.vin) { carID = car.vin}
+        if(car.ID) { carID = car.ID }
 
-        if(car.vin === '' || car.vin === null || car.vin.length !== 17){           return [{error: 'error en vin, no cumple con las condiciones == no nulo, no vacio, vin incompleto (17 caracteres) =='}, {car}]}
+        if(carID === '' || carID === null || carID.length !== 17){                 return [{error: 'error en vin, no cumple con las condiciones == no nulo, no vacio, vin incompleto (17 caracteres) =='}, {car}]}
         if(car.agencyID === '' || car.agencyID === null){                          return [{error: 'sin agencyID'}, {car}]}
         if(car.brand === '' || car.brand === null){                                return [{error: 'sin brand'}, {car}]}
         if(car.model === '' || car.model === null || car.model.includes('/')){     return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
-        if(car.series === '' || car.series === null || car.series.includes('/')){  return [{error: 'serie vacia o con caracteres especiales'}, {car}]}
+        if(car.series === '' || car.series === null ){                             return [{error: 'serie vacia o con caracteres especiales'}, {car}]}
         if(car.price === '' || car.price === null) {                               return [{error: 'sin precio'}, {car}]}
         if(car.chassisType === '' || car.chassisType === null){                    return [{error: 'sin segmento'}, {car}]}
         if(car.year === '' || car.year === null){                                  return [{error: 'sin año, verifique los datos ingresados'}, {car}]}
@@ -172,6 +175,8 @@ export class UsedCarService extends CrudService<typeof x> {
             const responses = await Promise.all(promises)
             let carlist = await this.repository.findAll();
             let carinlist = [];
+            let carlistban = []
+
             for (let response of responses) {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADUsedCar[]
@@ -193,8 +198,9 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             }
                         })
+                        let verificacion = await this.carModelVerification(sc)
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
 
                             let MetaDescription: string;
                             let h1: string;
@@ -274,16 +280,21 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                            carlist.items.forEach((car: any) => {
+                            if(verificacion !== 200){
+                                carlistban.push(verificacion)
+                            }
+                            else {
+                                carlist.items.forEach((car: any) => {
 
-                                if (sc.ID === car.vin) {
-
-                                    this.finishedcar.create(car)
-
-                                    console.log( 'auto descartado: ', car.vin)
-                                    this.repository.delete(car._id)
-                                }
-                            })
+                                    if (sc.ID === car.vin) {
+    
+                                        this.finishedcar.create(car)
+    
+                                        console.log( 'auto descartado: ', car.vin)
+                                        this.repository.delete(car._id)
+                                    }
+                                })
+                            }
 
                         }
                     }
@@ -331,7 +342,14 @@ export class UsedCarService extends CrudService<typeof x> {
                     }
                 });
             }
-            return this.repository.createMany(usedCarsArray)
+            const createdCars = await this.repository.createMany(usedCarsArray)
+
+            return {
+                banCarlist: carlistban,
+                count: usedCarsArray.length,
+                results: createdCars,
+                
+            }
         } catch (err) {
             console.log('error en update usedcar: ' + err)
             Logger.error(err)
