@@ -76,7 +76,7 @@ export class CreateUserDTO {
   })
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
 
   readonly state: string;
 
@@ -86,7 +86,7 @@ export class CreateUserDTO {
   })
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
 
   readonly zipCode: number;
 
