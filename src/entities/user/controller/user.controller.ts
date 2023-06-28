@@ -187,6 +187,15 @@ export class UserController {
     return this.service.update(params.id, body);
   }
 
+  @Patch('updategoogleuser/:id')
+  async updategoogleuser(@Param() params: FindByIdParams, @Body() body: UpdateUserDTO) {
+
+    let BDID = await this.service.findByFirebaseid(params.id)
+    return this.service.update(BDID.id, body);
+  }
+
+  
+
 
   @UsePipes(new ValidationPipe({ transform: true }))
   @Patch(':id/wishlist')

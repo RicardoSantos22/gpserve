@@ -39,6 +39,11 @@ export class UserService extends CrudService<User> {
     return this.repository.findAll(query);
   }
 
+  async findByFirebaseid(id: string){
+
+    return this.repository.findOne({firebaseId: id})
+  }
+
   async findSelf(userId: string): Promise<SelfUserResponse> {
     const foundUser = await this.repository.findById(userId)
     const dto = plainToClass(SelfUserResponse, foundUser, { excludeExtraneousValues: true })
