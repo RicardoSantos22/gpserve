@@ -41,7 +41,19 @@ export class UserService extends CrudService<User> {
 
   async findByFirebaseid(id: string){
 
-    return this.repository.findOne({firebaseId: id})
+    let allusers = await this.repository.findAll();
+
+    let userModel: any;
+
+    allusers.items.forEach((user) => {
+      if(user.firebaseId === id)
+      [
+        userModel = user
+      ]
+    })
+    
+
+    return userModel
   }
 
   async findSelf(userId: string): Promise<SelfUserResponse> {

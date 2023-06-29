@@ -191,7 +191,7 @@ export class UserController {
   async updategoogleuser(@Param() params: FindByIdParams, @Body() body: UpdateUserDTO) {
 
     let BDID = await this.service.findByFirebaseid(params.id)
-    return this.service.update(BDID.id, body);
+    return this.service.update(BDID._id, {phone: body.phone, zipCode: body.zipCode});
   }
 
   
