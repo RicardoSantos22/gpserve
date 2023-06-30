@@ -336,10 +336,10 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                             if (BDID !== '') {
 
-                                // await this.repository.update(BDID, newCar)
+                                 await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
-                                // newCarsArray.push(newCar)
+                                 newCarsArray.push(newCar)
                             }
 
 
