@@ -63,7 +63,7 @@ export class asesoresservice extends CrudService<Asesores> {
        try
        {
      
-          const reponse: any = await this.httpservice.post(this.Karbotdev + '/ws/create-lead-inbound', {
+          const reponse: any = await this.httpservice.post(this.karbotProd + '/ws/create-lead-inbound', {
           lineName: "Estrenatuauto",
           referenceId: (Math.floor(Math.random() * (100 - 1 + 1)) + 1).toString(),
           categoryLead: payload.categoryLead,
@@ -104,7 +104,7 @@ export class asesoresservice extends CrudService<Asesores> {
 
         try
         {
-          const response: any = await this.httpservice.post(this.Karbotdev + '/auth/login', {
+          const response: any = await this.httpservice.post(this.karbotProd + '/auth/login', {
             email: 'development+estrenatuauto@karlo.io',
             password: 'AyJB58w7GLA'
           }).toPromise()
