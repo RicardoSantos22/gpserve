@@ -16,7 +16,7 @@ import { promises } from 'dns';
 export class asesoresservice extends CrudService<Asesores> {
 
   private Karbotdev = 'https://back-staging.karbot.mx/api'
-  private karbotProd = 'https://back.karbot.mx/api'
+  private karbotProd = 'https://back-production.karbot.mx/api'
 
     constructor(
         protected readonly repository: asesorsrespository,
@@ -105,8 +105,8 @@ export class asesoresservice extends CrudService<Asesores> {
         try
         {
           const response: any = await this.httpservice.post(this.karbotProd + '/auth/login', {
-            email: 'development+estrenatuauto@karlo.io',
-            password: 'AyJB58w7GLA'
+            email: 'production+estrenatuauto@karlo.io',
+            password: '$Bq@x$bFX&mDdED4'
           }).toPromise()
 
           let karbotstruture: KarbotModel = response.data
