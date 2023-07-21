@@ -17,7 +17,6 @@ import {NewCar} from '../model/newcar.model';
 import {NewCarRepository} from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
 import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
-import { CreateNewCarDTO } from '../dto/create-newcar';
 
 
 let x;
@@ -38,7 +37,7 @@ export class NewCarService extends CrudService<typeof x> {
         readonly repository: NewCarRepository,
         readonly config: ConfigService,
         private httpService: HttpService,
-        private finishedcar:FinishedcarsService,
+        private finishedcar:FinishedcarsService
         
     ) {
         super(repository, 'NewCar', config);
@@ -118,7 +117,8 @@ export class NewCarService extends CrudService<typeof x> {
             colours: new Set<string>(),
             prices: new Set<number>(),
             km: new Set<number>(),
-            chassistype: new Set<string>()
+            chassistype: new Set<string>(),
+            agencyId: new Set<string>()
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -126,6 +126,7 @@ export class NewCarService extends CrudService<typeof x> {
         for (let car of allCars.items) {
             sets.brand.add(car.brand)
             sets.year.add(+car.year)
+            sets.agencyId.add(car.agencyId)
             sets.transmision.add(car.transmision)
             sets.colours.add(car.baseColour as string)
             maxPrice = Math.max(maxPrice, +car.price)
@@ -143,9 +144,10 @@ export class NewCarService extends CrudService<typeof x> {
             colours: [...sets.colours],
             prices: [...sets.prices],
             km: [...sets.km],
+            agencyId: [...sets.agencyId],
             chassisType: [...sets.chassistype]
         }
-
+        
         const otrosIndex = result.colours.indexOf('Otros')
         if (otrosIndex !== -1) {
             result.colours.splice(otrosIndex, 1)
@@ -317,6 +319,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 brand: sc.brand,
                                 model: newmodel,
                                 series: sc.version,
+                                agencyCity: sc.agencyCity,
                                 chassisType: chasystype,
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
                                 metaDescription: MetaDescription,

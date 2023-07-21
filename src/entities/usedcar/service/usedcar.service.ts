@@ -77,7 +77,8 @@ export class UsedCarService extends CrudService<typeof x> {
             colours: new Set<string>(),
             prices: new Set<number>(),
             km: new Set<number>(),
-            chassistype: new Set<string>()
+            chassistype: new Set<string>(),
+            agencyId: new Set<string>()
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -90,6 +91,7 @@ export class UsedCarService extends CrudService<typeof x> {
             maxPrice = Math.max(maxPrice, +car.price)
             minPrice = Math.min(minPrice, +car.price)
             sets.chassistype.add(car.chassisType)
+            sets.agencyId.add(car.agencyId)
         }
         //Logger.debug({minPrice, maxPrice})
         sets.prices.add(minPrice)
@@ -102,7 +104,8 @@ export class UsedCarService extends CrudService<typeof x> {
             colours: [...sets.colours],
             prices: [...sets.prices],
             km: [...sets.km],
-            chassisType: [...sets.chassistype]
+            chassisType: [...sets.chassistype],
+            agencyId: [...sets.agencyId],
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
@@ -251,6 +254,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             //if(true) {
                             let usedCar: UsedCar = {
                                 chassisType: chasystype,
+                                agencyCity: sc.agencyCity,
                                 metaTitulo: ''+sc.brand.trim()+' '+sc.model.trim()+' '+ sc.year.trim()+' Seminuevo en Línea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
                                 h1Title: h1,
