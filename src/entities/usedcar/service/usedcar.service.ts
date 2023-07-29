@@ -45,6 +45,24 @@ export class UsedCarService extends CrudService<typeof x> {
         return await this.repository.findAll();
     }
 
+
+    async findForString(body: any){
+        console.log(body)
+        const cars: any = await this.repository.findAll();
+        let carfinallist: any = [];
+
+        cars.items.forEach((car: any) => {
+
+
+           if(car.model.includes(body.busqueda.toUpperCase()) ||  car.brand.includes(body.busqueda.toUpperCase()) || car.series.includes(body.busqueda.toUpperCase()))
+           {
+            carfinallist.push(car)
+           }
+        });
+
+        return {items: carfinallist}
+    }
+
     async carModelVerification(car){
         let carID = '';
         if(car.vin) { carID = car.vin}
@@ -166,7 +184,7 @@ export class UsedCarService extends CrudService<typeof x> {
         try {
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
-                        `${this.sadApiConfig.baseUrl}/Vehicles/Used?dealerId=${id}`,
+                        `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${id}`,
                         {
                             headers: {
                                 'Authorization': 'Bearer ' + token.trim()

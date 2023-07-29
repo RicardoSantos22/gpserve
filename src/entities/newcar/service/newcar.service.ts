@@ -65,6 +65,23 @@ export class NewCarService extends CrudService<typeof x> {
         return r
     }
 
+    async findForString(body: any){
+        console.log(body)
+        const cars: any = await this.repository.findAll();
+        let carfinallist: any = [];
+
+        cars.items.forEach((car: any) => {
+
+
+           if(car.model.includes(body.busqueda.toUpperCase()) ||  car.brand.includes(body.busqueda.toUpperCase()) || car.series.includes(body.busqueda.toUpperCase()))
+           {
+            carfinallist.push(car)
+           }
+        });
+
+        return {items: carfinallist}
+    }
+
     async getNewCars() {
 
         return this.repository.findAll();
@@ -221,10 +238,11 @@ export class NewCarService extends CrudService<typeof x> {
             // 30, 
         ]
         let promises = []
+        console.log(token)
         try {
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADNewCar[] }>(
-                        `${this.sadApiConfig.baseUrl}/Vehicles?dealerId=${id}`,
+                        `http://201.116.249.45:1089/api/Vehicles?dealerId=${id}`,
                         {
                             headers: {
                                 'Authorization': 'Bearer ' + token.trim()
@@ -232,6 +250,8 @@ export class NewCarService extends CrudService<typeof x> {
                         }
                     ).toPromise()
                 )
+
+                console.log(promises)
             }
             const responses = await Promise.all(promises)
 
@@ -244,7 +264,8 @@ export class NewCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
-
+                    console.log(sadNewCars)
+                    
                     for (let sc of sadNewCars) {
 
           
@@ -339,7 +360,7 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                             if (BDID !== '') {
 
-                                 await this.repository.update(BDID, newCar)
+                                //  await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
                                  newCarsArray.push(newCar)
@@ -360,7 +381,7 @@ export class NewCarService extends CrudService<typeof x> {
                                         this.finishedcar.create(car)
     
                                         console.log( 'auto descartado: ', car.vin)
-                                        this.repository.delete(car._id)
+                                        // this.repository.delete(car._id)
                                     }
                                 })
                             }
@@ -403,9 +424,9 @@ export class NewCarService extends CrudService<typeof x> {
                             cartype: 'new',
                             km: 0,
                         }
-                        this.finishedcar.create(updateCar)
+                        // this.finishedcar.create(updateCar)
                         console.log( 'auto descartado: ', car.vin)
-                        this.repository.delete(car._id)
+                        // this.repository.delete(car._id)
                     }
                 });
             }

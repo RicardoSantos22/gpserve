@@ -172,6 +172,12 @@ export class UsedCarController {
     
   }
 
+  @Post('busqueda')
+  async busqueda(@Body() body: any)
+  {
+    return this.service.findForString(body)
+  }
+
   @Post('setup')
   async getUsedCarCatalogue(@Headers('Authorization') authHeader: string) {
     // return this.service.getUsedCarCatalogue(authHeader)
