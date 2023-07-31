@@ -184,7 +184,7 @@ export class UsedCarService extends CrudService<typeof x> {
         try {
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
-                        `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${id}`,
+                        `http://201.116.249.45:1086/api/Vehicles/Used?dealerId=${id}`,
                         {
                             headers: {
                                 'Authorization': 'Bearer ' + token.trim()
