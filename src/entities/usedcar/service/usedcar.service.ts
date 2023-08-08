@@ -205,6 +205,9 @@ export class UsedCarService extends CrudService<typeof x> {
                             let MetaDescription: string;
                             let h1: string;
                             let chasystype: string;
+                            let parsedBrand: string;
+                            let parsedModel: string;
+                            let parsedSeries: string;
                             let newmodel: string;
                             let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
@@ -248,6 +251,11 @@ export class UsedCarService extends CrudService<typeof x> {
                                     chasystype = sc.chassisType;
                                 }
                             }
+
+                            parsedModel = newmodel.replace('/','-').trim()                         
+                            parsedBrand = sc.brand.replace('/','-').trim()                                                 
+                            parsedSeries = sc.version.replace('/','-').trim()
+
                             //if(true) {
                             let usedCar: UsedCar = {
                                 chassisType: chasystype,
@@ -256,9 +264,9 @@ export class UsedCarService extends CrudService<typeof x> {
                                 h1Title: h1,
                                 vin: sc.ID,
                                 agencyId: sc.agencyID.toString(),
-                                brand: sc.brand.trim(),
-                                model: sc.model.trim(),
-                                series: sc.version.trim(),
+                                brand: parsedBrand,
+                                model: parsedModel,
+                                series: parsedSeries,
                                 price: sc.price,
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
