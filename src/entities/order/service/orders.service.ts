@@ -84,8 +84,6 @@ export class OrdersService extends CrudService<typeof x>{
 
         const hash = createHmac('sha256', this.bbvakey).update(Mensaje).digest('hex');
 
-        let token = await this.getaccesetoken();
-
         let order: order = {
             carid: body.idcar,
             userId: body.userid,
@@ -109,11 +107,11 @@ export class OrdersService extends CrudService<typeof x>{
      
 
 
-       let reponseControl = await this.ReserveZAD(car, 1, token)
+       let reponseControl = await this.ReserveZAD(car, 1, body.token)
 
        let createResponse = await this.repository.create(order);
 
-        return [createResponse, {SesionToken: token}]
+        return [createResponse, {SesionToken: body.token}]
 
     }
 
@@ -248,8 +246,6 @@ export class OrdersService extends CrudService<typeof x>{
 
         let agencyID: number = parseInt(Reserve.agencyId); 
 
-   
-
 
         const response = await this.httpService.post(`http://201.116.249.45:1089/api/Reserves/Vehicles`, {
 
@@ -271,14 +267,14 @@ export class OrdersService extends CrudService<typeof x>{
 
     }
 
-    private async getaccesetoken(){
+    async getaccesetoken(){
 
         const responsetoken = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
             userName: this.sadApiConfig.username,
             password: this.sadApiConfig.password
         }).toPromise()
 
-        return responsetoken.data
+        return {token: responsetoken.data}
     }
 
 

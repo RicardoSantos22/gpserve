@@ -182,6 +182,12 @@ export class NewCarController {
     return this.service.create({ ...body });
   }
 
+  @Post('busqueda')
+  async busqueda(@Body() body: any)
+  {
+    return this.service.findForString(body)
+  }
+
   @Post('bmw')
   async bmw(@Body() body: CreateNewCarDTO) {
 

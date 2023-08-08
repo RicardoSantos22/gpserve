@@ -6,6 +6,12 @@ import { HmacDTO } from '../dto/create_hmac'
 export class NeworderController {
     constructor( private readonly Orderservies: OrdersService){}
 
+    @Get("/token")
+    async gettoken()
+    {
+        return this.Orderservies.getaccesetoken();
+    }
+
     @Post("/Createhmac")
     async createkey(@Body() data:HmacDTO){
 

@@ -45,6 +45,24 @@ export class UsedCarService extends CrudService<typeof x> {
         return await this.repository.findAll();
     }
 
+
+    async findForString(body: any){
+        console.log(body)
+        const cars: any = await this.repository.findAll();
+        let carfinallist: any = [];
+
+        cars.items.forEach((car: any) => {
+
+
+           if(car.model.includes(body.busqueda.toUpperCase()) ||  car.brand.includes(body.busqueda.toUpperCase()) || car.series.includes(body.busqueda.toUpperCase()))
+           {
+            carfinallist.push(car)
+           }
+        });
+
+        return {items: carfinallist}
+    }
+
     async carModelVerification(car){
         let carID = '';
         if(car.vin) { carID = car.vin}
@@ -77,7 +95,8 @@ export class UsedCarService extends CrudService<typeof x> {
             colours: new Set<string>(),
             prices: new Set<number>(),
             km: new Set<number>(),
-            chassistype: new Set<string>()
+            chassistype: new Set<string>(),
+            agencyId: new Set<string>()
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -90,6 +109,7 @@ export class UsedCarService extends CrudService<typeof x> {
             maxPrice = Math.max(maxPrice, +car.price)
             minPrice = Math.min(minPrice, +car.price)
             sets.chassistype.add(car.chassisType)
+            sets.agencyId.add(car.agencyId)
         }
         //Logger.debug({minPrice, maxPrice})
         sets.prices.add(minPrice)
@@ -102,7 +122,8 @@ export class UsedCarService extends CrudService<typeof x> {
             colours: [...sets.colours],
             prices: [...sets.prices],
             km: [...sets.km],
-            chassisType: [...sets.chassistype]
+            chassisType: [...sets.chassistype],
+            agencyId: [...sets.agencyId],
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
@@ -163,7 +184,7 @@ export class UsedCarService extends CrudService<typeof x> {
         try {
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
-                        `${this.sadApiConfig.baseUrl}/Vehicles/Used?dealerId=${id}`,
+                        `http://201.116.249.45:1086/api/Vehicles/Used?dealerId=${id}`,
                         {
                             headers: {
                                 'Authorization': 'Bearer ' + token.trim()
@@ -259,6 +280,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             //if(true) {
                             let usedCar: UsedCar = {
                                 chassisType: chasystype,
+                                agencyCity: sc.agencyCity,
                                 metaTitulo: ''+sc.brand.trim()+' '+sc.model.trim()+' '+ sc.year.trim()+' Seminuevo en Línea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
                                 h1Title: h1,

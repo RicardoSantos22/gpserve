@@ -83,6 +83,9 @@ export class NewCar {
   @prop()
   price: number;
 
+  @prop()
+  agencyCity: string;
+
   @ApiProperty({
     description: "online or offline status car",
     readOnly: true,
