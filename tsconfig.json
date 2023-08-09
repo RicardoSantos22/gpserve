@@ -17,8 +17,13 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "typeRoots": [  
-    "node_modules/@types",
-    "src/typings"]
+    "typeRoots": [
+      "node", 
+      "Multer",
+      "./node_modules/@types"
+  ],
+      "types": [
+      "@openui5/ts-types-esm"
+  ],
   }
 }

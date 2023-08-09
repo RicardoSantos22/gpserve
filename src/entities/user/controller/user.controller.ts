@@ -38,6 +38,8 @@ import { UpdateUserWishlistDTO } from '../dto/update-user-wishlist.dto';
 import { SelfUserResponse } from '../dto/self-user-response.dto';
 import { UpdateUserDocuments } from '../dto/update-user-documents.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { Multer } from 'multer';
 
 @Controller('user')
 export class UserController {
