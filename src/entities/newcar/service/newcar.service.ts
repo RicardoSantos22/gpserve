@@ -202,7 +202,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     }
 
-    async updateCarCatalogue() {
+    async updateCarCatalogue() {        
         let updateitem: int = 0;
         const {token} = await this.loginToSAD()
         // const deletedRecords = await this.repository.deleteMany({})
@@ -289,6 +289,9 @@ export class NewCarService extends CrudService<typeof x> {
                             let MetaDescription: string;
                             let h1: string;
                             let chasystype: string;
+                            let parsedBrand: string;
+                            let parsedModel: string;
+                            let parsedSeries: string;
 
                             let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
@@ -333,13 +336,18 @@ export class NewCarService extends CrudService<typeof x> {
                                     chasystype = sc.chassisType;
                                 }
                             }
+                            
+                            parsedModel = newmodel.replace('/','-')                            
+                            parsedBrand = sc.brand.replace('/','-')                                                        
+                            parsedSeries = sc.version.replace('/','-')
+                
                             //if(true) {
                             let newCar: NewCar = {
                                 vin: sc.ID,
                                 agencyId: sc.agencyID.toString(),
-                                brand: sc.brand,
-                                model: newmodel,
-                                series: sc.version,
+                                brand: parsedBrand,
+                                model: parsedModel,
+                                series: parsedSeries,
                                 agencyCity: sc.agencyCity,
                                 chassisType: chasystype,
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
@@ -447,8 +455,6 @@ export class NewCarService extends CrudService<typeof x> {
             Logger.debug(`Inserted ${newCarsArray.length} records`)
             Logger.debug(`Update ${updateitem} records`)
         }
-
-
     }
 
     getCarCatalogue(authHeader: string) {
