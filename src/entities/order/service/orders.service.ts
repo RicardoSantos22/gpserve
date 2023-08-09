@@ -111,7 +111,7 @@ export class OrdersService extends CrudService<typeof x>{
 
        let createResponse = await this.repository.create(order);
 
-        return [createResponse, {SesionToken: body.token}]
+        return createResponse
 
     }
 
@@ -141,9 +141,11 @@ export class OrdersService extends CrudService<typeof x>{
             Order.fronturl = urlreconstruccion
 
             Order.apiAuthorization = 'Completado'
+
+            let token = await this.getaccesetoken()
             let car = await this.NewCarRepository.findById(Order.carID)
 
-            this.paymetsZAD(Order, car.vin, Order.token)
+            this.paymetsZAD(Order, car.vin, token)
 
             this.repository.update(Order.apiRegister, updateorder)
 
@@ -278,8 +280,6 @@ export class OrdersService extends CrudService<typeof x>{
     }
 
 
-    private async disponibilidad(){
 
-    }
 
 }
