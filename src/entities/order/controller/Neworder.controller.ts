@@ -27,6 +27,7 @@ export class NeworderController {
 
          
     }
+    
 @Redirect()
     @Post("/addorder")
     async addorder(@Body() data){

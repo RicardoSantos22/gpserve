@@ -264,7 +264,7 @@ export class NewCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
-                    console.log(sadNewCars)
+                    // console.log(sadNewCars)
                     
                     for (let sc of sadNewCars) {
 
@@ -368,7 +368,7 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                             if (BDID !== '') {
 
-                                //  await this.repository.update(BDID, newCar)
+                                 await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
                                  newCarsArray.push(newCar)
@@ -389,7 +389,7 @@ export class NewCarService extends CrudService<typeof x> {
                                         this.finishedcar.create(car)
     
                                         console.log( 'auto descartado: ', car.vin)
-                                        // this.repository.delete(car._id)
+                                        this.repository.delete(car._id)
                                     }
                                 })
                             }
@@ -432,9 +432,9 @@ export class NewCarService extends CrudService<typeof x> {
                             cartype: 'new',
                             km: 0,
                         }
-                        // this.finishedcar.create(updateCar)
-                        console.log( 'auto descartado: ', car.vin)
-                        // this.repository.delete(car._id)
+                        this.finishedcar.create(updateCar)
+                        // console.log( 'auto descartado: ', car.vin)
+                        this.repository.delete(car._id)
                     }
                 });
             }
