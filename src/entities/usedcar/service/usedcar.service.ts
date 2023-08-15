@@ -47,7 +47,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
     async findForString(body: any){
-        console.log(body)
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
 
@@ -203,10 +202,10 @@ export class UsedCarService extends CrudService<typeof x> {
                     const sadNewCars = response.data.data as SADUsedCar[]
                     for (let sc of sadNewCars) {
 
-       
-                           
-                    
-
+                        if(sc.agencyID === 28)
+                        {
+                            console.log(sc)
+                        }
 
                         let BDID: string = '';
                         carlist.items.forEach((car: any) => {
@@ -222,6 +221,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         let verificacion = await this.carModelVerification(sc)
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
+
 
                             let MetaDescription: string;
                             let h1: string;
@@ -273,6 +273,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
+
                             parsedModel = newmodel.replace('/','-').trim()                         
                             parsedBrand = sc.brand.replace('/','-').trim()                                                 
                             parsedSeries = sc.version.replace('/','-').trim()
@@ -280,6 +281,8 @@ export class UsedCarService extends CrudService<typeof x> {
                             //if(true) {
                             let usedCar: UsedCar = {
                                 chassisType: chasystype,
+                                promocion: sc.promotionDescription,
+                                promotionAmount: sc.promotionAmount,
                                 agencyCity: sc.agencyCity,
                                 metaTitulo: ''+sc.brand.trim()+' '+sc.model.trim()+' '+ sc.year.trim()+' Seminuevo en Línea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
@@ -320,7 +323,7 @@ export class UsedCarService extends CrudService<typeof x> {
     
                                         this.finishedcar.create(car)
     
-                                        console.log( 'auto descartado: ', car.vin)
+                                        // console.log( 'auto descartado: ', car.vin)
                                         this.repository.delete(car._id)
                                     }
                                 })
@@ -367,7 +370,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         this.finishedcar.create(updateCar)
 
-                        console.log( 'auto descartado: ', car.vin)
+                        // console.log( 'auto descartado: ', car.vin)
                         this.repository.delete(car._id)
                     }
                 });
