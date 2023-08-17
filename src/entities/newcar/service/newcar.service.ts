@@ -347,6 +347,9 @@ export class NewCarService extends CrudService<typeof x> {
                                     currency: "MXN"
                                 });
                             }
+                            else{
+                                promociontext = '';
+                            }
 
                             
                             parsedModel = newmodel.replace('/','-')                            

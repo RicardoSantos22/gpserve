@@ -264,6 +264,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             let parsedModel: string;
                             let parsedSeries: string;
                             let newmodel: string;
+                            let promociontext: string;
                             let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
                             banModelList.forEach((stringindex) =>  { 
@@ -305,6 +306,17 @@ export class UsedCarService extends CrudService<typeof x> {
                                 {
                                     chasystype = sc.chassisType;
                                 }
+                            }
+
+                            if(sc.promotionAmount !== 0)
+                            {
+                                promociontext = sc.promotionDescription + ' de ' + sc.promotionAmount.toLocaleString("en", {
+                                    style: "currency",
+                                    currency: "MXN"
+                                });
+                            }
+                            else{
+                                promociontext = '';
                             }
 
 
