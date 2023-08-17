@@ -134,5 +134,12 @@ export class NewCar {
 
   @prop()
   baseColour: string
+
+
+  @prop()
+  promocion: string;
+
+  @prop()
+  promotionAmount: number;
   
 }

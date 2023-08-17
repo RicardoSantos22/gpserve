@@ -12,6 +12,8 @@ import {UsedCarRepository} from '../repository/usedcar.repository';
 import {Cron} from '@nestjs/schedule'
 import {CronExpression} from '@nestjs/schedule/dist';
 import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
+import { Agency } from 'src/entities/agency/model/agency.model';
+import { async } from 'rxjs';
 
 let x;
 
@@ -145,9 +147,27 @@ export class UsedCarService extends CrudService<typeof x> {
         }
     }
 
+    async zadCarCatalogue(agency, token){
+
+        let angeci: any = await this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
+            `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${agency}`,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + token.trim()
+                }
+            }
+        ).toPromise()
+
+        return angeci.data
+
+    }
+
     async updateCarCatalogue() {
         let updateitem = 0;
         const {token} = await this.loginToSAD()
+
+        console.log(token)
+
         // const deletedRecords = await this.repository.deleteMany({})
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
@@ -169,7 +189,7 @@ export class UsedCarService extends CrudService<typeof x> {
             18, // Chrysler Culiacán
             19, // Land Rover Culiacán
             20, // Kia Culiacán
-            21, // Chevrolet Hermosillo
+            21, // Chevrolet Hermosillo 1
             22, // Chrysler Mochis
             23, // KIA Cabos
             24, // KIA Hermosillo
@@ -180,10 +200,15 @@ export class UsedCarService extends CrudService<typeof x> {
             29, // Chirey Culiacan 
         ]
         let promises = []
+
+        let carlist:any = [];
         try {
+
+
+            
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
-                        `http://201.116.249.45:1086/api/Vehicles/Used?dealerId=${id}`,
+                        `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${id}`,
                         {
                             headers: {
                                 'Authorization': 'Bearer ' + token.trim()
@@ -191,23 +216,29 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                     ).toPromise()
                 )
+
+               
             }
-            const responses = await Promise.all(promises)
+            
+            const responses: any = await Promise.all(promises)
+
+    
+
+        
             let carlist = await this.repository.findAll();
             let carinlist = [];
-            let carlistban = []
+            let carlistban = [];
+            let carlistlist = [];
 
             for (let response of responses) {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADUsedCar[]
+
                     for (let sc of sadNewCars) {
 
-                        if(sc.agencyID === 28)
-                        {
-                            console.log(sc)
-                        }
 
-                        let BDID: string = '';
+                        
+                         let BDID: string = '';
                         carlist.items.forEach((car: any) => {
 
                             if (sc.ID === car.vin) {
@@ -218,10 +249,13 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             }
                         })
+
+
                         let verificacion = await this.carModelVerification(sc)
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
-
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
+                            
+                            
 
                             let MetaDescription: string;
                             let h1: string;
@@ -323,7 +357,7 @@ export class UsedCarService extends CrudService<typeof x> {
     
                                         this.finishedcar.create(car)
     
-                                        // console.log( 'auto descartado: ', car.vin)
+                                        console.log( 'auto descartado: ', car.vin)
                                         this.repository.delete(car._id)
                                     }
                                 })
@@ -370,7 +404,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         this.finishedcar.create(updateCar)
 
-                        // console.log( 'auto descartado: ', car.vin)
+                        console.log( 'auto descartado: ', car.vin)
                         this.repository.delete(car._id)
                     }
                 });
@@ -379,10 +413,13 @@ export class UsedCarService extends CrudService<typeof x> {
 
             return {
                 banCarlist: carlistban,
-                count: usedCarsArray.length,
+                count: carlistlist.length,
                 results: createdCars,
                 
             }
+
+
+            
         } catch (err) {
             console.log('error en update usedcar: ' + err)
             Logger.error(err)

@@ -11,6 +11,8 @@ export class SADNewCar {
     isReserved: string;
     price: string;
     fuelType: string;
+    promotionDescription: string;
+    promotionAmount: number;
     serialNumber: string;
     chassisType: string;
     cylinderNumber: string;

@@ -205,6 +205,7 @@ export class NewCarService extends CrudService<typeof x> {
     async updateCarCatalogue() {        
         let updateitem: int = 0;
         const {token} = await this.loginToSAD()
+        console.log(token)
         // const deletedRecords = await this.repository.deleteMany({})
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = []
@@ -238,11 +239,10 @@ export class NewCarService extends CrudService<typeof x> {
             // 30, 
         ]
         let promises = []
-        console.log(token)
         try {
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADNewCar[] }>(
-                        `http://201.116.249.45:1086/api/Vehicles?dealerId=${id}`,
+                        `http://201.116.249.45:1089/api/Vehicles?dealerId=${id}`,
                         {
                             headers: {
                                 'Authorization': 'Bearer ' + token.trim()
@@ -250,25 +250,25 @@ export class NewCarService extends CrudService<typeof x> {
                         }
                     ).toPromise()
                 )
-
-                console.log(promises)
             }
             const responses = await Promise.all(promises)
 
             let carlist = await this.repository.findAll();
 
             let carinlist = [];
-            let carlistban = []
+            let carlistban = [];
+
+            let carlistr = [];
 
             for (let response of responses) {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
-                    // console.log(sadNewCars)
+              
                     
                     for (let sc of sadNewCars) {
 
-          
+
                         let BDID: string = '';
 
                         carlist.items.forEach((car: any) => {
@@ -283,7 +283,9 @@ export class NewCarService extends CrudService<typeof x> {
                        let verificacion = await this.carModelVerification(sc)
 
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' ) {
+
+                         
 
                             let newmodel: string;
                             let MetaDescription: string;
@@ -292,6 +294,7 @@ export class NewCarService extends CrudService<typeof x> {
                             let parsedBrand: string;
                             let parsedModel: string;
                             let parsedSeries: string;
+                            let promociontext: string;
 
                             let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
@@ -336,15 +339,28 @@ export class NewCarService extends CrudService<typeof x> {
                                     chasystype = sc.chassisType;
                                 }
                             }
+
+                            if(sc.promotionAmount !== 0)
+                            {
+                                promociontext = sc.promotionDescription + ' de ' + sc.promotionAmount.toLocaleString("en", {
+                                    style: "currency",
+                                    currency: "MXN"
+                                });
+                            }
+
                             
                             parsedModel = newmodel.replace('/','-')                            
                             parsedBrand = sc.brand.replace('/','-')                                                        
                             parsedSeries = sc.version.replace('/','-')
+
+                       
                 
                             //if(true) {
                             let newCar: NewCar = {
                                 vin: sc.ID,
                                 agencyId: sc.agencyID.toString(),
+                                promocion: promociontext,
+                                promotionAmount: sc.promotionAmount,
                                 brand: parsedBrand,
                                 model: parsedModel,
                                 series: parsedSeries,
@@ -433,7 +449,7 @@ export class NewCarService extends CrudService<typeof x> {
                             km: 0,
                         }
                         this.finishedcar.create(updateCar)
-                        // console.log( 'auto descartado: ', car.vin)
+                        console.log( 'auto descartado: ', car.vin)
                         this.repository.delete(car._id)
                     }
                 });

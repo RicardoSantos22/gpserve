@@ -83,6 +83,12 @@ export class UsedCar {
   @prop()
   transmision: any;
 
+  @prop()
+  promocion: string;
+
+  @prop()
+  promotionAmount: number;
+
   @ApiProperty({
     description: "The car's kilometers",
     readOnly: true,

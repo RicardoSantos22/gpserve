@@ -12,6 +12,8 @@ export class SADUsedCar {
     technicalFile: string;
     year: string;
     color: string;
+    promotionDescription: string;
+    promotionAmount: number;
     isReserved: string;
     price: string;
     fuelType: string;
