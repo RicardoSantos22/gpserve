@@ -106,7 +106,7 @@ export class AdminController {
         })
         SmStream.write({url: 'https://estrenatuauto.com/concesionarias', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/contacto', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'hhttps://estrenatuauto.com/vender-mi-auto', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/vender-mi-auto', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/autos-nuevos', changefreq: 'monthly', priority: 0.3})
 
         newcarslist.items.forEach((car: any) => {

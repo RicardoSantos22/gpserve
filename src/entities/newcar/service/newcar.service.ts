@@ -205,7 +205,6 @@ export class NewCarService extends CrudService<typeof x> {
     async updateCarCatalogue() {        
         let updateitem: int = 0;
         const {token} = await this.loginToSAD()
-        console.log(token)
         // const deletedRecords = await this.repository.deleteMany({})
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = []
