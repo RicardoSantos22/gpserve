@@ -326,6 +326,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             //if(true) {
                             let usedCar: UsedCar = {
+                                promocioType: sc.promotionDescription,
                                 chassisType: chasystype,
                                 promocion: sc.promotionDescription,
                                 promotionAmount: sc.promotionAmount,

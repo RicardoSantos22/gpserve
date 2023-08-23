@@ -135,6 +135,9 @@ export class UsedCar {
   @prop()
   chassisType: string
 
+  @prop()
+  promocioType: string;
+
 
 
 }

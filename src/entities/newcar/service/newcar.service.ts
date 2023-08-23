@@ -268,6 +268,12 @@ export class NewCarService extends CrudService<typeof x> {
                     for (let sc of sadNewCars) {
 
 
+                        if(sc.ID === 'LSGHD52H7JD018498')
+                        {
+                            console.log(sc)
+                        }
+
+
                         let BDID: string = '';
 
                         carlist.items.forEach((car: any) => {
@@ -284,7 +290,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' ) {
 
-                         
+                    
 
                             let newmodel: string;
                             let MetaDescription: string;
@@ -360,6 +366,7 @@ export class NewCarService extends CrudService<typeof x> {
                             //if(true) {
                             let newCar: NewCar = {
                                 vin: sc.ID,
+                                promocioType: sc.promotionDescription,
                                 agencyId: sc.agencyID.toString(),
                                 promocion: promociontext,
                                 promotionAmount: sc.promotionAmount,

@@ -142,4 +142,6 @@ export class NewCar {
   @prop()
   promotionAmount: number;
   
+  @prop()
+  promocioType: string;
 }
