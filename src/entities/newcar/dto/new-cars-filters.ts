@@ -7,4 +7,5 @@ export interface NewCarsFilters {
     km: Array<number>
     chassisType: Array<string>
     agencyId: Array<string>
+    promocioType: Array<string>
 }

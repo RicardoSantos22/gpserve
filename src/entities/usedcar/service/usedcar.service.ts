@@ -97,7 +97,8 @@ export class UsedCarService extends CrudService<typeof x> {
             prices: new Set<number>(),
             km: new Set<number>(),
             chassistype: new Set<string>(),
-            agencyId: new Set<string>()
+            agencyId: new Set<string>(),
+            promocioType: new Set<string>()
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -111,6 +112,7 @@ export class UsedCarService extends CrudService<typeof x> {
             minPrice = Math.min(minPrice, +car.price)
             sets.chassistype.add(car.chassisType)
             sets.agencyId.add(car.agencyId)
+            sets.promocioType.add(car.promocioType)
         }
         //Logger.debug({minPrice, maxPrice})
         sets.prices.add(minPrice)
@@ -125,6 +127,7 @@ export class UsedCarService extends CrudService<typeof x> {
             km: [...sets.km],
             chassisType: [...sets.chassistype],
             agencyId: [...sets.agencyId],
+            promocioType: [...sets.promocioType]
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
