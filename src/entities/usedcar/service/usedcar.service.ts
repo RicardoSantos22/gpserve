@@ -319,7 +319,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 });
                             }
                             else{
-                                promociontext = '';
+                                promociontext = sc.promotionDescription;
                             }
 
 

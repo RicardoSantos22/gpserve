@@ -356,7 +356,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 });
                             }
                             else{
-                                promociontext = '';
+                                promociontext = sc.promotionDescription;
                             }
 
                             
