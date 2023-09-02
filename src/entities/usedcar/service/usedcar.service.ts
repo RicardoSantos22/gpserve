@@ -13,7 +13,8 @@ import {Cron} from '@nestjs/schedule'
 import {CronExpression} from '@nestjs/schedule/dist';
 import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
 import { Agency } from 'src/entities/agency/model/agency.model';
-import { async } from 'rxjs';
+import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
+import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 
 let x;
 
@@ -45,6 +46,62 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async getallcars() {
         return await this.repository.findAll();
+    }
+
+
+    async findAll(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
+
+
+        if(query.model && query.brand)
+        {
+           let newquery = await this.getAllModelOfBrands(query)
+
+           console.log(newquery)
+
+           const cars = await this.repository.findAll(newquery)
+   
+   
+           return cars
+        }
+        else{
+            const cars = await this.repository.findAll(query)
+   
+    
+            return cars
+        }
+
+
+  
+    }
+
+
+    async getAllModelOfBrands(query: any)
+    {
+
+        const cars = await this.repository.findByBrands(query.brand)
+
+        let allmodeles: any = [];
+
+        for (let c of cars) {
+            allmodeles.push(c.model)
+        }
+
+        
+        for(let model of query.model)
+        {
+           if(allmodeles.includes(model) === false)
+           {
+            query.model = query.model.filter((i) => i !== model)
+           }
+        }
+
+        if(query.model.length === 0)
+        {
+            delete query.model;
+        }
+        
+       return query
+
     }
 
 
@@ -239,7 +296,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
-
+                    
                         
                          let BDID: string = '';
                         carlist.items.forEach((car: any) => {
@@ -256,9 +313,11 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         let verificacion = await this.carModelVerification(sc)
 
+                     
+
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
                             
-                            
+                   
 
                             let MetaDescription: string;
                             let h1: string;
@@ -353,11 +412,20 @@ export class UsedCarService extends CrudService<typeof x> {
                                 location: sc.agencyCity.trim(),
                                 specs: sc.specs
                             }
+
+                            if(sc.agencyID === 17)
+                            {
+                                console.log(sc)
+                            }
+                            
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, usedCar)
                                 updateitem++
                             } else {
+
+                               
+
                                 usedCarsArray.push(usedCar)
                             }
                         }
@@ -428,8 +496,8 @@ export class UsedCarService extends CrudService<typeof x> {
             const createdCars = await this.repository.createMany(usedCarsArray)
 
             return {
-                banCarlist: carlistban,
-                count: carlistlist.length,
+                // banCarlist: carlistban,
+                // count: carlistlist.length,
                 results: createdCars,
                 
             }

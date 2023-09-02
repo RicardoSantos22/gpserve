@@ -51,18 +51,71 @@ export class NewCarService extends CrudService<typeof x> {
     }
 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
-        const cars = await this.repository.findAll(query)
-        const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-        const response = {
-            ...cars,
-            items: groupedCars,
-          }
-        const r = {
-            count: cars.count,
-            items: response.items
-          }
 
-        return r
+
+        if(query.model && query.brand)
+        {
+           let newquery = await this.getAllModelOfBrands(query)
+
+           const cars = await this.repository.findAll(newquery)
+           const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+           const response = {
+               ...cars,
+               items: groupedCars,
+             }
+           const r = {
+               count: cars.count,
+               items: response.items
+             }
+   
+           return r
+        }
+        else{
+            const cars = await this.repository.findAll(query)
+            const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+            const response = {
+                ...cars,
+                items: groupedCars,
+              }
+            const r = {
+                count: cars.count,
+                items: response.items
+              }
+    
+            return r
+        }
+
+
+  
+    }
+
+    async getAllModelOfBrands(query: any)
+    {
+
+        const cars = await this.repository.findByBrands(query.brand)
+
+        let allmodeles: any = [];
+
+        for (let c of cars) {
+            allmodeles.push(c.model)
+        }
+
+        
+        for(let model of query.model)
+        {
+           if(allmodeles.includes(model) === false)
+           {
+            query.model = query.model.filter((i) => i !== model)
+           }
+        }
+
+        if(query.model.length === 0)
+        {
+            delete query.model;
+        }
+        
+       return query
+
     }
 
     async findForString(body: any){
