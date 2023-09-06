@@ -12,8 +12,12 @@ let x;
 
 @Injectable()
 export class OrdersService extends CrudService<typeof x>{
-    private readonly bbvakey: string = '6x8S&74!45m&1=n!!Ffv!#6aQP-i1l8!-=0W!3H1mj3sM8Ty8dpWf45A4)u-#Jm=-(&mqUJt5t-!G7WIH%Wa9m2+o068b4&R(t63m83vH%%xC$LQZ#CQ2$eSUv#TEjTA';
 
+    //bbva llave publica
+   // private readonly bbvakey: string = '6x8S&74!45m&1=n!!Ffv!#6aQP-i1l8!-=0W!3H1mj3sM8Ty8dpWf45A4)u-#Jm=-(&mqUJt5t-!G7WIH%Wa9m2+o068b4&R(t63m83vH%%xC$LQZ#CQ2$eSUv#TEjTA';
+
+   //bbva llave dev
+   private readonly bbvakey: string = 'M94eF#-09dKGeDN9u=-b=j2(4&Xe)f3U9+o134i&0y3(75XsSNE0MO6sEe-M!l)7G1%7(d6v$i#Kp-9sFkVo=&lB1#Pm2OL6kf##=kv7R%K9rLjb#3#+R9I&6E#Kh7B#';
 
     setupCarsSecret: string
 
@@ -143,9 +147,12 @@ export class OrdersService extends CrudService<typeof x>{
             Order.apiAuthorization = 'Completado'
 
             let token = await this.getaccesetoken()
+            console.log(token)
             let car = await this.NewCarRepository.findById(Order.carID)
 
-            this.paymetsZAD(Order, car.vin, token)
+            let i = this.paymetsZAD(Order, car.vin, token.token)
+
+            console.log(i)
 
             this.repository.update(Order.apiRegister, updateorder)
 
@@ -201,7 +208,7 @@ export class OrdersService extends CrudService<typeof x>{
 
         let hh = new Date();
 
-        const response = await this.httpService.post(`http://201.116.249.45:1089/api/Payments`, {
+        const response:any = await this.httpService.post(`http://201.116.249.45:1089/api/Payments`, {
             agencyID: body.agencyId,
             vehicleSerialNumber: vin,
             vehicleIsNew: body.isnewcar,
@@ -210,7 +217,7 @@ export class OrdersService extends CrudService<typeof x>{
                 secondLastName: 'kumul',
                 firstName: 'ricardo',
                 phone: "9988307729",
-                email: 'ricardo@kalyptio.com',
+                email: body.email,
                 contactMethod: 'whatsapp',
                 city: 'Benito Juarez',
                 address: {
@@ -220,16 +227,16 @@ export class OrdersService extends CrudService<typeof x>{
                     suburb: '12',
                     postalCode: '77517'
                 },
-                regimenFiscal: "601",
-                usoCFDI:'p01',
-                RFC: 'XAXX010101000',
+                regimenFiscal: "616",
+                usoCFDI:'s01',
+                RFC: body.rfc,
 
             },
             sellerID: '1',
             paymentDate: hh,
             paymentAmount: body.mp_amount,
             paymentMethod: 'Credit',
-            paymentID: '675179'
+            paymentID: body.order.toString()
 
 
         },
@@ -240,7 +247,9 @@ export class OrdersService extends CrudService<typeof x>{
         }).toPromise()
         .then(res => {console.log(res)})
         .catch(e => {console.log(e)})
-        return 0
+
+        
+        return response.data
     }
 
 
@@ -261,9 +270,10 @@ export class OrdersService extends CrudService<typeof x>{
                 'Authorization': 'Bearer ' + token.trim()
             }
         }).toPromise()
-        .then(res => {console.log(res)})
+        .then(res => {console.log(res.data)})
         .catch(e => {console.log(e.data)})
 
+        
 
         return 0
 
