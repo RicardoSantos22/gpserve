@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CrudService } from '../../../common/crud/crud.service';
 import { createHmac } from 'crypto'
@@ -122,6 +122,8 @@ export class OrdersService extends CrudService<typeof x>{
     async AddNewOrder(Order) {
 
         console.log(Order)
+        let car; 
+        let i;
 
         let urlreconstruccion = '&agencyId=' + Order.agencyId + '&carId=' + Order.carID + '&brand=' + Order.brand + '&model=' + Order.model + '&series=' + Order.series + '&img=' + Order.img + '&price=' + Order.price + '&year=' + Order.year + '&colorname=' + Order.name + '&transmicion=' + Order.transmicion + '&fuel=' + Order.fuel + '&brandUrl=' + Order.brandUrl + '&modelUrl=' + Order.modelUrl + '&seriesUrl=' + Order.seriesUrl + '&isnewcar=' + Order.isnewcar + '&type=' + Order.type;
         const Mensaje: string = (await Order.mp_order).toString() + (await Order.mp_reference).toString() + (await Order.mp_amount).toString() + (await Order.mp_authorization).toString();
@@ -148,14 +150,22 @@ export class OrdersService extends CrudService<typeof x>{
 
             let token = await this.getaccesetoken()
             console.log(token)
-            let car = await this.NewCarRepository.findById(Order.carID)
 
-            let i = this.paymetsZAD(Order, car.vin, token.token)
+            if(Order.isnewcar)
+            {
+                car = await this.NewCarRepository.findById(Order.carID)
+            }
+            else{
 
-            console.log(i)
+                car = await this.usedcarRepository.findById(Order.carID)
+            }
+            
+
+            i = this.paymetsZAD(Order, car.vin, token.token)
 
             this.repository.update(Order.apiRegister, updateorder)
 
+            console.log(i)
 
         }
         else {
@@ -206,29 +216,29 @@ export class OrdersService extends CrudService<typeof x>{
 
     private async paymetsZAD(body, vin, token) {
 
+
         let hh = new Date();
 
-        const response:any = await this.httpService.post(`http://201.116.249.45:1089/api/Payments`, {
+        let zadbody = {
             agencyID: body.agencyId,
             vehicleSerialNumber: vin,
             vehicleIsNew: body.isnewcar,
             customer: {
-                lastName: 'santos',
-                secondLastName: 'kumul',
-                firstName: 'ricardo',
-                phone: "9988307729",
+                lastName: body.paterno,
+                secondLastName: body.materno,
+                firstName: body.username,
+                phone: body.telefono,
                 email: body.email,
                 contactMethod: 'whatsapp',
-                city: 'Benito Juarez',
+                city: body.estado,
                 address: {
-                    street: '12',
-                    noExt: '12',
-                    noInt: '12',
-                    suburb: '12',
-                    postalCode: '77517'
+                    street: body.calle,
+                    noExt: body.num_ext,
+                    suburb: body.colonia,
+                    postalCode: body.zip
                 },
-                regimenFiscal: "616",
-                usoCFDI:'s01',
+                regimenFiscal: body.regimen_fiscal,
+                usoCFDI:body.cfdi,
                 RFC: body.rfc,
 
             },
@@ -236,10 +246,12 @@ export class OrdersService extends CrudService<typeof x>{
             paymentDate: hh,
             paymentAmount: body.mp_amount,
             paymentMethod: 'Credit',
-            paymentID: body.order.toString()
+            paymentID: body.mp_order
 
 
-        },
+        }
+
+        const response:any = await this.httpService.post(`http://201.116.249.45:1089/api/Payments`, zadbody ,
         {
             headers: {
                 'Authorization': 'Bearer ' + token.trim()
@@ -250,6 +262,7 @@ export class OrdersService extends CrudService<typeof x>{
 
         
         return response.data
+
     }
 
 
@@ -287,6 +300,38 @@ export class OrdersService extends CrudService<typeof x>{
         }).toPromise()
 
         return {token: responsetoken.data}
+    }
+
+
+    async conciliacionforDocument(body: any){
+
+
+        let documentsOrdesList:any = []
+
+        for(let orderitem of body)
+        {
+            if(orderitem.Estado === 'Dispersado')
+            {
+                let Norder = parseInt(orderitem.Orden)
+                documentsOrdesList.push(Norder)
+            }
+        }
+
+        console.log(documentsOrdesList)
+
+        let allorders = await this.repository.findAll();
+
+        for(let order of allorders.items)
+        {
+            if(documentsOrdesList.includes(order.Norder))
+            {
+              let id = order.id
+
+              this.repository.update(id, {status: 'conciliado'})
+            }
+        }
+
+
     }
 
 

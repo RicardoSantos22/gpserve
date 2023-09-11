@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Post, Redirect } from '@nestjs/common';
+import { Body, Controller, Get, Post, Redirect, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { OrdersService } from '../service/orders.service';
 import { HmacDTO } from '../dto/create_hmac'
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as XLSX from 'xlsx';
 
 @Controller('Neworder')
 export class NeworderController {
@@ -47,6 +49,21 @@ export class NeworderController {
             }
         }
          
+    }
+    
+
+    @Post('/conciliacion')
+    @UseInterceptors(FileInterceptor('file'))
+    uploadFile(@UploadedFile() file) {
+
+        const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0]; // Supongamos que solo hay una hoja en el archivo XLSX
+    
+        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        this.Orderservies.conciliacionforDocument(sheetData)
+    
+        return { message: 'Archivo XLSX procesado correctamente', data: sheetData };
     }
 }
 
