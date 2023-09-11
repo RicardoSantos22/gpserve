@@ -56,4 +56,13 @@ export class order {
   @prop()
   concept: number;
 
+  @prop()
+  commerceName: string;
+
+  @prop()
+  method: string;
+
+  
+
+
 }

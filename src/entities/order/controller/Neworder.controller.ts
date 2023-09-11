@@ -1,12 +1,18 @@
-import { Body, Controller, Get, Post, Redirect, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, Redirect, UploadedFile, UseInterceptors, Param,} from '@nestjs/common';
 import { OrdersService } from '../service/orders.service';
 import { HmacDTO } from '../dto/create_hmac'
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
+import { FindByIdParams } from 'src/common/models/dto/params/find-by-id-params.dto';
 
 @Controller('Neworder')
 export class NeworderController {
     constructor( private readonly Orderservies: OrdersService){}
+
+    @Get("order/:Norder")
+    async getorder(@Param('Norder') Norder: string){
+        return this.Orderservies.findAll({Norder: Norder})
+    }
 
     @Get("/token")
     async gettoken()
@@ -36,9 +42,11 @@ export class NeworderController {
 
         const validation = await this.Orderservies.AddNewOrder(data);
 
-        
 
         if(validation.orderDuplicate){
+
+            
+        console.log('https://estrenatuauto.com/Proceso-de-Pago?order=true' + validation.fronturl)
             return {
                 url: 'https://estrenatuauto.com/Proceso-de-Pago?order=true' + validation.fronturl
             }

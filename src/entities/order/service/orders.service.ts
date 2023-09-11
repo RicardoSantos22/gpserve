@@ -97,7 +97,9 @@ export class OrdersService extends CrudService<typeof x>{
             amount: await amount,
             concept: body.concept,
             agencyId: body.agencyId,
-            hmac: hash
+            hmac: hash,
+            commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
+            method: '',
         }
 
         // let respuesta = {
@@ -125,13 +127,17 @@ export class OrdersService extends CrudService<typeof x>{
         let car; 
         let i;
 
-        let urlreconstruccion = '&agencyId=' + Order.agencyId + '&carId=' + Order.carID + '&brand=' + Order.brand + '&model=' + Order.model + '&series=' + Order.series + '&img=' + Order.img + '&price=' + Order.price + '&year=' + Order.year + '&colorname=' + Order.name + '&transmicion=' + Order.transmicion + '&fuel=' + Order.fuel + '&brandUrl=' + Order.brandUrl + '&modelUrl=' + Order.modelUrl + '&seriesUrl=' + Order.seriesUrl + '&isnewcar=' + Order.isnewcar + '&type=' + Order.type;
+        let urlreconstruccion = '&norder=' + Order.mp_order + '&agencyId=' + Order.agencyId + '&carId=' + Order.carID + '&brand=' + Order.brand + '&model=' + Order.model + '&series=' + Order.series + '&img=' + Order.img + '&price=' + Order.price + '&year=' + Order.year + '&colorname=' + Order.name + '&transmicion=' + Order.transmicion + '&fuel=' + Order.fuel + '&brandUrl=' + Order.brandUrl + '&modelUrl=' + Order.modelUrl + '&seriesUrl=' + Order.seriesUrl + '&isnewcar=' + Order.isnewcar + '&type=' + Order.type;
         const Mensaje: string = (await Order.mp_order).toString() + (await Order.mp_reference).toString() + (await Order.mp_amount).toString() + (await Order.mp_authorization).toString();
 
         const hashverificacion = createHmac('sha256', this.bbvakey).update(Mensaje).digest('hex');
 
-        let updateorder = {
-            status: "En Verifiacion"
+        const updateorder = {
+            status: "En Verifiacion",
+            method: Order.mp_paymentMethod,
+            transaccionDate: Order.mp_date,
+            commerceName: Order.mp_commerceName,
+            agencyId: Order.agencyId
         }
 
         if (Order.mp_signature === hashverificacion) {
@@ -159,13 +165,15 @@ export class OrdersService extends CrudService<typeof x>{
 
                 car = await this.usedcarRepository.findById(Order.carID)
             }
+
+            console.log(updateorder)
             
 
-            i = this.paymetsZAD(Order, car.vin, token.token)
+            // i = this.paymetsZAD(Order, car.vin, token.token)
 
-            this.repository.update(Order.apiRegister, updateorder)
+            let r = await this.repository.update(Order.apiRegister, updateorder)
 
-            console.log(i)
+            console.log(r)
 
         }
         else {
