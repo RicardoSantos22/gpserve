@@ -20,6 +20,13 @@ export class NeworderController {
         return this.Orderservies.getaccesetoken();
     }
 
+    @Post("/createintencion")
+    async createIntencion(@Body() data:HmacDTO){
+
+        return this.Orderservies.createintencion(data)
+         
+    }
+
     @Post("/Createhmac")
     async createkey(@Body() data:HmacDTO){
 

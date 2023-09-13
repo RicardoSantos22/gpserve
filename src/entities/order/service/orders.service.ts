@@ -45,6 +45,20 @@ export class OrdersService extends CrudService<typeof x>{
     }
 
 
+    async createintencion(body)
+    {
+        let amount;
+        if (body.concept === 1) {
+            amount = (body.amount / 100) * 50;
+        }
+        else if (body.concept === 2) {
+            amount = body.amount;
+        }
+
+        return amount
+    }
+
+
     async CreateOrder(body) {
 
         console.log(body)
@@ -135,9 +149,7 @@ export class OrdersService extends CrudService<typeof x>{
         const updateorder = {
             status: "En Verifiacion",
             method: Order.mp_paymentMethod,
-            transaccionDate: Order.mp_date,
             commerceName: Order.mp_commerceName,
-            agencyId: Order.agencyId
         }
 
         if (Order.mp_signature === hashverificacion) {
@@ -341,8 +353,5 @@ export class OrdersService extends CrudService<typeof x>{
 
 
     }
-
-
-
 
 }
