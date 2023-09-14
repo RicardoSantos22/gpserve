@@ -129,6 +129,8 @@ export class OrdersService extends CrudService<typeof x>{
 
        let reponseControl = await this.ReserveZAD(car, 1, body.token)
 
+       console.log(reponseControl)
+
        let createResponse = await this.repository.create(order);
 
         return createResponse
@@ -281,7 +283,7 @@ export class OrdersService extends CrudService<typeof x>{
         .catch(e => {console.log(e)})
 
         
-        return response.data
+        return 0
 
     }
 
@@ -289,6 +291,8 @@ export class OrdersService extends CrudService<typeof x>{
     private async ReserveZAD(Reserve, status: number, token) {
 
         let agencyID: number = parseInt(Reserve.agencyId); 
+
+        
 
 
         const response = await this.httpService.post(`http://201.116.249.45:1089/api/Reserves/Vehicles`, {
@@ -303,12 +307,10 @@ export class OrdersService extends CrudService<typeof x>{
                 'Authorization': 'Bearer ' + token.trim()
             }
         }).toPromise()
-        .then(res => {console.log(res.data)})
-        .catch(e => {console.log(e.data)})
 
-        
 
-        return 0
+
+        return  response.data
 
     }
 
