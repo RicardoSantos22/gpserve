@@ -118,6 +118,12 @@ export class InspectionAppointmentController {
     type: DatabaseErrorDto,
   })
 
+  @Get('userall/:id')
+  async getAllForUser(@Param('id') id: string){
+
+    return this.service.findAll({userId: id})
+  }
+
   // #endregion create
 
   @Post()

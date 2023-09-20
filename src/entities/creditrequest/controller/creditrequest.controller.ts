@@ -123,6 +123,14 @@ export class CreditRequestController {
     type: DatabaseErrorDto,
   })
 
+  
+  @Get('userall/:id')
+  async getAllForUser(@Param('id') id: string){
+
+    return this.service.findAll({userId: id})
+  }
+
+
   // #endregion create
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()

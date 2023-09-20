@@ -11,6 +11,7 @@ export class NeworderController {
 
     @Get("order/:Norder")
     async getorder(@Param('Norder') Norder: string){
+        console.log(Norder)
         return this.Orderservies.findAll({Norder: Norder})
     }
 
