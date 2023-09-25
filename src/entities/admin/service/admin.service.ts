@@ -105,8 +105,10 @@ export class AdminService extends CrudService<Admin> {
            s3Url = await this.s3Service.uploadBeners(`publicidad/banners/carlist-movil-banner.jpg`, file.buffer, true)
         }
        
-        return s3Url
+        
       }
+
+      return s3Url
 
     }
     catch(e)
