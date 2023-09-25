@@ -95,6 +95,40 @@ export class AwsS3Service {
     }
   }
 
+
+  public async uploadBeners(fileName: string, buffer: any, isPublic: boolean,): Promise<string> {
+
+
+    const params = {
+      // ACL: 'public-read',
+      Bucket: 'estrenatuauto-public-assets',
+      Body: buffer,
+      Key: fileName,
+    }; // Uploading image directly from server
+
+    console.log(params)
+    if (isPublic) {
+      params['ACL'] = 'public-read';
+    }
+    try {
+      const data = await this.s3Client
+        .upload(params, {
+          tags: [{ Key: 'Date', Value: Date.now().toString() }],
+        })
+        .promise();
+      this.logger.log(`AWS Returned Data: ${JSON.stringify(data)}`);
+      const url = data.Location;
+      console.log(url)
+      return url;
+    } catch (err) {
+      this.logger.error('Error ocurrio aqui');
+      this.logger.error(err);
+      throw err;
+    }
+
+  }
+
+
   public async deleteFile(fileName: string): Promise<boolean> {
     const params = {
       Bucket: this.S3_BUCKET,

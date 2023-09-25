@@ -11,10 +11,11 @@ import {AdminService} from '../service/admin.service';
 import {CreateAdminDTO} from '../dto/create-admin.dto';
 import {FindAllAdminsQuery} from '../dto/find-all-admins-query';
 import {UpdateAdminDTO} from '../dto/update-admin';
-import {Res} from '@nestjs/common/decorators';
+import {Res, UploadedFile, UseInterceptors} from '@nestjs/common/decorators';
 import {SitemapStream, streamToPromise} from "sitemap";
 import {NewCarService} from 'src/entities/newcar/service/newcar.service';
 import {UsedCarService} from 'src/entities/usedcar/service/usedcar.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('admin')
 export class AdminController {
@@ -136,6 +137,7 @@ export class AdminController {
         })
     }
 
+
     // #endregion findById
 
     @Get(':id')
@@ -165,6 +167,7 @@ export class AdminController {
         description: 'There was an error in the database, the Admin was not created',
         type: DatabaseErrorDto,
     })
+
 
     // #endregion create
 
@@ -236,6 +239,15 @@ export class AdminController {
         description: 'There was an error while trying to delete the Admin',
         type: DatabaseErrorDto,
     })
+
+    @Post('bannershome')
+    @UseInterceptors(FileInterceptor('file'))
+    async updateBannersHome(@UploadedFile() file, @Body() body: any){
+
+        return this.service.updateBannersForHome(body, file)
+    }
+
+
 
     // #endregion delete
 

@@ -16,12 +16,16 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
+import e from 'express';
+
 @Injectable()
 export class AdminService extends CrudService<Admin> {
 
   constructor(
     readonly repository: AdminRepository,
     readonly config: ConfigService,
+    readonly s3Service: AwsS3Service
   ) {
     super(repository, 'Admin', config);
   }
@@ -53,5 +57,62 @@ export class AdminService extends CrudService<Admin> {
         ERROR_CREATING_DOCUMENT(this.name, e.message || e),
       );
     }
+  }
+
+  async updateBannersForHome( body: any, file: Express.Multer.File){
+
+    if(!file || !file.buffer) {
+      throw new BadRequestException('Invalid file provided')
+    }
+
+    const sizeInMb = file.size / 1024 / 1024
+   
+    if(sizeInMb > 5) {
+      throw new BadRequestException('File exceeds allowed size limit')
+    }
+
+  
+
+    try
+    {
+      let s3Url;
+
+      if(body.type === 'desktop')
+      { 
+  
+        if(body.banner === 'home')
+        {
+  
+            s3Url = await this.s3Service.uploadBeners(`publicidad/banners/home-desktop-banner.jpg`, file.buffer, true)
+          
+        }
+        if(body.banner === 'carlist')
+        {
+           s3Url = await this.s3Service.uploadBeners(`publicidad/banners/carlist-desktop-banner.jpg`, file.buffer, true)
+        }
+       
+      }
+  
+      if(body.type === 'movil')
+      { 
+  
+        if(body.banner === 'home')
+        {
+           s3Url = await this.s3Service.uploadBeners(`publicidad/banners/home-movil-banner.jpg`, file.buffer, true)
+        }
+        if(body.banner === 'carlist')
+        {
+           s3Url = await this.s3Service.uploadBeners(`publicidad/banners/carlist-movil-banner.jpg`, file.buffer, true)
+        }
+       
+        return s3Url
+      }
+
+    }
+    catch(e)
+    {
+      return e
+    }
+
   }
 }
