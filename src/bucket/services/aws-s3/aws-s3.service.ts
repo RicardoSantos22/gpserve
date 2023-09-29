@@ -101,15 +101,15 @@ export class AwsS3Service {
 
     const params = {
       // ACL: 'public-read',
-      Bucket: 'estrenatuauto-public-assets',
+      Bucket: 'estrenatuauto-newcars-images',
       Body: buffer,
       Key: fileName,
+      ContentType: 'image/jpeg',
+      ACL: 'public-read',
     }; // Uploading image directly from server
 
     console.log(params)
-    if (isPublic) {
-      params['ACL'] = 'public-read';
-    }
+ 
     try {
       const data = await this.s3Client
         .upload(params, {
