@@ -101,7 +101,7 @@ export class AwsS3Service {
 
     const params = {
       // ACL: 'public-read',
-      Bucket: 'estrenatuauto-newcars-images',
+      Bucket: 'estrenatuauto-public-assets',
       Body: buffer,
       Key: fileName,
       ContentType: 'image/jpeg',
