@@ -6,14 +6,28 @@ import { UserRepository } from './repository/user.repository';
 import { Module } from '@nestjs/common';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { BucketModule } from '../../bucket/bucket.module';
+import { CreditRequestModule } from '../creditrequest/creditrequest.module';
+import { InsuranceRequestsModule } from '../insurancerequests/insurancerequests.module';
+import { NewCarModule } from '../newcar/newcar.module';
+import { UsedCarModule } from '../usedcar/usedcar.module';
+import { TestDriveAppointmentsModule } from '../testdriveappointments/testdriveappointments.module';
+import { OrderModule } from '../order/order.module';
+import { InspectionAppointmentModule } from '../inspectionappointment/inspectionappointment.module';
 
 @Module({
   imports: [
     TypegooseModule.forFeature([User]),
-    BucketModule
+    BucketModule,
+    CreditRequestModule,
+    InsuranceRequestsModule,
+    NewCarModule,
+    UsedCarModule,
+    TestDriveAppointmentsModule,
+    OrderModule,
+    InspectionAppointmentModule
   ],
   controllers: [UserController],
-  providers: [UserService, UserRepository],
+  providers: [UserService, UserRepository, CreditRequestModule, InsuranceRequestsModule, NewCarModule, UsedCarModule, TestDriveAppointmentsModule, OrderModule, InspectionAppointmentModule],
   exports: [UserService]
 })
 

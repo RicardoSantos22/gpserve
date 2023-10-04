@@ -19,6 +19,7 @@ import { BucketModule } from '../../bucket/bucket.module';
   imports: [TypegooseModule.forFeature([TestDriveAppointments, Asesores]), BucketModule, HttpModule.register({})],
   controllers: [TestDriveAppointmentController],
   providers: [TestDriveAppointmentsService, TestDriveAppointmentRepository, asesoresservice, asesorsrespository],
+  exports: [TestDriveAppointmentsModule, TestDriveAppointmentsService, TestDriveAppointmentRepository]
 })
 
 export class TestDriveAppointmentsModule {}

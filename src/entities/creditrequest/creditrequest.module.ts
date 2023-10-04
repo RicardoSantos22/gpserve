@@ -16,6 +16,7 @@ import { BucketModule } from '../../bucket/bucket.module';
   imports: [TypegooseModule.forFeature([CreditRequest, Asesores]), BucketModule, HttpModule.register({})],
   controllers: [CreditRequestController],
   providers: [CreditRequestService, CreditRequestRepository, asesoresservice, asesorsrespository],
+  exports: [CreditRequestModule, CreditRequestRepository, CreditRequestService]
 })
 
 export class CreditRequestModule {}

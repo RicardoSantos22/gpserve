@@ -18,6 +18,6 @@ import { UsedCarModule } from '../usedcar/usedcar.module';
 ],
   controllers: [NeworderController],
   providers: [OrdersService, orderRepository, NewCarModule, UsedCarModule],
-  exports: [OrdersService, orderRepository]
+  exports: [OrdersService, orderRepository, OrderModule]
 })
 export class OrderModule {}

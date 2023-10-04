@@ -10,6 +10,7 @@ import { InspectionAppointmentRepository } from './repository/inspectionappointm
   imports: [TypegooseModule.forFeature([InspectionAppointment])],
   controllers: [InspectionAppointmentController],
   providers: [InspectionAppointmentService, InspectionAppointmentRepository],
+  exports: [InspectionAppointmentModule, InspectionAppointmentService, InspectionAppointmentRepository]
 })
 
 export class InspectionAppointmentModule {}

@@ -13,14 +13,29 @@ import { SelfUserResponse } from '../dto/self-user-response.dto';
 import { plainToClass } from 'class-transformer';
 import { UpdateUserDocuments } from '../dto/update-user-documents.dto';
 import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
+import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
+import { NewCarRepository } from 'src/entities/newcar/repository/newcar.repository';
+import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
+import { InsuranceRequestRepository } from 'src/entities/insurancerequests/repository/insurancerequest.repository';
+import { carType } from 'src/entities/shared/enums';
+import { TestDriveAppointmentRepository } from 'src/entities/testdriveappointments/repository/testdriveappointment.repository';
+import { orderRepository } from 'src/entities/order/repository/order.repository';
+import { InspectionAppointmentRepository } from 'src/entities/inspectionappointment/repository/inspectionappointment.repository';
 
 @Injectable()
 export class UserService extends CrudService<User> {
-  
+
   constructor(
     readonly repository: UserRepository,
     readonly config: ConfigService,
-    readonly s3Service: AwsS3Service
+    readonly s3Service: AwsS3Service,
+    private usedcarrepository: UsedCarRepository,
+    private newcarrepository: NewCarRepository,
+    private creditrepocitory: CreditRequestRepository,
+    private insurancerepository: InsuranceRequestRepository,
+    private testdriverepository: TestDriveAppointmentRepository,
+    private orderrepository: orderRepository,
+    private inspesctionrepository: InspectionAppointmentRepository
   ) {
     super(repository, 'User', config);
   }
@@ -51,7 +66,7 @@ export class UserService extends CrudService<User> {
         userModel = user
       ]
     })
-    
+
 
     return userModel
   }
@@ -129,6 +144,182 @@ export class UserService extends CrudService<User> {
     const fileNameOnly = userDocument.url.split('amazonaws.com/')[1];
     return { url: await this.s3Service.getSignedDownloadUrl(fileNameOnly) };
 
+  }
+
+  async findMyIntentions(id: string)
+  {
+
+    let allintenciones: any = []
+    let creditosactivos: any = []
+    let pruebasactivas: any = []
+    let ventasactivas: any = []
+    let comprasactivas: any = []
+
+    let autosyacomprados: any = []
+
+    // procesamiento de intenciones de compra
+
+   const ordersuserlist = await this.orderrepository.findAll({userId: id})
+
+   for(let order of ordersuserlist.items)
+   {
+     let car = await this.newcarrepository.findAll({_id: order.carid})
+
+     if(car.count > 0)
+     {
+      autosyacomprados.push(car.items[0].vin)
+
+      let compra = car.items[0]
+
+      compra.id = order._id
+      compra.status = order.status
+      compra.tipo = 2
+
+      allintenciones.push(compra)
+     }
+     else
+     {
+      let usedcar = await this.usedcarrepository.findAll({_id: order.carid})
+      autosyacomprados.push(usedcar.items[0].vin)
+
+      let compra = usedcar.items[0]
+
+      compra.id = order._id
+      compra.status = order.status
+      compra.tipo = 2
+
+      allintenciones.push(compra)
+     }
+
+    
+   }
+
+   // fin procesamiento de intenciones de compra
+
+
+   //procesamientos de creditos
+   const usercreditlist =  await this.creditrepocitory.findAll({userId: id})
+   let repitcreditforusedcar: any = []
+   let repitcreditfornewdcar: any = []
+
+   
+
+   for(let credit of usercreditlist.items)
+   {
+
+    if(autosyacomprados.includes(credit.carId) ){}
+    else 
+    {
+      if(credit.carType === carType.new )
+      {
+        if(repitcreditfornewdcar.includes(credit.carId)){}
+        else{repitcreditfornewdcar.push(credit.carId)}
+      }
+      else
+      {
+        if(repitcreditforusedcar.includes(credit.carId)){}
+        else{repitcreditforusedcar.push(credit.carId)}
+      }
+    }
+
+   }
+
+
+
+
+   for(let car of repitcreditfornewdcar)
+   {
+    let carverify:any = await this.newcarrepository.findAll({vin: car})
+
+    if(carverify.items[0])
+    {
+      let numbercarforcaracters = await (await this.newcarrepository.findAll({series: carverify.items[0].series, colours:  carverify.items[0].colours})).items.length
+
+      let itemresponsemodel = carverify.items[0];
+
+      const usercreditlist =  await this.creditrepocitory.findAll({userId: id, carId: car})
+
+      itemresponsemodel.disponibles = numbercarforcaracters;
+      itemresponsemodel.status = usercreditlist.items[0].status;
+      itemresponsemodel.tipo = 1
+
+      allintenciones.push(itemresponsemodel)
+
+    }
+
+
+   }
+
+   for(let car of repitcreditforusedcar)
+   {
+    let carverify:any = await this.usedcarrepository.findAll({vin: car})
+
+
+    if(carverify.items[0])
+    {
+
+      let itemresponsemodel = carverify.items[0];
+
+      const usercreditlist =  await this.creditrepocitory.findAll({userId: id, carId: car})
+
+      itemresponsemodel.disponibles = 1;
+      itemresponsemodel.status = usercreditlist.items[0].status;
+      itemresponsemodel.tipo = 1
+
+      allintenciones.push(itemresponsemodel)
+
+    }
+
+   }
+
+   // fin procesamientos de creditos
+
+   // pruebas de manejo
+
+  
+    let userDriveTestList = await this.testdriverepository.findAll({userId: id})
+
+    for(let test of userDriveTestList.items)
+    {
+      if(autosyacomprados.includes(test.carId)){}
+      else 
+      {
+        let isnewcar = await this.newcarrepository.findAll({vin: test.carId})
+
+        if(isnewcar.count > 0)
+        {
+          let numbercarforcaracters = await (await this.newcarrepository.findAll({series: isnewcar.items[0].series, colours:  isnewcar.items[0].colours})).items.length
+
+          let itemresponsemodel = isnewcar.items[0];
+    
+          itemresponsemodel.disponibles = numbercarforcaracters;
+          itemresponsemodel.status = test.status;
+          itemresponsemodel.tipo = 1
+    
+          allintenciones.push(itemresponsemodel)
+        }
+        else
+        {
+        
+          let usedcar = await this.usedcarrepository.findAll({vin: test.carId})
+          let itemresponsemodel = usedcar.items[0];
+    
+          itemresponsemodel.disponibles = 1;
+          itemresponsemodel.status = test.status;
+          itemresponsemodel.tipo = 1
+    
+          allintenciones.push(itemresponsemodel)
+        }
+      }
+    }
+
+    let misventas = await this.inspesctionrepository.findAll({userId: id})
+
+    return [
+      {intenciones: allintenciones},
+      {ventas: misventas.items}
+   
+    ]
   }
 
 }

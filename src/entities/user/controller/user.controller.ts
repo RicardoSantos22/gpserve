@@ -89,6 +89,7 @@ export class UserController {
    * @memberof UserController
    */
 
+
   @ApiOperation({
     summary: 'Find User by ID',
     description: 'Retrieves an specific User based on the given ID',
@@ -109,6 +110,13 @@ export class UserController {
     type: DatabaseErrorDto,
   })
 
+
+  @Get('myhistorial/:iduser')
+  async findmyMovements(@Param('iduser') iduser: string){
+
+    return this.service.findMyIntentions(iduser);
+   
+  }
   // #endregion findById
 
   @Get(':id')
