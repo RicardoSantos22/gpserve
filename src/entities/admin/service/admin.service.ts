@@ -83,12 +83,12 @@ export class AdminService extends CrudService<Admin> {
         if(body.banner === 'home')
         {
   
-            s3Url = await this.s3Service.uploadBeners(`publicidad/banners/home-desktop-banner.jpg`, file.buffer, true)
+            s3Url = await this.s3Service.uploadBeners(`img-detalies/home-desktop-banner.jpg`, file.buffer, true)
           
         }
         if(body.banner === 'carlist')
         {
-           s3Url = await this.s3Service.uploadBeners(`publicidad/banners/carlist-desktop-banner.jpg`, file.buffer, true)
+           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-desktop-banner.jpg`, file.buffer, true)
         }
        
       }
@@ -98,11 +98,11 @@ export class AdminService extends CrudService<Admin> {
   
         if(body.banner === 'home')
         {
-           s3Url = await this.s3Service.uploadBeners(`publicidad/banners/home-movil-banner.jpg`, file.buffer, true)
+           s3Url = await this.s3Service.uploadBeners(`img-detalies/home-movil-banner.jpg`, file.buffer, true)
         }
         if(body.banner === 'carlist')
         {
-           s3Url = await this.s3Service.uploadBeners(`publicidad/banners/carlist-movil-banner.jpg`, file.buffer, true)
+           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-movil-banner.jpg`, file.buffer, true)
         }
        
         
