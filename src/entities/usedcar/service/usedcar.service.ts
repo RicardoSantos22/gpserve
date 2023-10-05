@@ -400,6 +400,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 agencyId: sc.agencyID.toString(),
                                 brand: parsedBrand,
                                 model: parsedModel,
+                                status: 'online',
                                 series: parsedSeries,
                                 price: sc.price,
                                 year: sc.year,

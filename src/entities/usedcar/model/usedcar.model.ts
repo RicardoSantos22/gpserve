@@ -138,6 +138,9 @@ export class UsedCar {
   @prop()
   promocioType: string;
 
+  @prop()
+  status: string;
+
 
 
 }

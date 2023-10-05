@@ -65,14 +65,14 @@ export class NewCarController {
 
   // #endregion findAll
   @UseInterceptors(CacheInterceptor)
-  @CacheKey('newcars')
+  @CacheKey('usedcars')
   @CacheTTL(30)
   @Get()
   async findAll(@Query() query: FindAllNewCarsQuery, @Req() req: Request) {
 
     let hh = new Date().toLocaleString()
     const userAgent = req.headers['user-agent'];
-    console.log('se requirio de catalogo newcar a las: ' + hh + ' Por: ' + userAgent)
+    console.log('se requirio de catalogo usedcars a las: ' + hh + ' Por: ' + userAgent)
     return this.service.findAll(query);
   };
 
@@ -80,11 +80,11 @@ export class NewCarController {
   async updateCarList(@Req() req: Request){
     let hh = new Date().toLocaleString()
     const userAgent = req.headers['user-agent'];
-    console.log('se inicio una actualizacion de catalogo newcar a las: ' + hh + ' Por: ' + userAgent )
+    console.log('se inicio una actualizacion de catalogo usedcars a las: ' + hh + ' Por: ' + userAgent )
     return await this.service.updateCarCatalogue();
   }
 
-
+  
   @Get('filters')
   async getFiltersValues() {
     return this.service.getFiltersValues()

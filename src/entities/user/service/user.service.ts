@@ -150,10 +150,6 @@ export class UserService extends CrudService<User> {
   {
 
     let allintenciones: any = []
-    let creditosactivos: any = []
-    let pruebasactivas: any = []
-    let ventasactivas: any = []
-    let comprasactivas: any = []
 
     let autosyacomprados: any = []
 
@@ -224,6 +220,7 @@ export class UserService extends CrudService<User> {
 
    }
 
+   //color, modelo, agencia, version, año, status
 
 
 
@@ -233,7 +230,7 @@ export class UserService extends CrudService<User> {
 
     if(carverify.items[0])
     {
-      let numbercarforcaracters = await (await this.newcarrepository.findAll({series: carverify.items[0].series, colours:  carverify.items[0].colours})).items.length
+      let numbercarforcaracters = await (await this.newcarrepository.findAll({series: carverify.items[0].series, colours:  carverify.items[0].colours, model: carverify.items[0].model, agencyId: carverify.items[0].agencyId, year: carverify.items[0].year, status: 'online'})).items.length
 
       let itemresponsemodel = carverify.items[0];
 
@@ -241,6 +238,7 @@ export class UserService extends CrudService<User> {
 
       itemresponsemodel.disponibles = numbercarforcaracters;
       itemresponsemodel.status = usercreditlist.items[0].status;
+      itemresponsemodel.isnewcar = true;
       itemresponsemodel.tipo = 1
 
       allintenciones.push(itemresponsemodel)
@@ -263,7 +261,14 @@ export class UserService extends CrudService<User> {
       const usercreditlist =  await this.creditrepocitory.findAll({userId: id, carId: car})
 
       itemresponsemodel.disponibles = 1;
+
+      if(carverify.items[0].status === 'offline')
+      {
+        itemresponsemodel.disponibles = 0;
+      }
+      
       itemresponsemodel.status = usercreditlist.items[0].status;
+      itemresponsemodel.isnewcar = false;
       itemresponsemodel.tipo = 1
 
       allintenciones.push(itemresponsemodel)
@@ -288,12 +293,13 @@ export class UserService extends CrudService<User> {
 
         if(isnewcar.count > 0)
         {
-          let numbercarforcaracters = await (await this.newcarrepository.findAll({series: isnewcar.items[0].series, colours:  isnewcar.items[0].colours})).items.length
+          let numbercarforcaracters = await (await this.newcarrepository.findAll({series: isnewcar.items[0].series, colours: isnewcar.items[0].colours, model: isnewcar.items[0].model, agencyId: isnewcar.items[0].agencyId, year: isnewcar.items[0].year, status: 'online'})).items.length
 
           let itemresponsemodel = isnewcar.items[0];
     
           itemresponsemodel.disponibles = numbercarforcaracters;
           itemresponsemodel.status = test.status;
+          itemresponsemodel.isnewcar = true;
           itemresponsemodel.tipo = 1
     
           allintenciones.push(itemresponsemodel)
@@ -305,7 +311,14 @@ export class UserService extends CrudService<User> {
           let itemresponsemodel = usedcar.items[0];
     
           itemresponsemodel.disponibles = 1;
+
+          if(usedcar.items[0].status === 'offline')
+          {
+            itemresponsemodel.disponibles = 0;
+          }
+
           itemresponsemodel.status = test.status;
+          itemresponsemodel.isnewcar = false;
           itemresponsemodel.tipo = 1
     
           allintenciones.push(itemresponsemodel)
