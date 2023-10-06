@@ -171,6 +171,8 @@ export class UserService extends CrudService<User> {
       compra.status = order.status
       compra.tipo = 2
 
+      compra.isnewcar = true;
+
       allintenciones.push(compra)
      }
      else
@@ -183,6 +185,7 @@ export class UserService extends CrudService<User> {
       compra.Norder = order.Norder
       compra.status = order.status
       compra.tipo = 2
+      compra.isnewcar = false;
 
       allintenciones.push(compra)
      }
