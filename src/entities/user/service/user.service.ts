@@ -180,7 +180,7 @@ export class UserService extends CrudService<User> {
 
       let compra = usedcar.items[0]
 
-      compra.id = order._id
+      compra.Norder = order.Norder
       compra.status = order.status
       compra.tipo = 2
 
