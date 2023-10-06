@@ -69,11 +69,14 @@ export class OrdersService extends CrudService<typeof x>{
         {
 
             car = await this.NewCarRepository.findById(body.idcar)
+            this.NewCarRepository.update(body.idcar, {status: 'offline'})
             
         }
         else
         {
             car = await this.usedcarRepository.findById(body.idcar)
+            this.usedcarRepository.update(body.idcar, {status: 'offline'})
+
         }
 
 
