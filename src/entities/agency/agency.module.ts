@@ -10,6 +10,7 @@ import { AgencyRepository } from './repository/agency.repository';
   imports: [TypegooseModule.forFeature([Agency])],
   controllers: [AgencyController],
   providers: [AgencyService, AgencyRepository],
+  exports: [AgencyRepository, AgencyService, AgencyModule]
 })
 
 export class AgencyModule {}
