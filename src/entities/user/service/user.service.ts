@@ -167,10 +167,9 @@ export class UserService extends CrudService<User> {
 
       let compra = car.items[0]
 
-      compra.id = order.Norder
+      compra.Norder  = order.Norder
       compra.status = order.status
       compra.tipo = 2
-
       compra.isnewcar = true;
 
       if(order.concept === 1)
@@ -254,7 +253,7 @@ export class UserService extends CrudService<User> {
     {
       let numbercarforcaracters = await (await this.newcarrepository.findAll({series: carverify.items[0].series, colours:  carverify.items[0].colours, model: carverify.items[0].model, agencyId: carverify.items[0].agencyId, year: carverify.items[0].year, status: 'online'})).items.length
 
-      let itemresponsemodel = carverify.items[0];
+      let itemresponsemodel: any = carverify.items[0];
 
       const usercreditlist:any =  await this.creditrepocitory.findAll({userId: id, carId: car})
 
@@ -262,7 +261,7 @@ export class UserService extends CrudService<User> {
       itemresponsemodel.status = usercreditlist.items[0].status;
       itemresponsemodel.isnewcar = true;
       itemresponsemodel.tipo = 1
-      itemresponsemodel.idintencion = usercreditlist.items[0].id;
+      itemresponsemodel.intencionid = usercreditlist.items[0].id;
       itemresponsemodel.grupo = 'credito'
 
       allintenciones.push(itemresponsemodel)
@@ -280,7 +279,7 @@ export class UserService extends CrudService<User> {
     if(carverify.items[0])
     {
 
-      let itemresponsemodel = carverify.items[0];
+      let itemresponsemodel: any = carverify.items[0];
 
       const usercreditlist:any =  await this.creditrepocitory.findAll({userId: id, carId: car})
 
@@ -294,7 +293,7 @@ export class UserService extends CrudService<User> {
       itemresponsemodel.status = usercreditlist.items[0].status;
       itemresponsemodel.isnewcar = false;
       itemresponsemodel.tipo = 1
-      itemresponsemodel.idintencion = usercreditlist.items[0].id;
+      itemresponsemodel.intencionid = usercreditlist.items[0].id;
       itemresponsemodel.grupo = 'credito'
 
       allintenciones.push(itemresponsemodel)
@@ -308,7 +307,7 @@ export class UserService extends CrudService<User> {
    // pruebas de manejo
 
   
-    let userDriveTestList = await this.testdriverepository.findAll({userId: id})
+    let userDriveTestList: any = await this.testdriverepository.findAll({userId: id})
 
     for(let test of userDriveTestList.items)
     {
@@ -319,15 +318,17 @@ export class UserService extends CrudService<User> {
 
         if(isnewcar.count > 0)
         {
+
+          console.log(test)
           let numbercarforcaracters = await (await this.newcarrepository.findAll({series: isnewcar.items[0].series, colours: isnewcar.items[0].colours, model: isnewcar.items[0].model, agencyId: isnewcar.items[0].agencyId, year: isnewcar.items[0].year, status: 'online'})).items.length
 
-          let itemresponsemodel = isnewcar.items[0];
+          let itemresponsemodel: any = isnewcar.items[0];
     
           itemresponsemodel.disponibles = numbercarforcaracters;
           itemresponsemodel.status = test.status;
           itemresponsemodel.isnewcar = true;
           itemresponsemodel.tipo = 1
-          itemresponsemodel.idintencion = test.id
+          itemresponsemodel.intencionid = test._id
           itemresponsemodel.grupo = 'prueba de manejo'
     
           allintenciones.push(itemresponsemodel)
@@ -336,7 +337,7 @@ export class UserService extends CrudService<User> {
         {
         
           let usedcar = await this.usedcarrepository.findAll({vin: test.carId})
-          let itemresponsemodel = usedcar.items[0];
+          let itemresponsemodel: any = usedcar.items[0];
     
           itemresponsemodel.disponibles = 1;
 
@@ -348,7 +349,7 @@ export class UserService extends CrudService<User> {
           itemresponsemodel.status = test.status;
           itemresponsemodel.isnewcar = false;
           itemresponsemodel.tipo = 1
-          itemresponsemodel.idintencion = test.id
+          itemresponsemodel.intencionid = test._id
           itemresponsemodel.grupo = 'prueba de manejo'
     
           allintenciones.push(itemresponsemodel)
@@ -370,6 +371,8 @@ export class UserService extends CrudService<User> {
 
     console.log(body)
 
+
+    return 0
 
 
   }
