@@ -13,6 +13,7 @@ import { UsedCarModule } from '../usedcar/usedcar.module';
 import { TestDriveAppointmentsModule } from '../testdriveappointments/testdriveappointments.module';
 import { OrderModule } from '../order/order.module';
 import { InspectionAppointmentModule } from '../inspectionappointment/inspectionappointment.module';
+import { AgencyModule } from '../agency/agency.module';
 
 @Module({
   imports: [
@@ -24,10 +25,11 @@ import { InspectionAppointmentModule } from '../inspectionappointment/inspection
     UsedCarModule,
     TestDriveAppointmentsModule,
     OrderModule,
+    AgencyModule,
     InspectionAppointmentModule
   ],
   controllers: [UserController],
-  providers: [UserService, UserRepository, CreditRequestModule, InsuranceRequestsModule, NewCarModule, UsedCarModule, TestDriveAppointmentsModule, OrderModule, InspectionAppointmentModule],
+  providers: [UserService, UserRepository, CreditRequestModule, InsuranceRequestsModule, NewCarModule, UsedCarModule, TestDriveAppointmentsModule, OrderModule, InspectionAppointmentModule, AgencyModule],
   exports: [UserService]
 })
 

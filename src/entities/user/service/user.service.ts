@@ -21,6 +21,7 @@ import { carType } from 'src/entities/shared/enums';
 import { TestDriveAppointmentRepository } from 'src/entities/testdriveappointments/repository/testdriveappointment.repository';
 import { orderRepository } from 'src/entities/order/repository/order.repository';
 import { InspectionAppointmentRepository } from 'src/entities/inspectionappointment/repository/inspectionappointment.repository';
+import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -35,7 +36,8 @@ export class UserService extends CrudService<User> {
     private insurancerepository: InsuranceRequestRepository,
     private testdriverepository: TestDriveAppointmentRepository,
     private orderrepository: orderRepository,
-    private inspesctionrepository: InspectionAppointmentRepository
+    private inspesctionrepository: InspectionAppointmentRepository,
+    private agencyrepository: AgencyRepository
   ) {
     super(repository, 'User', config);
   }
@@ -371,10 +373,133 @@ export class UserService extends CrudService<User> {
 
     console.log(body)
 
+    let modelstatus = ['Apartado', 'Apartado Offline', 'Enganche Recibido', 'Compra Contado', 'Auto Facturado', 'Preparando Auto', 'Auto en Camino', 'En Agencia', 'Estrenado']
 
-    return 0
+
+    if(body.type === 'test'){
+      
+      if(modelstatus.includes(body.newstatus))
+      {
+
+        const N_order = this.CreateRamdomNum();
+
+        const N_referencia = this.CreateRamdomNum();
+
+        let credit = await this.creditrepocitory.findById(body.intencionid)
+        let agency = await this.agencyrepository.findById(credit.agencyId.toString())
+
+        let carid = ''
+
+        if(credit.carType === carType.new)
+        {
+          let car = await this.newcarrepository.findAll({vin: credit.carId})
+
+          carid = car.items[0]._id;
+        }
+        else
+        {
+          let car = await this.usedcarrepository.findAll({vin: credit.carId})
+
+          carid = car.items[0]._id;
+        }
+
+        let order: any = {
+          carid: carid,
+          userId: credit.userId,
+          status: body.newstatus,
+          Norder: await N_order,
+          Nreferencia: await N_referencia,
+          amount: 0,
+          concept: body.concept,
+          agencyId: agency.number,
+          hmac: 'sin asignar',
+          commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
+          method: 'offline',
+      }
+
+        return this.orderrepository.create(order)
+      }
+      else
+      {
+        return this.testdriverepository.update(body.intencionid, {status: body.newstatus})
+      }
+   
+    
+    }
+    else if(body.type === 'credit'){ 
+
+      if(modelstatus.includes(body.newstatus))
+      {
+
+        const N_order = this.CreateRamdomNum();
+
+        const N_referencia = this.CreateRamdomNum();
+
+        let test = await this.testdriverepository.findById(body.intencionid)
+        let agency = await this.agencyrepository.findById(test.agencyId.toString())
+
+        let carid = ''
+
+        let isnewcar = await this.newcarrepository.findAll({vin: test.carId})
+
+        if(isnewcar.count > 0)
+        {
+          carid = isnewcar.items[0]._id
+        }
+        else
+        {
+          let usedcar = await this.usedcarrepository.findAll({vin: test.carId})
+
+          carid = usedcar.items[0]._id;
+        }
+
+
+        let order: any = {
+          carid: carid,
+          userId: test.userId,
+          status: body.newstatus,
+          Norder: await N_order,
+          Nreferencia: await N_referencia,
+          amount: 0,
+          concept: body.concept,
+          agencyId: agency.number,
+          hmac: 'sin asignar',
+          commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
+          method: 'offline',
+      }
+
+        return this.orderrepository.create(order)
+      }
+      else
+      {
+        return this.creditrepocitory.update(body.intencionid, {status: body.newstatus}) 
+      }
+      
+    
+    }
+    else if(body.type === 'order'){ 
+      
+
+      let norder: any = parseInt(body.intencionid)
+      
+      let order = await this.orderrepository.findAll({Norder: norder})
+
+      console.log(order)
+      
+      return this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
+    
+    }
+    else 
+    {
+      return 'no exite el tipo que enviaste: type referencia { test: prueba de manejo, credit: cotizacion o credito, order: compra/apartado/enganche}'
+    }
 
 
   }
+
+  async CreateRamdomNum() {
+    return Math.round(Math.random() * 999999);
+}
+
 
 }
