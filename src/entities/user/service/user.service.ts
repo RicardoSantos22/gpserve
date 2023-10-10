@@ -483,8 +483,6 @@ export class UserService extends CrudService<User> {
       let norder: any = parseInt(body.intencionid)
       
       let order = await this.orderrepository.findAll({Norder: norder})
-
-      console.log(order)
       
       return this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
     
