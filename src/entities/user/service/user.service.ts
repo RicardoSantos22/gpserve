@@ -173,6 +173,15 @@ export class UserService extends CrudService<User> {
 
       compra.isnewcar = true;
 
+      if(order.concept === 1)
+      {
+        compra.grupo = 'apartado'
+      }
+      else
+      {
+        compra.grupo = 'compra'
+      }
+
       allintenciones.push(compra)
      }
      else
@@ -186,6 +195,16 @@ export class UserService extends CrudService<User> {
       compra.status = order.status
       compra.tipo = 2
       compra.isnewcar = false;
+
+      if(order.concept === 1)
+      {
+        compra.grupo = 'apartado'
+      }
+      else
+      {
+        compra.grupo = 'compra'
+      }
+      
 
       allintenciones.push(compra)
      }
@@ -237,12 +256,14 @@ export class UserService extends CrudService<User> {
 
       let itemresponsemodel = carverify.items[0];
 
-      const usercreditlist =  await this.creditrepocitory.findAll({userId: id, carId: car})
+      const usercreditlist:any =  await this.creditrepocitory.findAll({userId: id, carId: car})
 
       itemresponsemodel.disponibles = numbercarforcaracters;
       itemresponsemodel.status = usercreditlist.items[0].status;
       itemresponsemodel.isnewcar = true;
       itemresponsemodel.tipo = 1
+      itemresponsemodel.idintencion = usercreditlist.items[0].id;
+      itemresponsemodel.grupo = 'credito'
 
       allintenciones.push(itemresponsemodel)
 
@@ -261,7 +282,7 @@ export class UserService extends CrudService<User> {
 
       let itemresponsemodel = carverify.items[0];
 
-      const usercreditlist =  await this.creditrepocitory.findAll({userId: id, carId: car})
+      const usercreditlist:any =  await this.creditrepocitory.findAll({userId: id, carId: car})
 
       itemresponsemodel.disponibles = 1;
 
@@ -273,6 +294,8 @@ export class UserService extends CrudService<User> {
       itemresponsemodel.status = usercreditlist.items[0].status;
       itemresponsemodel.isnewcar = false;
       itemresponsemodel.tipo = 1
+      itemresponsemodel.idintencion = usercreditlist.items[0].id;
+      itemresponsemodel.grupo = 'credito'
 
       allintenciones.push(itemresponsemodel)
 
@@ -304,6 +327,8 @@ export class UserService extends CrudService<User> {
           itemresponsemodel.status = test.status;
           itemresponsemodel.isnewcar = true;
           itemresponsemodel.tipo = 1
+          itemresponsemodel.idintencion = test.id
+          itemresponsemodel.grupo = 'prueba de manejo'
     
           allintenciones.push(itemresponsemodel)
         }
@@ -323,6 +348,8 @@ export class UserService extends CrudService<User> {
           itemresponsemodel.status = test.status;
           itemresponsemodel.isnewcar = false;
           itemresponsemodel.tipo = 1
+          itemresponsemodel.idintencion = test.id
+          itemresponsemodel.grupo = 'prueba de manejo'
     
           allintenciones.push(itemresponsemodel)
         }
@@ -336,6 +363,15 @@ export class UserService extends CrudService<User> {
       {ventas: misventas.items}
    
     ]
+  }
+
+
+  async updateintencion(body: any){
+
+    console.log(body)
+
+
+
   }
 
 }

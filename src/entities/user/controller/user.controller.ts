@@ -154,6 +154,14 @@ export class UserController {
     type: DatabaseErrorDto,
   })
 
+
+  @Post('actualizarintencion')
+  async updateintencion(@Body() body: any)
+  {
+
+    return await this.service.updateintencion(body);
+  }
+
   // #endregion create
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Post()
