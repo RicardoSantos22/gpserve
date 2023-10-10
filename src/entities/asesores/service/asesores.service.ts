@@ -78,7 +78,6 @@ export class asesoresservice extends CrudService<Asesores> {
           },
           customerInterest: payload.product,
           additionalData1: payload.vin,
-          promocion: payload.promocion
           },
           {
             headers: {
