@@ -165,12 +165,26 @@ export class UserService extends CrudService<User> {
 
      if(car.count > 0)
      {
+
+  
+      let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: car.items[0].vin})).count
+      let numbercredits: any = (await this.creditrepocitory.findAll({userId: id, carId: car.items[0].vin})).count
+
+       let agency = await this.agencyrepository.findAll({number: car.items[0].agencyId})
+
+     
+
       autosyacomprados.push(car.items[0].vin)
 
       let compra = car.items[0]
 
+      compra.ncotizaciones = numbercredits
+      compra.npruebas = numberDriveTestList
+
       compra.Norder  = order.Norder
       compra.status = order.status
+      compra.agencyname = agency.items[0].name;
+      compra.agencyID = agency.items[0].number
       compra.tipo = 2
       compra.isnewcar = true;
 
@@ -188,26 +202,35 @@ export class UserService extends CrudService<User> {
      else
      {
       let usedcar = await this.usedcarrepository.findAll({_id: order.carid})
-      autosyacomprados.push(usedcar.items[0].vin)
 
-      let compra = usedcar.items[0]
-
-      compra.Norder = order.Norder
-      compra.status = order.status
-      compra.tipo = 2
-      compra.isnewcar = false;
-
-      if(order.concept === 1)
+      if(usedcar.count > 0)
       {
-        compra.grupo = 'apartado'
-      }
-      else
-      {
-        compra.grupo = 'compra'
-      }
-      
+        autosyacomprados.push(usedcar.items[0].vin)
 
-      allintenciones.push(compra)
+        let compra = usedcar.items[0]
+  
+        let agency = await this.agencyrepository.findAll({number: usedcar.items[0].agencyId})
+        compra.agencyname = agency.items[0].name;
+        compra.agencyID = agency.items[0].number
+  
+        compra.Norder = order.Norder
+        compra.status = order.status
+        compra.tipo = 2
+        compra.isnewcar = false;
+  
+        if(order.concept === 1)
+        {
+          compra.grupo = 'apartado'
+        }
+        else
+        {
+          compra.grupo = 'compra'
+        }
+        
+  
+        allintenciones.push(compra)
+      }
+     
      }
 
     
@@ -255,14 +278,24 @@ export class UserService extends CrudService<User> {
     {
       let numbercarforcaracters = await (await this.newcarrepository.findAll({series: carverify.items[0].series, colours:  carverify.items[0].colours, model: carverify.items[0].model, agencyId: carverify.items[0].agencyId, year: carverify.items[0].year, status: 'online'})).items.length
 
+      
+      
       let itemresponsemodel: any = carverify.items[0];
 
       const usercreditlist:any =  await this.creditrepocitory.findAll({userId: id, carId: car})
+
+      let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: car})).count
+
+      let agency = await this.agencyrepository.findById(usercreditlist.items[0].agencyId)
+      itemresponsemodel.agencyname = agency.name;
+      itemresponsemodel.agencyID = agency.number
 
       itemresponsemodel.disponibles = numbercarforcaracters;
       itemresponsemodel.status = usercreditlist.items[0].status;
       itemresponsemodel.isnewcar = true;
       itemresponsemodel.tipo = 1
+      itemresponsemodel.ncotizaciones = usercreditlist.count
+      itemresponsemodel.npruebas = numberDriveTestList
       itemresponsemodel.intencionid = usercreditlist.items[0].id;
       itemresponsemodel.grupo = 'credito'
 
@@ -285,17 +318,25 @@ export class UserService extends CrudService<User> {
 
       const usercreditlist:any =  await this.creditrepocitory.findAll({userId: id, carId: car})
 
+      let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: car})).count
+
       itemresponsemodel.disponibles = 1;
 
       if(carverify.items[0].status === 'offline')
       {
         itemresponsemodel.disponibles = 0;
       }
+
+      let agency = await this.agencyrepository.findById(usercreditlist.items[0].agencyId)
+      itemresponsemodel.agencyname = agency.name;
+      itemresponsemodel.agencyID = agency.number
       
       itemresponsemodel.status = usercreditlist.items[0].status;
       itemresponsemodel.isnewcar = false;
       itemresponsemodel.tipo = 1
       itemresponsemodel.intencionid = usercreditlist.items[0].id;
+      itemresponsemodel.ncotizaciones = usercreditlist.count
+      itemresponsemodel.npruebas = numberDriveTestList
       itemresponsemodel.grupo = 'credito'
 
       allintenciones.push(itemresponsemodel)
@@ -321,16 +362,23 @@ export class UserService extends CrudService<User> {
         if(isnewcar.count > 0)
         {
 
-          console.log(test)
           let numbercarforcaracters = await (await this.newcarrepository.findAll({series: isnewcar.items[0].series, colours: isnewcar.items[0].colours, model: isnewcar.items[0].model, agencyId: isnewcar.items[0].agencyId, year: isnewcar.items[0].year, status: 'online'})).items.length
 
+          let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: test.carId})).count
+          let numbercredits: any = (await this.creditrepocitory.findAll({userId: id, carId: test.carId})).count
           let itemresponsemodel: any = isnewcar.items[0];
+
+          let agency = await this.agencyrepository.findById(test.agencyId)
+          itemresponsemodel.agencyname = agency.name;
+          itemresponsemodel.agencyID = agency.number
     
           itemresponsemodel.disponibles = numbercarforcaracters;
           itemresponsemodel.status = test.status;
           itemresponsemodel.isnewcar = true;
           itemresponsemodel.tipo = 1
           itemresponsemodel.intencionid = test._id
+          itemresponsemodel.npruebas = numberDriveTestList
+          itemresponsemodel.ncotizaciones = numbercredits
           itemresponsemodel.grupo = 'prueba de manejo'
     
           allintenciones.push(itemresponsemodel)
@@ -339,19 +387,30 @@ export class UserService extends CrudService<User> {
         {
         
           let usedcar = await this.usedcarrepository.findAll({vin: test.carId})
+
+          let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: test.carId})).count
+          let numbercredits: any = (await this.creditrepocitory.findAll({userId: id, carId: test.carId})).count
+          
+ 
+
           let itemresponsemodel: any = usedcar.items[0];
     
           itemresponsemodel.disponibles = 1;
-
           if(usedcar.items[0].status === 'offline')
           {
             itemresponsemodel.disponibles = 0;
           }
 
+          let agency = await this.agencyrepository.findById(test.agencyId)
+          itemresponsemodel.agencyname = agency.name;
+          itemresponsemodel.agencyID = agency.number
+
           itemresponsemodel.status = test.status;
           itemresponsemodel.isnewcar = false;
           itemresponsemodel.tipo = 1
           itemresponsemodel.intencionid = test._id
+          itemresponsemodel.npruebas = numberDriveTestList
+          itemresponsemodel.ncotizaciones = numbercredits
           itemresponsemodel.grupo = 'prueba de manejo'
     
           allintenciones.push(itemresponsemodel)
@@ -371,7 +430,6 @@ export class UserService extends CrudService<User> {
 
   async updateintencion(body: any){
 
-    console.log(body)
 
     let modelstatus = ['Apartado', 'Apartado Offline', 'Enganche Recibido', 'Compra Contado', 'Auto Facturado', 'Preparando Auto', 'Auto en Camino', 'En Agencia', 'Estrenado']
 
