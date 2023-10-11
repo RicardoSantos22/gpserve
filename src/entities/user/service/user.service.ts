@@ -178,6 +178,9 @@ export class UserService extends CrudService<User> {
 
       let compra = car.items[0]
 
+      compra.ncotizaciones = 0
+      compra.npruebas = 0
+
       compra.ncotizaciones = numbercredits
       compra.npruebas = numberDriveTestList
 
