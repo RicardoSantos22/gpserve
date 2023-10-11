@@ -167,8 +167,8 @@ export class UserService extends CrudService<User> {
      {
 
   
-      let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: car.items[0].vin})).count
-      let numbercredits: any = (await this.creditrepocitory.findAll({userId: id, carId: car.items[0].vin})).count
+      let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: car.items[0].vin})).items.length
+      let numbercredits: any = (await this.creditrepocitory.findAll({userId: id, carId: car.items[0].vin})).items.length
 
        let agency = await this.agencyrepository.findAll({number: car.items[0].agencyId})
 
@@ -178,9 +178,8 @@ export class UserService extends CrudService<User> {
 
       let compra = car.items[0]
 
-      compra.ncotizaciones = 0
-      compra.npruebas = 0
-
+   
+      console.log(numberDriveTestList, numbercredits)
       compra.ncotizaciones = numbercredits
       compra.npruebas = numberDriveTestList
 
@@ -210,12 +209,17 @@ export class UserService extends CrudService<User> {
       {
         autosyacomprados.push(usedcar.items[0].vin)
 
+          
+      let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: usedcar.items[0].vin})).items.length
+      let numbercredits: any = (await this.creditrepocitory.findAll({userId: id, carId: usedcar.items[0].vin})).items.length
+
         let compra = usedcar.items[0]
   
         let agency = await this.agencyrepository.findAll({number: usedcar.items[0].agencyId})
         compra.agencyname = agency.items[0].name;
         compra.agencyID = agency.items[0].number
-  
+        compra.ncotizaciones = numbercredits
+        compra.npruebas = numberDriveTestList
         compra.Norder = order.Norder
         compra.status = order.status
         compra.tipo = 2
