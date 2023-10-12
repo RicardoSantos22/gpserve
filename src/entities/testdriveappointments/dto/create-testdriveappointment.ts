@@ -65,4 +65,8 @@ export class CreateTestDriveAppointmentDTO {
   @IsArray()
   @IsOptional()
   readonly comments: string[];
+
+  @IsArray()
+  @IsOptional()
+  readonly informativestatus: string;
 };

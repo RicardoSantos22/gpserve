@@ -62,6 +62,9 @@ export class order {
   @prop()
   method: string;
 
+  @prop()
+  informativestatus:string
+
   
 
 

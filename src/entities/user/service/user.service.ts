@@ -181,13 +181,12 @@ export class UserService extends CrudService<User> {
       let compra = car.items[0]
 
    
-      console.log(numberDriveTestList, numbercredits)
       compra.ncotizaciones = numbercredits
       compra.npruebas = numberDriveTestList
 
       compra.Norder  = order.Norder
       compra.intencionid = order.Norder
-      compra.status = order.status
+      compra.status = order.informativestatus
       compra.agencyname = agency.items[0].name;
       compra.agencyID = agency.items[0].number
       compra.tipo = 2
@@ -231,12 +230,12 @@ export class UserService extends CrudService<User> {
         compra.npruebas = numberDriveTestList
         compra.Norder = order.Norder
         compra.intencionid = order.Norder
-        compra.status = order.status
+        compra.status = order.informativestatus
         compra.tipo = 2
 
-        if(tipo1.includes(order.status)){compra.tipo = 1}
-        if(tipo2.includes(order.status)){compra.tipo = 2}
-        if(tipo3.includes(order.status)){compra.tipo = 3}
+        if(tipo1.includes(order.informativestatus)){compra.tipo = 1}
+        if(tipo2.includes(order.informativestatus)){compra.tipo = 2}
+        if(tipo3.includes(order.informativestatus)){compra.tipo = 3}
         compra.isnewcar = false;
   
         if(order.concept === 1)
@@ -298,8 +297,6 @@ export class UserService extends CrudService<User> {
     if(carverify.items[0])
     {
       let numbercarforcaracters = await (await this.newcarrepository.findAll({series: carverify.items[0].series, colours:  carverify.items[0].colours, model: carverify.items[0].model, agencyId: carverify.items[0].agencyId, year: carverify.items[0].year, status: 'online'})).items.length
-
-      
       
       let itemresponsemodel: any = carverify.items[0];
 
@@ -312,7 +309,7 @@ export class UserService extends CrudService<User> {
       itemresponsemodel.agencyID = agency.number
 
       itemresponsemodel.disponibles = numbercarforcaracters;
-      itemresponsemodel.status = usercreditlist.items[0].status;
+      itemresponsemodel.status = usercreditlist.items[0].informativestatus;
       itemresponsemodel.isnewcar = true;
       itemresponsemodel.tipo = 1
 
@@ -353,7 +350,7 @@ export class UserService extends CrudService<User> {
       itemresponsemodel.agencyname = agency.name;
       itemresponsemodel.agencyID = agency.number
       
-      itemresponsemodel.status = usercreditlist.items[0].status;
+      itemresponsemodel.status = usercreditlist.items[0].informativestatus;
       itemresponsemodel.isnewcar = false;
       itemresponsemodel.tipo = 1
       itemresponsemodel.intencionid = usercreditlist.items[0].id;
@@ -376,6 +373,7 @@ export class UserService extends CrudService<User> {
 
     for(let test of userDriveTestList.items)
     {
+      console.log(test)
       if(autosyacomprados.includes(test.carId)){}
       else 
       {
@@ -395,7 +393,7 @@ export class UserService extends CrudService<User> {
           itemresponsemodel.agencyID = agency.number
     
           itemresponsemodel.disponibles = numbercarforcaracters;
-          itemresponsemodel.status = test.status;
+          itemresponsemodel.status = test.informativestatus;
           itemresponsemodel.isnewcar = true;
           itemresponsemodel.tipo = 1
           itemresponsemodel.intencionid = test._id
@@ -427,7 +425,7 @@ export class UserService extends CrudService<User> {
           itemresponsemodel.agencyname = agency.name;
           itemresponsemodel.agencyID = agency.number
 
-          itemresponsemodel.status = test.status;
+          itemresponsemodel.status = test.informativestatus;
           itemresponsemodel.isnewcar = false;
           itemresponsemodel.tipo = 1
           itemresponsemodel.intencionid = test._id
@@ -523,7 +521,7 @@ export class UserService extends CrudService<User> {
         let order: any = {
           carid: carid,
           userId: credit.userId,
-          status: body.newstatus,
+          status: 'en proceso',
           Norder: await N_order,
           Nreferencia: await N_referencia,
           amount: 0,
@@ -532,6 +530,7 @@ export class UserService extends CrudService<User> {
           hmac: 'sin asignar',
           commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
           method: 'offline',
+          informativestatus: body.newstatus
       }
 
         await this.creditrepocitory.update(body.intencionid, {status: body.newstatus})
@@ -576,7 +575,7 @@ export class UserService extends CrudService<User> {
         let order: any = {
           carid: carid,
           userId: test.userId,
-          status: body.newstatus,
+          status: 'en proceso',
           Norder: await N_order,
           Nreferencia: await N_referencia,
           amount: 0,
@@ -585,14 +584,15 @@ export class UserService extends CrudService<User> {
           hmac: 'sin asignar',
           commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
           method: 'offline',
+          informativestatus: body.newstatus
       }
 
-        await this.testdriverepository.update(body.intencionid, {status: body.newstatus}) 
+        await this.testdriverepository.update(body.intencionid, {informativestatus: body.newstatus}) 
         return await this.orderrepository.create(order)
       }
       else
       {
-        return await this.testdriverepository.update(body.intencionid, {status: body.newstatus}) 
+        return await this.testdriverepository.update(body.intencionid, {informativestatus: body.newstatus}) 
       }
       
     
@@ -604,7 +604,7 @@ export class UserService extends CrudService<User> {
         let order = await this.orderrepository.findAll({Norder: numorder})
  
         
-        return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
+        return await this.orderrepository.update(order.items[0]._id, {informativestatus: body.newstatus})
       }
       else
       {
@@ -613,7 +613,7 @@ export class UserService extends CrudService<User> {
         let order = await this.orderrepository.findAll({Norder: norder})
 
 
-        return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
+        return await this.orderrepository.update(order.items[0]._id, {informativestatus: body.newstatus})
       }
       
 

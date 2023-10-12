@@ -115,4 +115,8 @@ export class CreditRequest {
 
   @prop()
   status: requestStatus;
+
+
+  @prop()
+  informativestatus: string;
 }

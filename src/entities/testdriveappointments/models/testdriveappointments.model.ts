@@ -21,6 +21,7 @@ export class TestDriveAppointments {
   @prop()
   id: string;
 
+
   @ApiProperty({
     description: "The model's identifier of asesor"
   })
@@ -91,4 +92,7 @@ export class TestDriveAppointments {
 
   @prop()
   comments: string[];
+
+  @prop()
+  informativestatus: string;
 }

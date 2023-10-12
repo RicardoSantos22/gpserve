@@ -117,6 +117,7 @@ export class OrdersService extends CrudService<typeof x>{
             hmac: hash,
             commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
             method: '',
+            informativestatus: 'Apartado'
         }
 
         // let respuesta = {

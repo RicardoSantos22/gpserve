@@ -78,4 +78,8 @@ export class FindAllTestDriveAppointmentsQuery extends PartialType(FindAllQuery)
   @IsOptional()
 
   comments: any;
+
+  @IsOptional()
+
+  informativestatus: any;
 };
