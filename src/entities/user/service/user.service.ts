@@ -22,6 +22,7 @@ import { TestDriveAppointmentRepository } from 'src/entities/testdriveappointmen
 import { orderRepository } from 'src/entities/order/repository/order.repository';
 import { InspectionAppointmentRepository } from 'src/entities/inspectionappointment/repository/inspectionappointment.repository';
 import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
+import { String } from 'aws-sdk/clients/batch';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -438,7 +439,7 @@ export class UserService extends CrudService<User> {
   async updateintencion(body: any){
 
 
-    let orderresponse = await this.verifationduplicate(body.intencionid)
+    let orderresponse = await this.verifationduplicate(body.intencionid, body.newstatus)
 
     console.log(orderresponse)
 
@@ -608,10 +609,16 @@ export class UserService extends CrudService<User> {
 }
 
 
-async verifationduplicate(id: string) {
+async verifationduplicate(id: string, newstatus: String) {
+
+  console.log(newstatus)
+
+  let statusdecline = ['Cotización', 'Solicitud de Crédito', 'Crédito Autorizado', 'Crédito Rechazado']; 
 
   let creditexist = await this.creditrepocitory.findAll({_id: id})
   let testexist = await this.testdriverepository.findAll({_id: id})
+
+
 
   if(creditexist.count > 0)
   {
@@ -625,7 +632,17 @@ async verifationduplicate(id: string) {
 
       if(order.count > 0)
       {
-        return order.items[0].Norder
+        if(statusdecline.includes(newstatus))
+        {
+          await this.orderrepository.delete(order.items[0]._id)
+
+          return 500
+        }
+        else
+        {
+          return order.items[0].Norder
+
+        }
       }
       else 
       {
@@ -639,7 +656,19 @@ async verifationduplicate(id: string) {
 
       if(order.count > 0)
       {
-        return order.items[0].Norder
+        
+
+        if(statusdecline.includes(newstatus))
+        {
+          await this.orderrepository.delete(order.items[0]._id)
+
+          return 500
+        }
+        else
+        {
+          return order.items[0].Norder
+
+        }
       }
       else
       {
@@ -658,6 +687,28 @@ async verifationduplicate(id: string) {
       let order = await this.orderrepository.findAll({userId: testexist.items[0].userId.toString(), carid: isnewcar.items[0]._id});
 
       console.log(order)
+
+      
+      if(order.count > 0)
+      {
+        
+        if(statusdecline.includes(newstatus))
+        {
+          await this.orderrepository.delete(order.items[0]._id)
+
+          return 500
+        }
+        else
+        {
+          return order.items[0].Norder
+
+        }
+      }
+      else
+      {
+        return 500
+
+      }
     }
     else
     {
@@ -666,7 +717,18 @@ async verifationduplicate(id: string) {
 
       if(order.count > 0)
       {
-        return order.items[0].Norder
+        
+        if(statusdecline.includes(newstatus))
+        {
+          await this.orderrepository.delete(order.items[0]._id)
+
+          return 500
+        }
+        else
+        {
+          return order.items[0].Norder
+
+        }
       }
       else
       {
