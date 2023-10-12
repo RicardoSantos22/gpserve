@@ -197,6 +197,8 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async getModelsByBrands(brands: string[]): Promise<{ models: string[] }> {
+
+        let carros = [];
         const cars = await this.repository.findByBrands(brands)
         const modelsSet = new Set<string>()
         for (let c of cars) {
@@ -223,6 +225,8 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async updateCarCatalogue() {
+
+        let carros = []
         let updateitem = 0;
         const {token} = await this.loginToSAD()
 
@@ -316,6 +320,11 @@ export class UsedCarService extends CrudService<typeof x> {
                      
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
+
+                            if(sc.agencyID === 17 )
+                            {
+                                carros.push(sc)
+                            }
                             
                    
 
@@ -499,7 +508,7 @@ export class UsedCarService extends CrudService<typeof x> {
             return {
                 // banCarlist: carlistban,
                 // count: carlistlist.length,
-                results: createdCars,
+                results: carros,
                 
             }
 
