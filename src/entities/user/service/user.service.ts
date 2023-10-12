@@ -437,24 +437,34 @@ export class UserService extends CrudService<User> {
 
   async updateintencion(body: any){
 
+
+    let orderresponse = await this.verifationduplicate(body.intencionid)
+
+    console.log(orderresponse)
+
+    let numorder = '';
+
     let type = ''
 
+    if( orderresponse === 500)
+    {
+      let creditexist = await this.creditrepocitory.findAll({_id: body.intencionid})
+      let testexist = await this.testdriverepository.findAll({_id: body.intencionid})
 
-   let creditexist = await this.creditrepocitory.findAll({_id: body.intencionid})
-   let testexist = await this.testdriverepository.findAll({_id: body.intencionid})
-
-   let norder: any = parseInt(body.intencionid)
+       let norder: any = parseInt(body.intencionid)
       
-   let order = await this.orderrepository.findAll({Norder: norder})
+       let order = await this.orderrepository.findAll({Norder: norder})
 
+        if(order.count  > 0){ type = 'order'}
+        else if(testexist.count > 0){ type = 'test'}
+        else if(creditexist.count > 0){type = 'credit'}
+    }
+    else
+    {
+      type = 'order'
 
- 
-   if(order.count  > 0){ type = 'order'}
-   else if(testexist.count > 0){ type = 'test'}
-   else if(creditexist.count > 0){type = 'credit'}
-
-
-console.log(type)
+      numorder = orderresponse
+    }
 
     let modelstatus = ['Apartado', 'Apartado Offline', 'Enganche Recibido', 'Compra Contado', 'Auto Facturado', 'Preparando Auto', 'Auto en Camino', 'En Agencia', 'Estrenado']
 
@@ -502,6 +512,7 @@ console.log(type)
           method: 'offline',
       }
 
+        await this.creditrepocitory.update(body.intencionid, {status: body.newstatus})
         return await this.orderrepository.create(order)
       }
       else
@@ -554,6 +565,7 @@ console.log(type)
           method: 'offline',
       }
 
+        await this.testdriverepository.update(body.intencionid, {status: body.newstatus}) 
         return await this.orderrepository.create(order)
       }
       else
@@ -564,13 +576,24 @@ console.log(type)
     
     }
     else if(type === 'order'){ 
+
+      if(numorder !== '')
+      {
+        let order = await this.orderrepository.findAll({Norder: numorder})
+        
+        return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
+      }
+      else
+      {
+        let norder: any = parseInt(body.intencionid)
+      
+        let order = await this.orderrepository.findAll({Norder: norder})
+        
+        return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
+      }
       
 
-      let norder: any = parseInt(body.intencionid)
-      
-      let order = await this.orderrepository.findAll({Norder: norder})
-      
-      return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
+  
     
     }
     else 
@@ -578,11 +601,88 @@ console.log(type)
       return 'intencion no encontrado'
     }
 
-
   }
 
   async CreateRamdomNum() {
     return Math.round(Math.random() * 999999);
+}
+
+
+async verifationduplicate(id: string) {
+
+  let creditexist = await this.creditrepocitory.findAll({_id: id})
+  let testexist = await this.testdriverepository.findAll({_id: id})
+
+  if(creditexist.count > 0)
+  {
+
+    
+    if(creditexist.items[0].carType === carType.new)
+    {
+      let isnewcar = await this.newcarrepository.findAll({vin: creditexist.items[0].carId})
+
+      let order = await this.orderrepository.findAll({userId: creditexist.items[0].userId.toString(), carid: isnewcar.items[0]._id});
+
+      if(order.count > 0)
+      {
+        return order.items[0].Norder
+      }
+      else 
+      {
+        return 500
+      }
+    }
+    else if(creditexist.items[0].carType === carType.used)
+    {
+      let usedCar = await this.usedcarrepository.findAll({vin: creditexist.items[0].carId})
+      let order = await this.orderrepository.findAll({userId: creditexist.items[0].userId.toString(), usedCar: usedCar.items[0]._id});
+
+      if(order.count > 0)
+      {
+        return order.items[0].Norder
+      }
+      else
+      {
+        return 500
+
+      }
+    }
+    
+  }
+  else if(testexist.count > 0 )
+  {
+    let isnewcar = await this.newcarrepository.findAll({vin: testexist.items[0].carId})
+
+    if(isnewcar.count > 0)
+    {
+      let order = await this.orderrepository.findAll({userId: testexist.items[0].userId.toString(), carid: isnewcar.items[0]._id});
+
+      console.log(order)
+    }
+    else
+    {
+      let usedCar = await this.usedcarrepository.findAll({vin: testexist.items[0].carId})
+      let order = await this.orderrepository.findAll({userId: testexist.items[0].userId.toString(), carid: usedCar.items[0]._id});
+
+      if(order.count > 0)
+      {
+        return order.items[0].Norder
+      }
+      else
+      {
+        return 500
+
+      }
+    }
+
+  
+  }
+  else
+  {
+    return 500
+  }
+
+  
 }
 
 
