@@ -151,6 +151,9 @@ export class UserService extends CrudService<User> {
 
   async findMyIntentions(id: string)
   {
+    let tipo1 = ['Cotización', 'Solicitud de Crédito', 'Crédito Autorizado', 'Crédito Rechazado']; 
+    let tipo2 = ['Apartado', 'Apartado Offline', 'Enganche Recibido', 'Compra Contado', 'Auto Facturado', 'Preparando Auto']
+    let tipo3 = ['Auto en Camino', 'En Agencia', 'Estrenado']
 
     let allintenciones: any = []
 
@@ -165,9 +168,7 @@ export class UserService extends CrudService<User> {
      let car = await this.newcarrepository.findAll({_id: order.carid})
 
      if(car.count > 0)
-     {
-
-  
+     {  
       let numberDriveTestList: any = (await this.testdriverepository.findAll({userId: id, carId: car.items[0].vin})).items.length
       let numbercredits: any = (await this.creditrepocitory.findAll({userId: id, carId: car.items[0].vin})).items.length
 
@@ -190,6 +191,12 @@ export class UserService extends CrudService<User> {
       compra.agencyname = agency.items[0].name;
       compra.agencyID = agency.items[0].number
       compra.tipo = 2
+
+      if(tipo1.includes(order.status)){compra.tipo = 1}
+      if(tipo2.includes(order.status)){compra.tipo = 2}
+      if(tipo3.includes(order.status)){compra.tipo = 3}
+
+
       compra.isnewcar = true;
 
       if(order.concept === 1)
@@ -226,6 +233,10 @@ export class UserService extends CrudService<User> {
         compra.intencionid = order.Norder
         compra.status = order.status
         compra.tipo = 2
+
+        if(tipo1.includes(order.status)){compra.tipo = 1}
+        if(tipo2.includes(order.status)){compra.tipo = 2}
+        if(tipo3.includes(order.status)){compra.tipo = 3}
         compra.isnewcar = false;
   
         if(order.concept === 1)
@@ -304,6 +315,7 @@ export class UserService extends CrudService<User> {
       itemresponsemodel.status = usercreditlist.items[0].status;
       itemresponsemodel.isnewcar = true;
       itemresponsemodel.tipo = 1
+
       itemresponsemodel.ncotizaciones = usercreditlist.count
       itemresponsemodel.npruebas = numberDriveTestList
       itemresponsemodel.intencionid = usercreditlist.items[0].id;
