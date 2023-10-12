@@ -191,9 +191,9 @@ export class UserService extends CrudService<User> {
       compra.agencyID = agency.items[0].number
       compra.tipo = 2
 
-      if(tipo1.includes(order.status)){compra.tipo = 1}
-      if(tipo2.includes(order.status)){compra.tipo = 2}
-      if(tipo3.includes(order.status)){compra.tipo = 3}
+      if(tipo1.includes(order.informativestatus)){compra.tipo = 1}
+      if(tipo2.includes(order.informativestatus)){compra.tipo = 2}
+      if(tipo3.includes(order.informativestatus)){compra.tipo = 3}
 
 
       compra.isnewcar = true;
