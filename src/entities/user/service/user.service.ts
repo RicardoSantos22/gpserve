@@ -437,14 +437,34 @@ export class UserService extends CrudService<User> {
 
   async updateintencion(body: any){
 
+    let type = ''
+
+
+   let creditexist = await this.creditrepocitory.findAll({_id: body.intencionid})
+   let testexist = await this.testdriverepository.findAll({_id: body.intencionid})
+
+   let norder: any = parseInt(body.intencionid)
+      
+   let order = await this.orderrepository.findAll({Norder: norder})
+
+
+ 
+   if(order.count  > 0){ type = 'order'}
+   else if(testexist.count > 0){ type = 'test'}
+   else if(creditexist.count > 0){type = 'credit'}
+
+
+console.log(type)
 
     let modelstatus = ['Apartado', 'Apartado Offline', 'Enganche Recibido', 'Compra Contado', 'Auto Facturado', 'Preparando Auto', 'Auto en Camino', 'En Agencia', 'Estrenado']
 
 
-    if(body.type === 'test'){
+    if(type === 'credit'){
       
       if(modelstatus.includes(body.newstatus))
-      {
+      { 
+
+        
 
         const N_order = this.CreateRamdomNum();
 
@@ -482,16 +502,17 @@ export class UserService extends CrudService<User> {
           method: 'offline',
       }
 
-        return this.orderrepository.create(order)
+        return await this.orderrepository.create(order)
       }
       else
       {
-        return this.testdriverepository.update(body.intencionid, {status: body.newstatus})
+        return await this.creditrepocitory.update(body.intencionid, {status: body.newstatus})
       }
    
     
     }
-    else if(body.type === 'credit'){ 
+    else if(type === 'test'){ 
+
 
       if(modelstatus.includes(body.newstatus))
       {
@@ -533,28 +554,28 @@ export class UserService extends CrudService<User> {
           method: 'offline',
       }
 
-        return this.orderrepository.create(order)
+        return await this.orderrepository.create(order)
       }
       else
       {
-        return this.creditrepocitory.update(body.intencionid, {status: body.newstatus}) 
+        return await this.testdriverepository.update(body.intencionid, {status: body.newstatus}) 
       }
       
     
     }
-    else if(body.type === 'order'){ 
+    else if(type === 'order'){ 
       
 
       let norder: any = parseInt(body.intencionid)
       
       let order = await this.orderrepository.findAll({Norder: norder})
       
-      return this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
+      return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
     
     }
     else 
     {
-      return 'no exite el tipo que enviaste: type referencia { test: prueba de manejo, credit: cotizacion o credito, order: compra/apartado/enganche}'
+      return 'intencion no encontrado'
     }
 
 
