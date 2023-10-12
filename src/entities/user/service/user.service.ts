@@ -185,6 +185,7 @@ export class UserService extends CrudService<User> {
       compra.npruebas = numberDriveTestList
 
       compra.Norder  = order.Norder
+      compra.intencionid = order.Norder
       compra.status = order.status
       compra.agencyname = agency.items[0].name;
       compra.agencyID = agency.items[0].number
@@ -222,6 +223,7 @@ export class UserService extends CrudService<User> {
         compra.ncotizaciones = numbercredits
         compra.npruebas = numberDriveTestList
         compra.Norder = order.Norder
+        compra.intencionid = order.Norder
         compra.status = order.status
         compra.tipo = 2
         compra.isnewcar = false;
@@ -439,9 +441,16 @@ export class UserService extends CrudService<User> {
   async updateintencion(body: any){
 
 
-    let orderresponse = await this.verifationduplicate(body.intencionid, body.newstatus)
+    let orderresponse;
 
-    console.log(orderresponse)
+    if(body.intencionid.length === 6)
+    {
+      orderresponse = body.intencionid
+    }
+    else
+    {
+      orderresponse = await this.verifationduplicate(body.intencionid, body.newstatus)
+    }
 
     let numorder = '';
 
@@ -581,6 +590,7 @@ export class UserService extends CrudService<User> {
       if(numorder !== '')
       {
         let order = await this.orderrepository.findAll({Norder: numorder})
+ 
         
         return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
       }
@@ -589,7 +599,8 @@ export class UserService extends CrudService<User> {
         let norder: any = parseInt(body.intencionid)
       
         let order = await this.orderrepository.findAll({Norder: norder})
-        
+
+
         return await this.orderrepository.update(order.items[0]._id, {status: body.newstatus})
       }
       
@@ -611,9 +622,8 @@ export class UserService extends CrudService<User> {
 
 async verifationduplicate(id: string, newstatus: String) {
 
-  console.log(newstatus)
-
   let statusdecline = ['Cotización', 'Solicitud de Crédito', 'Crédito Autorizado', 'Crédito Rechazado']; 
+
 
   let creditexist = await this.creditrepocitory.findAll({_id: id})
   let testexist = await this.testdriverepository.findAll({_id: id})
