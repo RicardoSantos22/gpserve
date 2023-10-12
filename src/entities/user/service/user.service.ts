@@ -443,7 +443,7 @@ export class UserService extends CrudService<User> {
 
     let orderresponse;
 
-    if(body.intencionid.length === 6)
+    if(body.intencionid.toString().length === 6)
     {
       orderresponse = body.intencionid
     }
