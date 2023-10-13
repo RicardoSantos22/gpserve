@@ -10,6 +10,7 @@ import { InitialAssessmentRepository } from './repository/initial-assessment.rep
   imports: [TypegooseModule.forFeature([InitialAssessment])],
   controllers: [InitialAssessmentController],
   providers: [InitialAssessmentService, InitialAssessmentRepository],
+  exports: [InitialAssessmentService, InitialAssessmentRepository, InitialAssessmentModule]
 })
 
 export class InitialAssessmentModule {}

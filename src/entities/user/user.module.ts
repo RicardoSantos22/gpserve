@@ -14,6 +14,9 @@ import { TestDriveAppointmentsModule } from '../testdriveappointments/testdrivea
 import { OrderModule } from '../order/order.module';
 import { InspectionAppointmentModule } from '../inspectionappointment/inspectionappointment.module';
 import { AgencyModule } from '../agency/agency.module';
+import { InitialAssessmentModule } from '../initialassessment/initial-assessment.module';
+import { InitialAssessmentService } from '../initialassessment/service/initial-assessment.service';
+import { InitialAssessmentRepository } from '../initialassessment/repository/initial-assessment.repository';
 
 @Module({
   imports: [
@@ -26,10 +29,22 @@ import { AgencyModule } from '../agency/agency.module';
     TestDriveAppointmentsModule,
     OrderModule,
     AgencyModule,
-    InspectionAppointmentModule
+    InspectionAppointmentModule,
+    InitialAssessmentModule,
+     InitialAssessmentModule
   ],
   controllers: [UserController],
-  providers: [UserService, UserRepository, CreditRequestModule, InsuranceRequestsModule, NewCarModule, UsedCarModule, TestDriveAppointmentsModule, OrderModule, InspectionAppointmentModule, AgencyModule],
+  providers: [UserService,
+     UserRepository, 
+     CreditRequestModule, 
+     InsuranceRequestsModule,
+    NewCarModule,
+    UsedCarModule, 
+    TestDriveAppointmentsModule, 
+    OrderModule, 
+    InspectionAppointmentModule,
+    AgencyModule],
+
   exports: [UserService]
 })
 

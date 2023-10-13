@@ -23,6 +23,7 @@ import { orderRepository } from 'src/entities/order/repository/order.repository'
 import { InspectionAppointmentRepository } from 'src/entities/inspectionappointment/repository/inspectionappointment.repository';
 import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
 import { String } from 'aws-sdk/clients/batch';
+import { InitialAssessmentRepository } from 'src/entities/initialassessment/repository/initial-assessment.repository';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -38,7 +39,8 @@ export class UserService extends CrudService<User> {
     private testdriverepository: TestDriveAppointmentRepository,
     private orderrepository: orderRepository,
     private inspesctionrepository: InspectionAppointmentRepository,
-    private agencyrepository: AgencyRepository
+    private agencyrepository: AgencyRepository,
+    private initialassessmentsrepository: InitialAssessmentRepository
   ) {
     super(repository, 'User', config);
   }
@@ -482,9 +484,28 @@ export class UserService extends CrudService<User> {
 
     let misventas = await this.inspesctionrepository.findAll({userId: id})
 
+    let ventaslist = [];
+
+    for(let venta of misventas.items)
+    {
+
+      if(venta.initialAssessmentId)
+      {
+        let ventamodel:any = venta;
+
+        let carinfo = await this.initialassessmentsrepository.findById(venta.initialAssessmentId.toString())
+
+        ventamodel.carInfo = carinfo;
+
+        ventaslist.push(ventamodel)
+
+      }
+
+    }
+
     return [
       {intenciones: allintenciones},
-      {ventas: misventas.items}
+      {ventas: ventaslist}
    
     ]
   }
