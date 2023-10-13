@@ -149,8 +149,23 @@ export class UserService extends CrudService<User> {
 
   }
 
+
+  async sincronizar()
+  {
+    let credits: any = await this.creditrepocitory.findAll();
+
+    for(let credit of credits.items)
+    {
+   
+      await this.creditrepocitory.update(credit.id, {informativestatus: 'Cotización'})
+    }
+  }
+
   async findMyIntentions(id: string)
   {
+
+    
+
     let tipo1 = ['Cotización', 'Solicitud de Crédito', 'Crédito Autorizado', 'Crédito Rechazado']; 
     let tipo2 = ['Apartado', 'Apartado Offline', 'Enganche Recibido', 'Compra Contado', 'Auto Facturado', 'Preparando Auto']
     let tipo3 = ['Auto en Camino', 'En Agencia', 'Estrenado']
@@ -190,6 +205,18 @@ export class UserService extends CrudService<User> {
       compra.agencyname = agency.items[0].name;
       compra.agencyID = agency.items[0].number
       compra.tipo = 2
+      compra.monto = order.amount
+      compra.metodo = 'Transferencia'
+
+      if(order.method === 'TDX')
+      {
+        compra.metodo = 'Tarjeta'
+      }
+      else
+      {
+        compra.metodo = 'Efectivo'
+      }
+
 
       if(tipo1.includes(order.informativestatus)){compra.tipo = 1}
       if(tipo2.includes(order.informativestatus)){compra.tipo = 2}
@@ -225,6 +252,18 @@ export class UserService extends CrudService<User> {
   
         let agency = await this.agencyrepository.findAll({number: usedcar.items[0].agencyId})
         compra.agencyname = agency.items[0].name;
+        compra.monto = order.amount
+        compra.metodo = 'Transferencia'
+
+        if(order.method === 'TDX')
+        {
+          compra.metodo = 'Tarjeta'
+        }
+        else
+        {
+          compra.metodo = 'Efectivo'
+        }
+
         compra.agencyID = agency.items[0].number
         compra.ncotizaciones = numbercredits
         compra.npruebas = numberDriveTestList
@@ -233,9 +272,13 @@ export class UserService extends CrudService<User> {
         compra.status = order.informativestatus
         compra.tipo = 2
 
+        
+
         if(tipo1.includes(order.informativestatus)){compra.tipo = 1}
         if(tipo2.includes(order.informativestatus)){compra.tipo = 2}
         if(tipo3.includes(order.informativestatus)){compra.tipo = 3}
+
+    
         compra.isnewcar = false;
   
         if(order.concept === 1)
@@ -373,7 +416,6 @@ export class UserService extends CrudService<User> {
 
     for(let test of userDriveTestList.items)
     {
-      console.log(test)
       if(autosyacomprados.includes(test.carId)){}
       else 
       {
@@ -579,7 +621,7 @@ export class UserService extends CrudService<User> {
           Norder: await N_order,
           Nreferencia: await N_referencia,
           amount: 0,
-          concept: body.concept,
+          concept: 1,
           agencyId: agency.number,
           hmac: 'sin asignar',
           commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
