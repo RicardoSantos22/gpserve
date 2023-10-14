@@ -610,12 +610,12 @@ export class UserService extends CrudService<User> {
           informativestatus: body.newstatus
       }
 
-        await this.creditrepocitory.update(body.intencionid, {status: body.newstatus})
+        await this.creditrepocitory.update(body.intencionid, {informativestatus: body.newstatus})
         return await this.orderrepository.create(order)
       }
       else
       {
-        return await this.creditrepocitory.update(body.intencionid, {status: body.newstatus})
+        return await this.creditrepocitory.update(body.intencionid, {informativestatus: body.newstatus})
       }
    
     
