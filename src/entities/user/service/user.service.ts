@@ -581,6 +581,20 @@ export class UserService extends CrudService<User> {
           carid = car.items[0]._id;
         }
 
+        let concepto1 = ['Apartado', 'Apartado Offline', 'Enganche Recibido']
+        let concepto2 = ['Compra Contado', 'Auto Facturado', 'Preparando Auto', 'Auto en Camino', 'En Agencia', 'Estrenado']
+
+        let concepto = 1;
+
+        if(concepto1.includes(body.newstatus))
+        {
+          concepto = 1
+        }
+        if(concepto2.includes(body.newstatus))
+        {
+          concepto = 2
+        }
+
         let order: any = {
           carid: carid,
           userId: credit.userId,
@@ -588,11 +602,11 @@ export class UserService extends CrudService<User> {
           Norder: await N_order,
           Nreferencia: await N_referencia,
           amount: 0,
-          concept: body.concept,
+          concept: concepto,
           agencyId: agency.number,
           hmac: 'sin asignar',
           commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
-          method: 'offline',
+          method: 'Tranferencia',
           informativestatus: body.newstatus
       }
 
@@ -634,6 +648,20 @@ export class UserService extends CrudService<User> {
           carid = usedcar.items[0]._id;
         }
 
+        let concepto1 = ['Apartado', 'Apartado Offline', 'Enganche Recibido']
+        let concepto2 = ['Compra Contado', 'Auto Facturado', 'Preparando Auto', 'Auto en Camino', 'En Agencia', 'Estrenado']
+
+        let concepto = 1;
+
+        if(concepto1.includes(body.newstatus))
+        {
+          concepto = 1
+        }
+        if(concepto2.includes(body.newstatus))
+        {
+          concepto = 2
+        }
+
 
         let order: any = {
           carid: carid,
@@ -642,11 +670,11 @@ export class UserService extends CrudService<User> {
           Norder: await N_order,
           Nreferencia: await N_referencia,
           amount: 0,
-          concept: 1,
+          concept: concepto,
           agencyId: agency.number,
           hmac: 'sin asignar',
           commerceName: 'PREMIER AUTOMOTRIZ SA de CV MA',
-          method: 'offline',
+          method: 'Transferencia',
           informativestatus: body.newstatus
       }
 

@@ -110,6 +110,26 @@ export class AdminController {
         SmStream.write({url: 'https://estrenatuauto.com/vender-mi-auto', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/autos-nuevos', changefreq: 'monthly', priority: 0.3})
 
+        SmStream.write({url: 'https://blog.estrenatuauto.com/', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/ventajas-hyundai-hb20', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/seminuevos-agencia-vs-lotes', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/ventajas-seminuevos-agencia', changefreq: 'monthly', priority: 0.3})
+
+        SmStream.write({url: 'https://blog.estrenatuauto.com/refacciones-originales-vs-genericas', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/como-ahorrar-gasolina', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/diferencia-mantenimiento-agencia-taller', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/importancia-mantenimiento-autos', changefreq: 'monthly', priority: 0.3})
+
+        SmStream.write({url: 'https://blog.estrenatuauto.com/respaldo-estrenatuauto', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/consideraciones-comprar-auto-online', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/intencion-de-compra-vs-apartado', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/diferencias-compra-autos-online-presencial', changefreq: 'monthly', priority: 0.3})
+
+        SmStream.write({url: 'https://blog.estrenatuauto.com/showroom-digital', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/nuestro-diferenciador', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-vender-tu-auto-aqui', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-comprar-tu-auto-aqui', changefreq: 'monthly', priority: 0.3})
+
         newcarslist.items.forEach((car: any) => {
             SmStream.write({
                 url: 'https://estrenatuauto.com/nuevo/' + car.brandUrl + '-' + car.modelUrl + '-' + car.year + '-' +car._id+ '',
