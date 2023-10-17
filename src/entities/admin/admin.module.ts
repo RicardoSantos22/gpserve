@@ -10,6 +10,8 @@ import { PassportModule } from '@nestjs/passport';
 import { NewCarModule } from '../newcar/newcar.module';
 import { UsedCarModule } from '../usedcar/usedcar.module';
 import { BucketModule } from '../../bucket/bucket.module';
+import { banners } from './model/banners.model';
+import { bannersrepository } from './repository/banners.repository';
 
 @Module({
   imports: [
@@ -17,11 +19,11 @@ import { BucketModule } from '../../bucket/bucket.module';
     UsedCarModule,
     UserModule,
     PassportModule,
-    TypegooseModule.forFeature([Admin]),
+    TypegooseModule.forFeature([Admin, banners]),
     BucketModule
   ],
   controllers: [AdminController],
-  providers: [AdminService, AdminRepository],
+  providers: [AdminService, AdminRepository, bannersrepository],
 })
 
 export class AdminModule {}

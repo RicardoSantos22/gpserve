@@ -1,0 +1,28 @@
+import { ApiProperty } from '@nestjs/swagger';
+import {pre, modelOptions, prop, Severity } from '@typegoose/typegoose';
+
+
+@modelOptions({
+    schemaOptions: { timestamps: true },
+    options: {
+      allowMixed: Severity.ALLOW
+    }
+  })
+
+
+export class banners {
+  constructor(data?: any) {
+    Object.assign(this, data);
+  }
+
+
+  @prop()
+  imgurl: string;
+
+  @prop()
+  vinculo: string;
+
+  @prop()
+  isactive: boolean;
+
+}
