@@ -66,6 +66,56 @@ export class AdminService extends CrudService<Admin> {
     return this.bannersrepository.findAll()
   }
 
+  async bannelist()
+  {
+    let banerslist = await this.bannersrepository.findAll()
+
+
+    let bannershome = {banner: 'home', desktopUrl: '', movilUrl: '' }
+    let bannerscarlist = {banner: 'carlist', desktopUrl: '', movilUrl: ''}
+
+    for(let banner of banerslist.items)
+    {
+
+      if(banner.type === 'desktop')
+      {
+        if(banner.banner === 'home')
+        {
+          let desktopUrl = banner.imgurl
+
+          bannershome.desktopUrl = desktopUrl
+        }
+        else if(banner.banner === 'carlist')
+        {
+          let desktopUrl = banner.imgurl
+          bannerscarlist.desktopUrl = desktopUrl
+        }
+
+
+      }
+
+      if(banner.type === 'movil')
+      {
+        if(banner.banner === 'home')
+        {
+          let movilUrl = banner.imgurl
+          bannershome.movilUrl = movilUrl
+        }
+        else if(banner.banner === 'carlist')
+        {
+          let movilUrl = banner.imgurl
+          bannerscarlist.movilUrl = movilUrl
+        }
+      }
+      
+
+    }
+
+    return [{bannershome, bannerscarlist}]
+
+
+  }
+
   async disablebanners( body: any){
     let item:any = await this.bannersrepository.findAll({type:body.type , banner: body.banner}) 
 

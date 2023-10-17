@@ -218,6 +218,13 @@ export class AdminController {
         return this.service.activebanners()
     }
 
+    @Get('bannersadmin')
+    async bannersadmin()
+    {
+        return this.service.bannelist()
+    }
+
+
     @Get(':id')
     async findById(@Param() params: FindByIdParams) {
         return this.service.findById(params.id);
