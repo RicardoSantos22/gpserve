@@ -67,80 +67,10 @@ export class AdminService extends CrudService<Admin> {
   }
 
   async disablebanners( body: any){
+    let item:any = await this.bannersrepository.findAll({type:body.type , banner: body.banner}) 
 
 
-
-    try
-    {
-      let s3Url;
-
-      if(body.type === 'desktop')
-      { 
-  
-        if(body.banner === 'home')
-        {
-  
-       
-            let bannersmodels : banners = {
-            
-              imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-desktop-banner.jpg',
-              isactive: body.isactive,
-              vinculo: body.vinculo
-            }
-
-            return this.bannersrepository.update('652ed60c4c25e431ac5c3853',bannersmodels)
-          
-        }
-        if(body.banner === 'carlist')
-        {
-         
-           let bannersmodels : banners = {
-            
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-desktop-banner.jpg',
-            isactive: body.isactive,
-            vinculo: body.vinculo
-          }
-
-          return this.bannersrepository.update('652ed65a4c25e431ac5c3855',bannersmodels)
-        }
-       
-      }
-  
-      if(body.type === 'movil')
-      { 
-  
-        if(body.banner === 'home')
-        {
-     
-           let bannersmodels : banners = {
-            
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-movil-banner.jpg',
-            isactive: body.isactive,
-            vinculo: body.vinculo
-          }
-
-          return this.bannersrepository.update('652ed6854c25e431ac5c3859',bannersmodels)
-        }
-        if(body.banner === 'carlist')
-        {
-         
-           let bannersmodels : banners = {
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-movil-banner.jpg',
-            isactive: body.isactive,
-            vinculo: body.vinculo
-          }
-
-          return this.bannersrepository.update('652ed6814c25e431ac5c3857',bannersmodels)
-        }
-       
-        
-      }
-
-    }
-    catch(e)
-    {
-      return e
-    }
+    return this.bannersrepository.delete(item.items[0]._id)
 
   }
 
@@ -163,36 +93,60 @@ export class AdminService extends CrudService<Admin> {
     {
       let s3Url;
 
+      let item:any = await this.bannersrepository.findAll({type:body.type , banner: body.banner}) 
+
       if(body.type === 'desktop')
       { 
   
         if(body.banner === 'home')
         {
   
-            s3Url = await this.s3Service.uploadBeners(`img-detalies/home-desktop-banner.jpg`, file.buffer, body.isactive)
+            s3Url = await this.s3Service.uploadBeners(`img-detalies/home-desktop-banner.jpg`, file.buffer, true)
 
             let bannersmodels : banners = {
             
               imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-desktop-banner.jpg',
               isactive: body.isactive,
-              vinculo: body.vinculo
+              vinculo: body.vinculo,
+              type: 'desktop',
+              banner: 'home'
             }
 
-            return this.bannersrepository.update('652ed60c4c25e431ac5c3853',bannersmodels)
+            if(item.count > 0)
+            {
+              return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
+            }
+            else
+            {
+              return this.bannersrepository.create(bannersmodels)
+            }
+            
+
+           
           
         }
         if(body.banner === 'carlist')
         {
-           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-desktop-banner.jpg`, file.buffer, body.isactive)
+           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-desktop-banner.jpg`, file.buffer, true)
 
            let bannersmodels : banners = {
             
             imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-desktop-banner.jpg',
             isactive: body.isactive,
-            vinculo: body.vinculo
+            vinculo: body.vinculo,
+            type: 'desktop',
+            banner: 'carlist'
           }
 
-          return this.bannersrepository.update('652ed65a4c25e431ac5c3855',bannersmodels)
+          if(item.count > 0)
+          {
+            return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
+          }
+          else
+          {
+            return this.bannersrepository.create(bannersmodels)
+          }
+          
         }
        
       }
@@ -202,28 +156,48 @@ export class AdminService extends CrudService<Admin> {
   
         if(body.banner === 'home')
         {
-           s3Url = await this.s3Service.uploadBeners(`img-detalies/home-movil-banner.jpg`, file.buffer, body.isactive)
+           s3Url = await this.s3Service.uploadBeners(`img-detalies/home-movil-banner.jpg`, file.buffer, true)
 
            let bannersmodels : banners = {
             
             imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-movil-banner.jpg',
             isactive: body.isactive,
-            vinculo: body.vinculo
+            vinculo: body.vinculo,
+            type: 'movil',
+            banner: 'home'
           }
 
-          return this.bannersrepository.update('652ed6854c25e431ac5c3859',bannersmodels)
+          if(item.count > 0)
+          {
+            return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
+          }
+          else
+          {
+            return this.bannersrepository.create(bannersmodels)
+          }
+          
         }
         if(body.banner === 'carlist')
         {
-           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-movil-banner.jpg`, file.buffer, body.isactive)
+           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-movil-banner.jpg`, file.buffer, true)
 
            let bannersmodels : banners = {
             imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-movil-banner.jpg',
             isactive: body.isactive,
-            vinculo: body.vinculo
+            vinculo: body.vinculo,
+            type: 'movil',
+            banner: 'carlist'
           }
 
-          return this.bannersrepository.update('652ed6814c25e431ac5c3857',bannersmodels)
+          if(item.count > 0)
+          {
+            return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
+          }
+          else
+          {
+            return this.bannersrepository.create(bannersmodels)
+          }
+          
         }
        
         

@@ -24,5 +24,12 @@ export class banners {
 
   @prop()
   isactive: boolean;
+  
+  @prop()
+  type: string;
+
+  
+  @prop()
+  banner: string;
 
 }
