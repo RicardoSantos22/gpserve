@@ -95,6 +95,7 @@ export class AdminController {
         'https://estrenatuauto.com/concesionarias',
         'https://estrenatuauto.com/contacto',
         'https://estrenatuauto.com/vender-mi-auto',
+        'https://estrenatuauto.com/carros-de-agencia',
        'https://estrenatuauto.com/autos-nuevos',
        'https://blog.estrenatuauto.com/',
        'https://blog.estrenatuauto.com/ventajas-hyundai-hb20',
@@ -154,6 +155,7 @@ export class AdminController {
             rel: 'canonical'
         })
         SmStream.write({url: 'https://estrenatuauto.com/concesionarias', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/carros-de-agencia', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/contacto', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/vender-mi-auto', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/autos-nuevos', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
