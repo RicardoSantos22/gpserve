@@ -211,12 +211,7 @@ export class AdminController {
 
 
     // #endregion findById
-
-    @Get('banners')
-    async banners()
-    {
-        return this.service.activebanners()
-    }
+    
 
     @Get(':id')
     async findById(@Param() params: FindByIdParams) {

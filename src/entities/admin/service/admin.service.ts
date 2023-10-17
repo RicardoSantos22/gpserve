@@ -61,11 +61,6 @@ export class AdminService extends CrudService<Admin> {
     }
   }
 
-  async activebanners()
-  {
-    return this.bannersrepository.findAll()
-  }
-
   async updateBannersForHome( body: any, file: Express.Multer.File){
 
     if(!file || !file.buffer) {
@@ -91,29 +86,11 @@ export class AdminService extends CrudService<Admin> {
         {
   
             s3Url = await this.s3Service.uploadBeners(`img-detalies/home-desktop-banner.jpg`, file.buffer, true)
-
-            let bannersmodels : banners = {
-            
-              imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-desktop-banner.jpg',
-              isactive: body.isactive,
-              vinculo: body.vinculo
-            }
-
-            return this.bannersrepository.update('652ed60c4c25e431ac5c3853',bannersmodels)
           
         }
         if(body.banner === 'carlist')
         {
            s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-desktop-banner.jpg`, file.buffer, true)
-
-           let bannersmodels : banners = {
-            
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-desktop-banner.jpg',
-            isactive: body.isactive,
-            vinculo: body.vinculo
-          }
-
-          return this.bannersrepository.update('652ed65a4c25e431ac5c3855',bannersmodels)
         }
        
       }
@@ -124,31 +101,16 @@ export class AdminService extends CrudService<Admin> {
         if(body.banner === 'home')
         {
            s3Url = await this.s3Service.uploadBeners(`img-detalies/home-movil-banner.jpg`, file.buffer, true)
-
-           let bannersmodels : banners = {
-            
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-movil-banner.jpg',
-            isactive: body.isactive,
-            vinculo: body.vinculo
-          }
-
-          return this.bannersrepository.update('652ed6854c25e431ac5c3859',bannersmodels)
         }
         if(body.banner === 'carlist')
         {
            s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-movil-banner.jpg`, file.buffer, true)
-
-           let bannersmodels : banners = {
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-movil-banner.jpg',
-            isactive: body.isactive,
-            vinculo: body.vinculo
-          }
-
-          return this.bannersrepository.update('652ed6814c25e431ac5c3857',bannersmodels)
         }
        
         
       }
+
+      return s3Url
 
     }
     catch(e)
