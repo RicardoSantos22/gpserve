@@ -326,6 +326,14 @@ export class AdminController {
     }
 
 
+    @Post('dissablebanners')
+    @UseInterceptors(FileInterceptor('file'))
+    async dissablebanners( @Body() body: any){
+
+        return this.service.disablebanners(body)
+    }
+
+
 
     // #endregion delete
 
