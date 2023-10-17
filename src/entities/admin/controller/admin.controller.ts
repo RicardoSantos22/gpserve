@@ -85,6 +85,53 @@ export class AdminController {
         type: DatabaseErrorDto,
     })
 
+    @Get('jsSitemap')
+    async getjsonsitemap()
+    {
+        let newcarslist = await this.NewCarService.getNewCars();
+        let UsedCarlist = await this.UsedCarService.getallcars();
+
+        let urls = ['https://estrenatuauto.com/',
+        'https://estrenatuauto.com/concesionarias',
+        'https://estrenatuauto.com/contacto',
+        'https://estrenatuauto.com/vender-mi-auto',
+       'https://estrenatuauto.com/autos-nuevos',
+       'https://blog.estrenatuauto.com/',
+       'https://blog.estrenatuauto.com/ventajas-hyundai-hb20',
+       'https://blog.estrenatuauto.com/seminuevos-agencia-vs-lotes',
+       'https://blog.estrenatuauto.com/ventajas-seminuevos-agencia',
+       'https://blog.estrenatuauto.com/refacciones-originales-vs-genericas',
+       'https://blog.estrenatuauto.com/como-ahorrar-gasolina', 
+       'https://blog.estrenatuauto.com/diferencia-mantenimiento-agencia-taller',
+       'https://blog.estrenatuauto.com/importancia-mantenimiento-autos',
+       'https://blog.estrenatuauto.com/respaldo-estrenatuauto',
+       'https://blog.estrenatuauto.com/consideraciones-comprar-auto-online',
+       'https://blog.estrenatuauto.com/intencion-de-compra-vs-apartado',
+       'https://blog.estrenatuauto.com/diferencias-compra-autos-online-presencial',
+       'https://blog.estrenatuauto.com/showroom-digital',
+       'https://blog.estrenatuauto.com/nuestro-diferenciador',
+       'https://blog.estrenatuauto.com/razones-para-vender-tu-auto-aqui',
+       'https://blog.estrenatuauto.com/razones-para-comprar-tu-auto-aqui',]
+
+
+
+       for(let newcar of newcarslist.items)
+       {
+         let newurl = 'https://estrenatuauto.com/nuevo/' + newcar.brandUrl + '-' + newcar.modelUrl + '-' + newcar.year + '-' +newcar._id+ ''
+
+         urls.push(newurl)
+       }
+
+       for(let usedcar of UsedCarlist.items)
+       {
+        let newurl = 'https://estrenatuauto.com/seminuevo/' + usedcar.brand.toLowerCase() + '-' + usedcar.model.toLowerCase().replace(/\s+/g, '-')+ '-' +usedcar.year+ '-'+ usedcar._id + ''
+
+        urls.push(newurl)
+       }
+
+       return urls
+    }
+    
     @Get('sitemap')
     async getsitemap(@Res() res) {
 
@@ -103,39 +150,41 @@ export class AdminController {
             url: 'https://estrenatuauto.com/',
             changefreq: 'monthly',
             priority: 0.3,
-            img: 'https://estrenatuauto.com/assets/images/home-desktop-lite.jpg'
+            img: 'https://estrenatuauto.com/assets/images/home-desktop-lite.jpg',
+            rel: 'canonical'
         })
-        SmStream.write({url: 'https://estrenatuauto.com/concesionarias', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://estrenatuauto.com/contacto', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://estrenatuauto.com/vender-mi-auto', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://estrenatuauto.com/autos-nuevos', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/concesionarias', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/contacto', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/vender-mi-auto', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/autos-nuevos', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
-        SmStream.write({url: 'https://blog.estrenatuauto.com/', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/ventajas-hyundai-hb20', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/seminuevos-agencia-vs-lotes', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/ventajas-seminuevos-agencia', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/ventajas-hyundai-hb20', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/seminuevos-agencia-vs-lotes', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/ventajas-seminuevos-agencia', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
-        SmStream.write({url: 'https://blog.estrenatuauto.com/refacciones-originales-vs-genericas', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/como-ahorrar-gasolina', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/diferencia-mantenimiento-agencia-taller', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/importancia-mantenimiento-autos', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/refacciones-originales-vs-genericas', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/como-ahorrar-gasolina', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/diferencia-mantenimiento-agencia-taller', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/importancia-mantenimiento-autos', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
-        SmStream.write({url: 'https://blog.estrenatuauto.com/respaldo-estrenatuauto', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/consideraciones-comprar-auto-online', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/intencion-de-compra-vs-apartado', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/diferencias-compra-autos-online-presencial', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/respaldo-estrenatuauto', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/consideraciones-comprar-auto-online', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/intencion-de-compra-vs-apartado', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/diferencias-compra-autos-online-presencial', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
-        SmStream.write({url: 'https://blog.estrenatuauto.com/showroom-digital', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/nuestro-diferenciador', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-vender-tu-auto-aqui', changefreq: 'monthly', priority: 0.3})
-        SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-comprar-tu-auto-aqui', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/showroom-digital', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/nuestro-diferenciador', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-vender-tu-auto-aqui', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-comprar-tu-auto-aqui', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
         newcarslist.items.forEach((car: any) => {
             SmStream.write({
                 url: 'https://estrenatuauto.com/nuevo/' + car.brandUrl + '-' + car.modelUrl + '-' + car.year + '-' +car._id+ '',
                 changefreq: 'monthly',
                 priority: 0.3,
-                img: car.images[1]
+                img: car.images[1],
+                rel: 'canonical'
             })
 
         })
@@ -146,7 +195,8 @@ export class AdminController {
                 url: 'https://estrenatuauto.com/seminuevo/' + car.brand.toLowerCase() + '-' + car.model.toLowerCase().replace(/\s+/g, '-')+ '-' +car.year+ '-'+ car._id + '',
                 changefreq: 'monthly',
                 priority: 0.3,
-                img: car.images[1]
+                img: car.images[1],
+                rel: 'canonical'
             })
         })
 
