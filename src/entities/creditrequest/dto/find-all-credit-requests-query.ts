@@ -87,4 +87,8 @@ export class FindAllCreditRequestsQuery extends PartialType(FindAllQuery) implem
   @IsOptional()
 
   tradedCarValue?: any;
+
+  @IsOptional()
+
+  informativestatus?: string;
 };

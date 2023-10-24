@@ -111,4 +111,13 @@ export class CreateCreditRequestDTO {
   @IsEnum(requestStatus)
 
   readonly status: requestStatus;
+
+  @ApiProperty({
+    description: 'estado unicial informativo',
+    example: 'Cotizacion',
+  })
+
+  @IsString()
+
+  readonly informativestatus?: string;
 };
