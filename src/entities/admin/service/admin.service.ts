@@ -157,7 +157,7 @@ export class AdminService extends CrudService<Admin> {
             
               imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-desktop-banner.jpg',
               isactive: body.isactive,
-              vinculo: body.vinculo,
+              vinculo: 'https://bit.ly/3R4ddJg',
               type: 'desktop',
               banner: 'home'
             }
@@ -183,7 +183,7 @@ export class AdminService extends CrudService<Admin> {
             
             imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-desktop-banner.jpg',
             isactive: body.isactive,
-            vinculo: body.vinculo,
+            vinculo: 'https://bit.ly/3R4ddJg',
             type: 'desktop',
             banner: 'carlist'
           }
@@ -212,7 +212,7 @@ export class AdminService extends CrudService<Admin> {
             
             imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-movil-banner.jpg',
             isactive: body.isactive,
-            vinculo: body.vinculo,
+            vinculo: 'https://bit.ly/3R4ddJg',
             type: 'movil',
             banner: 'home'
           }
@@ -234,7 +234,7 @@ export class AdminService extends CrudService<Admin> {
            let bannersmodels : banners = {
             imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-movil-banner.jpg',
             isactive: body.isactive,
-            vinculo: body.vinculo,
+            vinculo: 'https://bit.ly/3R4ddJg',
             type: 'movil',
             banner: 'carlist'
           }
