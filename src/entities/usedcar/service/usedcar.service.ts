@@ -129,7 +129,7 @@ export class UsedCarService extends CrudService<typeof x> {
         if(carID === '' || carID === null || carID.length !== 17){                 return [{error: 'error en vin, no cumple con las condiciones == no nulo, no vacio, vin incompleto (17 caracteres) =='}, {car}]}
         if(car.agencyID === '' || car.agencyID === null){                          return [{error: 'sin agencyID'}, {car}]}
         if(car.brand === '' || car.brand === null){                                return [{error: 'sin brand'}, {car}]}
-        if(car.model === '' || car.model === null || car.model.includes('/')){     return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
+        if(car.model === '' || car.model === null ){                               return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
         if(car.series === '' || car.series === null ){                             return [{error: 'serie vacia o con caracteres especiales'}, {car}]}
         if(car.price === '' || car.price === null) {                               return [{error: 'sin precio'}, {car}]}
         if(car.chassisType === '' || car.chassisType === null){                    return [{error: 'sin segmento'}, {car}]}
@@ -307,7 +307,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             if (sc.ID === car.vin) {
 
-                               
                                 BDID = car._id;
                                 carinlist.push(sc.ID)
 
@@ -319,15 +318,10 @@ export class UsedCarService extends CrudService<typeof x> {
 
                      
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
 
-                            if(sc.agencyID === 17 )
-                            {
-                                carros.push(sc)
-                            }
-                            
-                   
 
+                            console.log(sc.chassisType)
                             let MetaDescription: string;
                             let h1: string;
                             let chasystype: string;
@@ -364,7 +358,13 @@ export class UsedCarService extends CrudService<typeof x> {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Vehiculo de Carga Seminuevo' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
                                 chasystype = 'CHASIS';
-                            } else {
+                            } 
+                            else if (sc.chassisType === 'VAN' || sc.chassisType === 'MINIVAN' || sc.chassisType === 'PASAJEROS') {
+                                chasystype = 'VAN';
+                            } 
+                            else {
+
+
                                 MetaDescription = 'Compra tu ' + sc.brand.trim()+ ' ' + sc.model.trim() + ' Seminuevo en línea, y te lo llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Seminuevo ' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
                                 
@@ -506,8 +506,8 @@ export class UsedCarService extends CrudService<typeof x> {
             const createdCars = await this.repository.createMany(usedCarsArray)
 
             return {
-                // banCarlist: carlistban,
-                // count: carlistlist.length,
+                banCarlist: carlistban,
+                count: carlistlist.length,
                 results: carros,
                 
             }

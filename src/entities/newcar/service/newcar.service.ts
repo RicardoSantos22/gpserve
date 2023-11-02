@@ -150,7 +150,7 @@ export class NewCarService extends CrudService<typeof x> {
         if( carID === '' || carID === null || carID.length !== 17){                return [{error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) =='}, {car}]}
         if(car.agencyID === '' || car.agencyID === null){                          return [{error: 'sin agencyID'}, {car}]}
         if(car.brand === '' || car.brand === null){                                return [{error: 'sin brand'}, {car}]}
-        if(car.model === '' || car.model === null || car.model.includes('/')){     return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
+        if(car.model === '' || car.model === null){                                return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
         if(car.series === '' || car.series === null ){                             return [{error: 'serie vacia'}, {car}]}
         if(car.price === '' || car.price === null) {                               return [{error: 'sin precio'}, {car}]}
         if(car.chassisType === '' || car.chassisType === null){                    return [{error: 'sin segmento'}, {car}]}
@@ -324,11 +324,6 @@ export class NewCarService extends CrudService<typeof x> {
                     for (let sc of sadNewCars) {
 
 
-                        if(sc.ID === 'LSGHD52H7JD018498')
-                        {
-                            console.log(sc)
-                        }
-
 
                         let BDID: string = '';
 
@@ -344,7 +339,7 @@ export class NewCarService extends CrudService<typeof x> {
                        let verificacion = await this.carModelVerification(sc)
 
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' ) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
 
                     
 
@@ -385,7 +380,13 @@ export class NewCarService extends CrudService<typeof x> {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Vehiculo de Carga Nuevo' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                                 chasystype = 'CHASIS';
-                            } else {
+                            } 
+
+                            else if (sc.chassisType === 'VAN' || sc.chassisType === 'MINIVAN' || sc.chassisType === 'PASAJEROS') {
+                                chasystype = 'VAN';
+                            } 
+                            else {
+
                                 MetaDescription = 'Compra tu ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                                 
