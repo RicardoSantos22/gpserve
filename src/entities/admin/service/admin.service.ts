@@ -162,6 +162,11 @@ export class AdminService extends CrudService<Admin> {
               banner: 'home'
             }
 
+            if(body.vinculo)
+            {
+              bannersmodels.vinculo = body.vinculo
+            }
+
             if(item.count > 0)
             {
               return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
@@ -187,6 +192,12 @@ export class AdminService extends CrudService<Admin> {
             type: 'desktop',
             banner: 'carlist'
           }
+
+          if(body.vinculo)
+          {
+            bannersmodels.vinculo = body.vinculo
+          }
+
 
           if(item.count > 0)
           {
@@ -217,6 +228,12 @@ export class AdminService extends CrudService<Admin> {
             banner: 'home'
           }
 
+          if(body.vinculo)
+          {
+            bannersmodels.vinculo = body.vinculo
+          }
+
+
           if(item.count > 0)
           {
             return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
@@ -238,6 +255,12 @@ export class AdminService extends CrudService<Admin> {
             type: 'movil',
             banner: 'carlist'
           }
+
+          if(body.vinculo)
+          {
+            bannersmodels.vinculo = body.vinculo
+          }
+
 
           if(item.count > 0)
           {
