@@ -279,11 +279,11 @@ export class NewCarService extends CrudService<typeof x> {
             15, // Toyota Zaragoza
             16, // Toyota Los Mochis
             17, // Toyota Guasave
-            18, // Chrysler Culiacán
+            18, // Chrysler Culiacán 0 Stellantis Culiacán
             19, // Land Rover Culiacán
             20, // Kia Culiacán
             21, // Chevrolet Hermosillo
-            22, // Chrysler Mochis
+            22, // Chrysler Mochis 0 Stellantis Mochis
             23, // KIA Cabos
             24, // KIA Hermosillo
             25, // KIA La Paz
