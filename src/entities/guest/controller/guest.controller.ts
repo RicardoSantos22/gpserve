@@ -13,6 +13,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -26,6 +27,8 @@ import { CreateGuestDTO } from '../dto/create-guest';
 import { FindAllGuestsQuery } from '../dto/find-all-guests-query';
 import { UpdateGuestDTO } from '../dto/update-guest';
 
+
+@ApiTags('guest')
 @Controller('guest')
 export class GuestController {
   constructor(private readonly service: GuestService) {}

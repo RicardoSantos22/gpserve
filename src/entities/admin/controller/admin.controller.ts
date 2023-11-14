@@ -1,6 +1,6 @@
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 
-import {ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnprocessableEntityResponse} from '@nestjs/swagger';
+import {ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnprocessableEntityResponse} from '@nestjs/swagger';
 
 import {DatabaseErrorDto, NotFoundErrorDto} from '../../../common/models/dto/errors';
 import {DeleteParams, FindByIdParams} from '../../../common/models/dto/params';
@@ -17,6 +17,7 @@ import {NewCarService} from 'src/entities/newcar/service/newcar.service';
 import {UsedCarService} from 'src/entities/usedcar/service/usedcar.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('admin')
 @Controller('admin')
 export class AdminController {
     constructor(

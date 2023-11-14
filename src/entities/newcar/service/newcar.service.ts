@@ -427,7 +427,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 agencyId: sc.agencyID.toString(),
                                 promocion: promociontext,
                                 promotionAmount: sc.promotionAmount,
-                                brand: parsedBrand,
+                                brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
                                 series: parsedSeries,
                                 agencyCity: sc.agencyCity,

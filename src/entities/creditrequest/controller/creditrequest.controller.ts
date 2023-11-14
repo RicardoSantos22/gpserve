@@ -15,6 +15,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -31,6 +32,8 @@ import { FindAllCreditRequestsQuery } from '../dto/find-all-credit-requests-quer
 import { UpdateCreditRequestDTO } from '../dto/update-credit-request';
 import { FindAllAsesoresDto } from 'src/entities/asesores/dto/findall-query';
 
+
+@ApiTags('creditrequest')
 @Controller('creditrequest')
 export class CreditRequestController {
   constructor(private readonly service: CreditRequestService, private readonly asesoreservices: asesoresservice) {}

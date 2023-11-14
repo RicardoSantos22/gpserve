@@ -15,6 +15,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -31,7 +32,7 @@ import { UpdateInsuranceRequestDTO } from '../dto/update-insurancerequest';
 import { FindAllAsesoresDto } from 'src/entities/asesores/dto/findall-query';
 import { asesoresservice } from '../../asesores/service/asesores.service'
 
-
+@ApiTags('insurancerequest')
 @Controller('insurancerequest')
 export class InsuranceRequestsController {
   constructor(private readonly service: InsuranceRequestsService, private readonly asesoreservices: asesoresservice) {}

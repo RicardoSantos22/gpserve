@@ -22,7 +22,9 @@ import { CreateAsesorDTO } from '../dto/create_asesor'
 import { asesoresservice } from '../service/asesores.service'
 import { FindByIdParams } from 'src/common/models/dto/params';
 import { karbotCreateLead } from '../model/Karbot.response';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('asesores')
 @Controller('asesores')
 export class Asesorescontroller {
     constructor(private readonly service: asesoresservice) {}

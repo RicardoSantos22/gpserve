@@ -13,6 +13,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -26,6 +27,7 @@ import { CreateInitialAssessmentDTO } from '../dto/create-initial-assessment';
 import { FindAllInitialAssessmentsQuery } from '../dto/find-all-initial-assessments-query';
 import { UpdateInitialAssessmentDTO } from '../dto/update-initial-assessment';
 
+@ApiTags('InitialAssessment')
 @Controller('InitialAssessment')
 export class InitialAssessmentController {
   constructor(private readonly service: InitialAssessmentService) { }

@@ -30,7 +30,7 @@
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^7.6.18",
     "@nestjs/schedule": "^2.2.3",
-    "@nestjs/swagger": "^4.6.1",
+    "@nestjs/swagger": "^4.8.2",
     "@openui5/ts-types-esm": "^1.117.0",
     "@typegoose/typegoose": "^7.4.1",
     "@types/express-serve-static-core": "4.17.3",
@@ -54,6 +54,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
     "sitemap": "^7.1.1",
+    "swagger-ui-express": "^5.0.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
