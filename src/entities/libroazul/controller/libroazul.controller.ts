@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { LibroazulService } from '../service/libroazul.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('libroazul')
 @Controller('libroazul')
 export class LibroazulController {
 

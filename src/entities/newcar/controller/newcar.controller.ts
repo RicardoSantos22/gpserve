@@ -21,6 +21,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -36,6 +37,8 @@ import { UpdateNewCarDTO } from '../dto/update-newcar';
 import { NewCarGroupFilter } from '../dto/new-car-group-filter';
 import { ModelsByBrandsQuery } from '../dto/models-by-brands.query';
 import { Request } from 'express';
+
+@ApiTags('newcar')
 @Controller('newcar')
 export class NewCarController {
   constructor(private readonly service: NewCarService) {}

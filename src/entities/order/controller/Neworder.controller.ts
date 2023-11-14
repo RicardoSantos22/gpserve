@@ -4,7 +4,10 @@ import { HmacDTO } from '../dto/create_hmac'
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { FindByIdParams } from 'src/common/models/dto/params/find-by-id-params.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('Neworder')
 @Controller('Neworder')
 export class NeworderController {
     constructor( private readonly Orderservies: OrdersService){}

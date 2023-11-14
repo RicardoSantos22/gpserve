@@ -15,6 +15,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -28,6 +29,7 @@ import { CreateNoteDTO } from '../dto/create-note';
 import { FindAllNotesQuery } from '../dto/find-all-notes-query';
 import { UpdateNoteDTO } from '../dto/update-note';
 
+@ApiTags('note')
 @Controller('note')
 export class NoteController {
   constructor(private readonly service: NoteService) { }

@@ -13,6 +13,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -26,6 +27,8 @@ import { CreateReservationDTO } from '../dto/create-reservation';
 import { FindAllReservationsQuery } from '../dto/find-all-reservations-query';
 import { UpdateReservationDTO } from '../dto/update-reservation';
 
+
+@ApiTags('reservations')
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly service: ReservationsService) {}

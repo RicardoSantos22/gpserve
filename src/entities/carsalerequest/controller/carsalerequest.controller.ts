@@ -3,7 +3,9 @@ import { JwtAuthGuard } from "../../../auth/guards/jwt-auth.guard";
 import { FindAllQuery } from "../../../common/models/dto/query";
 import { CreateCarSaleRequest } from "../dto/create-car-sale-request.dto";
 import { CarSaleRequestService } from "../service/carsalerequest.service";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('carsalerequest')
 @Controller('carsalerequest')
 
 export class CarSaleRequestController {

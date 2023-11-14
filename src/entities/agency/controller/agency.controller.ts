@@ -15,6 +15,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -28,6 +29,7 @@ import { CreateAgencyDTO } from '../dto/create-agency';
 import { FindAllAgenciesQuery } from '../dto/find-all-agencies-query';
 import { UpdateAgencyDTO } from '../dto/update-agency';
 
+@ApiTags('agency')
 @Controller('agency')
 export class AgencyController {
   constructor(private readonly service: AgencyService) {}

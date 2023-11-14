@@ -19,6 +19,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
@@ -41,6 +42,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { Multer } from 'multer';
 
+
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly service: UserService) {}
