@@ -264,6 +264,33 @@ export class AdminService extends CrudService<Admin> {
         
       }
 
+      if(body.banner === 'home' && body.vinculo !== '')
+      {
+        let banners:any = await this.bannersrepository.findAll({banner: body.banner}) 
+       
+
+        for(let banner of banners.items)
+        {
+         await this.bannersrepository.update(banner._id ,{vinculo: body.vinculo})
+        }
+
+        return 'Vinculo actualizado'
+        
+      }
+  
+      else if(body.banner === 'carlist' && body.vinculo !== '')
+      {
+        let banners:any = await this.bannersrepository.findAll({banner: body.banner}) 
+       
+
+        for(let banner of banners.items)
+        {
+         await this.bannersrepository.update(banner._id ,{vinculo: body.vinculo})
+        }
+
+        return 'Vinculo actualizado'
+      }
+
     }
     catch(e)
     {
