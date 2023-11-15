@@ -126,18 +126,6 @@ export class AdminService extends CrudService<Admin> {
 
   async updateBannersForHome( body: any, file: Express.Multer.File){
 
-    if(!file || !file.buffer) {
-      throw new BadRequestException('Invalid file provided')
-    }
-
-    const sizeInMb = file.size / 1024 / 1024
-   
-    if(sizeInMb > 5) {
-      throw new BadRequestException('File exceeds allowed size limit')
-    }
-
-
-
 
     try
     {
