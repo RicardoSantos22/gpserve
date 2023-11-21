@@ -56,14 +56,33 @@ export class asesoresservice extends CrudService<Asesores> {
         return asesorenturno;
       }
 
+      async login(){
+
+        try
+        {
+          const response: any = await this.httpservice.post(this.Karbotdev + '/auth/login', {
+            // email: 'production+estrenatuauto@karlo.io',
+            // password: '$Bq@x$bFX&mDdED4'
+
+            email: 'development+estrenatuauto@karlo.io',
+            password: 'AyJB58w7GLA'
+          }).toPromise()
+
+          let karbotstruture: KarbotModel = response.data
+          return ({token: karbotstruture.session.access_token})
+        }
+        catch(e)
+        {
+          console.error(e)
+
+          return 500
+        }
+
+      }
+
       async createLead(payload:karbotCreateLead){
 
-        console.log(payload)
-        
-       try
-       {
-     
-          const reponse: any = await this.httpservice.post(this.karbotProd + '/ws/create-lead-inbound', {
+        let modelKarbotCreateLead = {
           lineName: "Estrenatuauto",
           referenceId: (Math.floor(Math.random() * (100 - 1 + 1)) + 1).toString(),
           categoryLead: payload.categoryLead,
@@ -78,49 +97,20 @@ export class asesoresservice extends CrudService<Asesores> {
           },
           customerInterest: payload.product,
           additionalData1: payload.vin,
-          },
+          }
+
+          let token: any = await this.login()
+          
+          const reponse: any = await this.httpservice.post(this.Karbotdev + '/ws/create-lead-inbound', modelKarbotCreateLead ,
           {
             headers: {
-              'Authorization': 'Bearer ' + payload.token
+              'Authorization': 'Bearer ' + token.token
             }
           }).toPromise()
 
-
-          return await reponse.data
+        return reponse.data.statusCode
         
-       }
-       catch(e)
-       {
-        console.log(e)
-        return 500
-       }
-
-        
-
-        return 
-      }
-
-      async login(){
-
-        try
-        {
-          const response: any = await this.httpservice.post(this.karbotProd + '/auth/login', {
-            email: 'production+estrenatuauto@karlo.io',
-            password: '$Bq@x$bFX&mDdED4'
-          }).toPromise()
-
-          let karbotstruture: KarbotModel = response.data
-
-        
-          return ({token: karbotstruture.session.access_token})
-        }
-        catch(e)
-        {
-          console.error(e)
-
-          return 500
-        }
-
+      
       }
 
 }
