@@ -58,6 +58,8 @@ export class asesoresservice extends CrudService<Asesores> {
 
       async login(){
 
+        let hh = new Date().toLocaleString()
+        console.log('Se inicio un login de karbot' + hh)
         try
         {
           const response: any = await this.httpservice.post(this.karbotProd + '/auth/login', {
@@ -68,8 +70,11 @@ export class asesoresservice extends CrudService<Asesores> {
             // password: 'AyJB58w7GLA'
           }).toPromise()
 
+          console.log(response.data)
+
           let karbotstruture: KarbotModel = response.data
-          return ({token: karbotstruture.session.access_token})
+          // return ({token: karbotstruture.session.access_token})
+          return karbotstruture
         }
         catch(e)
         {
@@ -81,6 +86,7 @@ export class asesoresservice extends CrudService<Asesores> {
       }
 
       async createLead(payload:karbotCreateLead){
+
 
         let modelKarbotCreateLead = {
           lineName: "Estrenatuauto",
@@ -99,16 +105,17 @@ export class asesoresservice extends CrudService<Asesores> {
           additionalData1: payload.vin,
           }
 
-          let token: any = await this.login()
           
           const reponse: any = await this.httpservice.post(this.karbotProd + '/ws/create-lead-inbound', modelKarbotCreateLead ,
           {
             headers: {
-              'Authorization': 'Bearer ' + token.token
+              'Authorization': 'Bearer ' + payload.token
             }
           }).toPromise()
 
         return reponse.data.statusCode
+
+      
         
       
       }
