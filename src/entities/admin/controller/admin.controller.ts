@@ -155,6 +155,13 @@ export class AdminController {
             img: 'https://estrenatuauto.com/assets/images/home-desktop-lite.jpg',
             rel: 'canonical'
         })
+        
+
+
+
+
+
+
         SmStream.write({url: 'https://estrenatuauto.com/concesionarias', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/carros-de-agencia', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/contacto', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
@@ -180,6 +187,14 @@ export class AdminController {
         SmStream.write({url: 'https://blog.estrenatuauto.com/nuestro-diferenciador', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-vender-tu-auto-aqui', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://blog.estrenatuauto.com/razones-para-comprar-tu-auto-aqui', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+
+        SmStream.write({url: 'https://estrenatuauto.com/pickups', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/camionetas-vans', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/camionetas-chasis', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/suvs', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/carros-tipo-sedan', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/carros-tipo-hatchback', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://estrenatuauto.com/hyundai-hb20', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
         newcarslist.items.forEach((car: any) => {
             SmStream.write({

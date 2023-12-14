@@ -291,6 +291,10 @@ export class NewCarService extends CrudService<typeof x> {
             27, // KIA Obregó
             28, // JAC Cualiacán
             29, // Chirey Culiacan
+            1032, //Stallantis caballito
+            1033, //geely culiacan
+            1034, //jac mochis
+            1035, //geely hermosillo
             // 30, 
         ]
         let promises = []
