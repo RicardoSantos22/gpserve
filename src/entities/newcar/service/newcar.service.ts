@@ -291,10 +291,12 @@ export class NewCarService extends CrudService<typeof x> {
             27, // KIA Obregó
             28, // JAC Cualiacán
             29, // Chirey Culiacan
+            1030, // Omoda Hermosillo
             1032, //Stallantis caballito
             1033, //geely culiacan
             1034, //jac mochis
             1035, //geely hermosillo
+            1037, //gwm culiacan
             // 30, 
         ]
         let promises = []
@@ -327,6 +329,7 @@ export class NewCarService extends CrudService<typeof x> {
                     
                     for (let sc of sadNewCars) {
 
+                        console.log(sc.agencyID)
 
 
                         let BDID: string = '';

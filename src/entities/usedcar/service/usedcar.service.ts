@@ -261,11 +261,13 @@ export class UsedCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregón
             28, // JAC Cualiacán
-            29, // Chirey Culiacan 
+            29, // Chirey Culiacan
+            1030, // Omoda Hermosillo 
             1032, //Stallantis caballito
             1033, //geely culiacan
             1034, //jac mochis
             1035, //geely hermosillo
+            1037, //gwm culiacan
         ]
         let promises = []
 
@@ -304,7 +306,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
-                    
+                        console.log(sc.agencyID)
                         
                          let BDID: string = '';
                         carlist.items.forEach((car: any) => {
