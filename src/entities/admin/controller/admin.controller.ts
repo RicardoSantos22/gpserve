@@ -98,6 +98,7 @@ export class AdminController {
         'https://estrenatuauto.com/vender-mi-auto',
         'https://estrenatuauto.com/carros-de-agencia',
        'https://estrenatuauto.com/autos-nuevos',
+       'https://estrenatuauto.com/autos-seminuevos',
        'https://blog.estrenatuauto.com/',
        'https://blog.estrenatuauto.com/ventajas-hyundai-hb20',
        'https://blog.estrenatuauto.com/seminuevos-agencia-vs-lotes',
@@ -116,12 +117,25 @@ export class AdminController {
        'https://blog.estrenatuauto.com/razones-para-comprar-tu-auto-aqui',]
 
 
+       let brads = []
+       let chassisTypes = []
 
        for(let newcar of newcarslist.items)
        {
          let newurl = 'https://estrenatuauto.com/nuevo/' + newcar.brandUrl + '-' + newcar.modelUrl + '-' + newcar.year + '-' +newcar._id+ ''
 
          urls.push(newurl)
+
+         if(brads.includes(newcar.brand))
+         {
+            brads.push(newcar.brand)
+         }
+
+         if(chassisTypes.includes(newcar.chassisType))
+         {
+            chassisTypes.push(newcar.chassisType)
+         }
+
        }
 
        for(let usedcar of UsedCarlist.items)
@@ -129,7 +143,26 @@ export class AdminController {
         let newurl = 'https://estrenatuauto.com/seminuevo/' + usedcar.brand.toLowerCase() + '-' + usedcar.model.toLowerCase().replace(/\s+/g, '-')+ '-' +usedcar.year+ '-'+ usedcar._id + ''
 
         urls.push(newurl)
+
+        if(brads.includes(usedcar.brand))
+        {
+           brads.push(usedcar.brand)
+        }
+
+        if(chassisTypes.includes(usedcar.chassisType))
+        {
+           chassisTypes.push(usedcar.chassisType)
+        }
        }
+
+       for(let brand of brads)
+       {
+         let usedbrand = "https://estrenatuauto.com/autos-seminuevos/"+brand.toLowerCase()+"-seminuevos"
+         let newbrand = "https://estrenatuauto.com/autos-nuevos/"+brand.toLowerCase()+"-nuevos"
+         urls.push(usedbrand)
+         urls.push(newbrand)
+       }
+
 
        return urls
     }
@@ -196,6 +229,7 @@ export class AdminController {
         SmStream.write({url: 'https://estrenatuauto.com/carros-tipo-hatchback', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://estrenatuauto.com/hyundai-hb20', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
+        let brads = []
         newcarslist.items.forEach((car: any) => {
             SmStream.write({
                 url: 'https://estrenatuauto.com/nuevo/' + car.brandUrl + '-' + car.modelUrl + '-' + car.year + '-' +car._id+ '',
@@ -204,6 +238,11 @@ export class AdminController {
                 img: car.images[1],
                 rel: 'canonical'
             })
+
+            if(brads.includes(car.brand))
+            {
+               brads.push(car.brand)
+            }
 
         })
 
@@ -216,7 +255,30 @@ export class AdminController {
                 img: car.images[1],
                 rel: 'canonical'
             })
+
+            if(brads.includes(car.brand))
+            {
+               brads.push(car.brand)
+            }
         })
+
+        for(let brand of brads)
+        {
+       
+            SmStream.write({
+                url: "https://estrenatuauto.com/autos-nuevos/"+brand.toLowerCase()+"-nuevos",
+                changefreq: 'monthly',
+                priority: 0.3,
+                rel: 'canonical'
+            })
+
+            SmStream.write({
+                url: "https://estrenatuauto.com/autos-seminuevos/"+brand.toLowerCase()+"-seminuevos",
+                changefreq: 'monthly',
+                priority: 0.3,
+                rel: 'canonical'
+            }) 
+        }
 
 
         SmStream.end()
