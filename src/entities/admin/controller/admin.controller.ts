@@ -239,9 +239,8 @@ export class AdminController {
             })
 
             if(brads.includes(car.brand))
-            {
-               brads.push(car.brand)
-            }
+            {}
+            else {brads.push(car.brand)}
 
         })
 
@@ -256,9 +255,8 @@ export class AdminController {
             })
 
             if(brads.includes(car.brand))
-            {
-               brads.push(car.brand)
-            }
+            {}
+            else {brads.push(car.brand)}
         })
 
         for(let brand of brads)
