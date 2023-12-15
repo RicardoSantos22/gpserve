@@ -126,10 +126,11 @@ export class AdminController {
 
          urls.push(newurl)
 
+         
+
          if(brads.includes(newcar.brand))
-         {
-            brads.push(newcar.brand)
-         }
+         {}
+         else {brads.push(newcar.brand)}
 
          if(chassisTypes.includes(newcar.chassisType))
          {
@@ -145,9 +146,8 @@ export class AdminController {
         urls.push(newurl)
 
         if(brads.includes(usedcar.brand))
-        {
-           brads.push(usedcar.brand)
-        }
+        {}
+        else {brads.push(usedcar.brand)}
 
         if(chassisTypes.includes(usedcar.chassisType))
         {
@@ -162,7 +162,6 @@ export class AdminController {
          urls.push(usedbrand)
          urls.push(newbrand)
        }
-
 
        return urls
     }
