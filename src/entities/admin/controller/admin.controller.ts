@@ -113,6 +113,13 @@ export class AdminController {
        'https://blog.estrenatuauto.com/diferencias-compra-autos-online-presencial',
        'https://blog.estrenatuauto.com/showroom-digital',
        'https://blog.estrenatuauto.com/nuestro-diferenciador',
+       'https://estrenatuauto.com/pickups',
+       'https://estrenatuauto.com/camionetas-vans',
+       'https://estrenatuauto.com/camionetas-chasis',
+       'https://estrenatuauto.com/suvs',
+       'https://estrenatuauto.com/carros-tipo-sedan',
+       'https://estrenatuauto.com/carros-tipo-hatchback',
+       'https://estrenatuauto.com/hyundai-hb20',
        'https://blog.estrenatuauto.com/razones-para-vender-tu-auto-aqui',
        'https://blog.estrenatuauto.com/razones-para-comprar-tu-auto-aqui',]
 
