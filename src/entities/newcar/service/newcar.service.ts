@@ -1,22 +1,23 @@
-import {HttpService} from '@nestjs/axios';
-import {Injectable, Logger, UnauthorizedException, Inject, CACHE_MANAGER} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
+import { Injectable, Logger, UnauthorizedException, Inject, CACHE_MANAGER } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import {Cron} from '@nestjs/schedule'
-import {CronExpression} from '@nestjs/schedule/dist';
-import {int} from 'aws-sdk/clients/datapipeline';
+import { Cron } from '@nestjs/schedule'
+import { CronExpression } from '@nestjs/schedule/dist';
+import { int } from 'aws-sdk/clients/datapipeline';
 
-import {CrudService} from '../../../common/crud/crud.service';
-import {PaginatedEntities} from '../../../common/models/paginated-entities.model';
-import {FindAllNewCarsQuery} from '../dto/find-all-newcars-query';
-import {NewCarGroupFilter} from '../dto/new-car-group-filter';
-import {NewCarsFilters} from '../dto/new-cars-filters';
-import {SADNewCar} from '../entities/sad-newcar';
-import {NewCarHelps} from '../helpers/newcar.helps';
-import {NewCar} from '../model/newcar.model';
-import {NewCarRepository} from '../repository/newcar.repository';
+import { CrudService } from '../../../common/crud/crud.service';
+import { PaginatedEntities } from '../../../common/models/paginated-entities.model';
+import { FindAllNewCarsQuery } from '../dto/find-all-newcars-query';
+import { NewCarGroupFilter } from '../dto/new-car-group-filter';
+import { NewCarsFilters } from '../dto/new-cars-filters';
+import { SADNewCar } from '../entities/sad-newcar';
+import { NewCarHelps } from '../helpers/newcar.helps';
+import { NewCar } from '../model/newcar.model';
+import { NewCarRepository } from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
-import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
+import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
+import { model } from 'mongoose';
 
 
 let x;
@@ -37,8 +38,8 @@ export class NewCarService extends CrudService<typeof x> {
         readonly repository: NewCarRepository,
         readonly config: ConfigService,
         private httpService: HttpService,
-        private finishedcar:FinishedcarsService
-        
+        private finishedcar: FinishedcarsService
+
     ) {
         super(repository, 'NewCar', config);
         this.sadApiConfig = {
@@ -53,44 +54,42 @@ export class NewCarService extends CrudService<typeof x> {
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
 
-        if(query.model && query.brand)
-        {
-           let newquery = await this.getAllModelOfBrands(query)
+        if (query.model && query.brand) {
+            let newquery = await this.getAllModelOfBrands(query)
 
-           const cars = await this.repository.findAll(newquery)
-           const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-           const response = {
-               ...cars,
-               items: groupedCars,
-             }
-           const r = {
-               count: cars.count,
-               items: response.items
-             }
-   
-           return r
+            const cars = await this.repository.findAll(newquery)
+            const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+            const response = {
+                ...cars,
+                items: groupedCars,
+            }
+            const r = {
+                count: cars.count,
+                items: response.items
+            }
+
+            return r
         }
-        else{
+        else {
             const cars = await this.repository.findAll(query)
             const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
             const response = {
                 ...cars,
                 items: groupedCars,
-              }
+            }
             const r = {
                 count: cars.count,
                 items: response.items
-              }
-    
+            }
+
             return r
         }
 
 
-  
+
     }
 
-    async getAllModelOfBrands(query: any)
-    {
+    async getAllModelOfBrands(query: any) {
 
         const cars = await this.repository.findByBrands(query.brand)
 
@@ -100,39 +99,58 @@ export class NewCarService extends CrudService<typeof x> {
             allmodeles.push(c.model)
         }
 
-        
-        for(let model of query.model)
-        {
-           if(allmodeles.includes(model) === false)
-           {
-            query.model = query.model.filter((i) => i !== model)
-           }
+
+        for (let model of query.model) {
+            if (allmodeles.includes(model) === false) {
+                query.model = query.model.filter((i) => i !== model)
+            }
         }
 
-        if(query.model.length === 0)
-        {
+        if (query.model.length === 0) {
             delete query.model;
         }
-        
-       return query
+
+        return query
 
     }
 
-    async findForString(body: any){
-        console.log(body)
+    async sugerenciasdebusqueda()
+    {
+        let sugerencias = []
+
+        const cars: any = await this.repository.findAll();
+
+        for(let car of cars.items)
+        {
+            let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase()
+
+            if(sugerencias.includes(sugerencia))
+            {}
+            else{sugerencias.push(sugerencia)}
+        }
+
+        return sugerencias
+    }
+
+    async findForString(body: any) {
+    
+        let tagsbusqueda = body.busqueda.split(' ');
+
+        console.log(body, tagsbusqueda)
+
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
 
         cars.items.forEach((car: any) => {
 
+            for (let tag of tagsbusqueda) {
+                if (car.model.includes(tag.toUpperCase()) || car.model.includes(tag.toLowerCase()) || car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase()) || car.series.includes(tag.toUpperCase()) || car.series.includes(tag.toLowerCase())) {
+                    carfinallist.push(car)
+                }
+            }
 
-           if(car.model.includes(body.busqueda.toUpperCase()) ||  car.brand.includes(body.busqueda.toUpperCase()) || car.series.includes(body.busqueda.toUpperCase()))
-           {
-            carfinallist.push(car)
-           }
-        });
-
-        return {items: carfinallist}
+        });     
+        return { items: carfinallist }
     }
 
     async getNewCars() {
@@ -140,28 +158,28 @@ export class NewCarService extends CrudService<typeof x> {
         return this.repository.findAll();
     }
 
-    async carModelVerification(car){
+    async carModelVerification(car) {
 
         let carID = '';
 
-        if(car.vin) { carID = car.vin}
-        if(car.ID) { carID = car.ID }
+        if (car.vin) { carID = car.vin }
+        if (car.ID) { carID = car.ID }
 
-        if( carID === '' || carID === null || carID.length !== 17){                return [{error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) =='}, {car}]}
-        if(car.agencyID === '' || car.agencyID === null){                          return [{error: 'sin agencyID'}, {car}]}
-        if(car.brand === '' || car.brand === null){                                return [{error: 'sin brand'}, {car}]}
-        if(car.model === '' || car.model === null){                                return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
-        if(car.series === '' || car.series === null ){                             return [{error: 'serie vacia'}, {car}]}
-        if(car.price === '' || car.price === null) {                               return [{error: 'sin precio'}, {car}]}
-        if(car.chassisType === '' || car.chassisType === null){                    return [{error: 'sin segmento'}, {car}]}
-        if(car.year === '' || car.year === null){                                  return [{error: 'sin año, verifique los datos ingresados'}, {car}]}
-        if(car.transmision === '' || car.transmision === null){                    return [{error: 'sin transmision, verifique los datos'}, {car}]}
-        if(car.fuel === '' || car.fuel === null){                                  return [{error: 'sin fuel'}, {car}]}
-        if(car.colours === '' || car.colours === null){                            return [{error: 'sin colour'}, {car}]}
-        if(car.baseColour === '' || car.baseColour === null) {                     return [{error: 'sin colour'}, {car}]}
+        if (carID === '' || carID === null || carID.length !== 17) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
+        if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }
+        if (car.brand === '' || car.brand === null) { return [{ error: 'sin brand' }, { car }] }
+        if (car.model === '' || car.model === null) { return [{ error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales' }, { car }] }
+        if (car.series === '' || car.series === null) { return [{ error: 'serie vacia' }, { car }] }
+        if (car.price === '' || car.price === null) { return [{ error: 'sin precio' }, { car }] }
+        if (car.chassisType === '' || car.chassisType === null) { return [{ error: 'sin segmento' }, { car }] }
+        if (car.year === '' || car.year === null) { return [{ error: 'sin año, verifique los datos ingresados' }, { car }] }
+        if (car.transmision === '' || car.transmision === null) { return [{ error: 'sin transmision, verifique los datos' }, { car }] }
+        if (car.fuel === '' || car.fuel === null) { return [{ error: 'sin fuel' }, { car }] }
+        if (car.colours === '' || car.colours === null) { return [{ error: 'sin colour' }, { car }] }
+        if (car.baseColour === '' || car.baseColour === null) { return [{ error: 'sin colour' }, { car }] }
 
         return 200
-    
+
     }
 
     async getByCarGroup(groupFilter: NewCarGroupFilter): Promise<{ cars: NewCar[], colours: string[] }> {
@@ -220,7 +238,7 @@ export class NewCarService extends CrudService<typeof x> {
             chassisType: [...sets.chassistype],
             promocioType: [...sets.promocioType]
         }
-        
+
         const otrosIndex = result.colours.indexOf('Otros')
         if (otrosIndex !== -1) {
             result.colours.splice(otrosIndex, 1)
@@ -258,9 +276,9 @@ export class NewCarService extends CrudService<typeof x> {
 
     }
 
-    async updateCarCatalogue() {        
+    async updateCarCatalogue() {
         let updateitem: int = 0;
-        const {token} = await this.loginToSAD()
+        const { token } = await this.loginToSAD()
         // const deletedRecords = await this.repository.deleteMany({})
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = []
@@ -303,13 +321,13 @@ export class NewCarService extends CrudService<typeof x> {
         try {
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADNewCar[] }>(
-                        `http://201.116.249.45:1089/api/Vehicles?dealerId=${id}`,
-                        {
-                            headers: {
-                                'Authorization': 'Bearer ' + token.trim()
-                            }
+                    `http://201.116.249.45:1089/api/Vehicles?dealerId=${id}`,
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + token.trim()
                         }
-                    ).toPromise()
+                    }
+                ).toPromise()
                 )
             }
             const responses = await Promise.all(promises)
@@ -325,8 +343,8 @@ export class NewCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
-              
-                    
+
+
                     for (let sc of sadNewCars) {
 
                         console.log(sc.agencyID)
@@ -343,12 +361,12 @@ export class NewCarService extends CrudService<typeof x> {
 
                         })
 
-                       let verificacion = await this.carModelVerification(sc)
+                        let verificacion = await this.carModelVerification(sc)
 
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
 
-                    
+
 
                             let newmodel: string;
                             let MetaDescription: string;
@@ -359,21 +377,21 @@ export class NewCarService extends CrudService<typeof x> {
                             let parsedSeries: string;
                             let promociontext: string;
 
-                            let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
+                            let banModelList = ['DENALI', 'MX', 'PE', '4X4', '2PTAS.', 'MAX', ' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
 
-                            banModelList.forEach((stringindex) =>  { 
+                            banModelList.forEach((stringindex) => {
 
-                            if(sc.model.includes(stringindex) && sc.model.includes('HB20')){
+                                if (sc.model.includes(stringindex) && sc.model.includes('HB20')) {
 
-                                newmodel = sc.model.replace(stringindex, '').trim()
-                                
-                            }
-                            else{
-                                newmodel = sc.model
-                            }
+                                    newmodel = sc.model.replace(stringindex, '').trim()
 
-                           })
+                                }
+                                else {
+                                    newmodel = sc.model
+                                }
+
+                            })
 
                             if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
@@ -387,46 +405,43 @@ export class NewCarService extends CrudService<typeof x> {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nueva de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Vehiculo de Carga Nuevo' + sc.brand + ' ' + sc.model + ' ' + sc.year;
                                 chasystype = 'CHASIS';
-                            } 
+                            }
 
                             else if (sc.chassisType === 'VAN' || sc.chassisType === 'MINIVAN' || sc.chassisType === 'PASAJEROS') {
                                 chasystype = 'VAN';
-                            } 
+                            }
                             else {
 
                                 MetaDescription = 'Compra tu ' + sc.brand + ' ' + sc.model.split(' ')[0] + ' nuevo de agencia. Solicitalo en linea desde cualquier lugar de mexico. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Nuevo ' + sc.brand + ' ' + sc.model + ' ' + sc.year;
-                                
-                                
 
-                                if(sc.chassisType === 'HATCH BACK' || sc.chassisType === 'HATCHBACK' )
-                                {
+
+
+                                if (sc.chassisType === 'HATCH BACK' || sc.chassisType === 'HATCHBACK') {
                                     chasystype = 'HATCHBACK';
                                 }
-                                else
-                                {
+                                else {
                                     chasystype = sc.chassisType;
                                 }
                             }
 
-                            if(sc.promotionAmount !== 0)
-                            {
+                            if (sc.promotionAmount !== 0) {
                                 promociontext = sc.promotionDescription + ' de ' + sc.promotionAmount.toLocaleString("en", {
                                     style: "currency",
                                     currency: "MXN"
                                 });
                             }
-                            else{
+                            else {
                                 promociontext = sc.promotionDescription;
                             }
 
-                            
-                            parsedModel = newmodel.replace('/','-')                            
-                            parsedBrand = sc.brand.replace('/','-')                                                        
-                            parsedSeries = sc.version.replace('/','-')
 
-                       
-                
+                            parsedModel = newmodel.replace('/', '-')
+                            parsedBrand = sc.brand.replace('/', '-')
+                            parsedSeries = sc.version.replace('/', '-')
+
+
+
                             //if(true) {
                             let newCar: NewCar = {
                                 vin: sc.ID,
@@ -457,27 +472,27 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                             if (BDID !== '') {
 
-                                 await this.repository.update(BDID, newCar)
+                                await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
-                                 newCarsArray.push(newCar)
+                                newCarsArray.push(newCar)
                             }
 
 
                         }
                         else {
 
-                            if(verificacion !== 200){
+                            if (verificacion !== 200) {
                                 carlistban.push(verificacion)
                             }
                             else {
                                 carlist.items.forEach((car: any) => {
 
                                     if (sc.ID === car.vin) {
-    
+
                                         this.finishedcar.create(car)
-    
-                                        console.log( 'auto descartado: ', car.vin)
+
+                                        console.log('auto descartado: ', car.vin)
                                         this.repository.delete(car._id)
                                     }
                                 })
@@ -488,16 +503,16 @@ export class NewCarService extends CrudService<typeof x> {
             }
 
             // const createdCars = newCarsArray;
-            
+
             const createdCars = await this.repository.createMany(newCarsArray)
 
-            if(carinlist.length > 0){
+            if (carinlist.length > 0) {
                 carlist.items.forEach((car: any) => {
-                    
-                    let bmwidlist = ['901', '902', '903', '904','905','906','907']
-                    
-                    if(carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)){}
-                    else{
+
+                    let bmwidlist = ['901', '902', '903', '904', '905', '906', '907']
+
+                    if (carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)) { }
+                    else {
                         let updateCar: finishecar = {
                             id: car._id,
                             vin: car.vin,
@@ -522,17 +537,17 @@ export class NewCarService extends CrudService<typeof x> {
                             km: 0,
                         }
                         this.finishedcar.create(updateCar)
-                        console.log( 'auto descartado: ', car.vin)
+                        console.log('auto descartado: ', car.vin)
                         this.repository.delete(car._id)
                     }
                 });
             }
-        
+
             return {
                 banCarlist: carlistban,
                 count: newCarsArray.length,
                 results: createdCars,
-                
+
             }
         } catch (err) {
             console.log('error en update newcar: ' + err)
@@ -569,6 +584,6 @@ export class NewCarService extends CrudService<typeof x> {
             userName: this.sadApiConfig.username,
             password: this.sadApiConfig.password
         }).toPromise()
-        return {token: response.data}
+        return { token: response.data }
     }
 };

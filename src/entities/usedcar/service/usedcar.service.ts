@@ -104,18 +104,39 @@ export class UsedCarService extends CrudService<typeof x> {
 
     }
 
+    async sugerenciasdebusqueda()
+    {
+        let sugerencias = []
+
+        const cars: any = await this.repository.findAll();
+
+        for(let car of cars.items)
+        {
+            let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase()
+
+            if(sugerencias.includes(sugerencia))
+            {}
+            else{sugerencias.push(sugerencia)}
+        }
+
+        return sugerencias
+    }
+
 
     async findForString(body: any){
+        let tagsbusqueda = body.busqueda.split(' ');
+
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
 
         cars.items.forEach((car: any) => {
 
 
-           if(car.model.includes(body.busqueda.toUpperCase()) ||  car.brand.includes(body.busqueda.toUpperCase()) || car.series.includes(body.busqueda.toUpperCase()))
-           {
-            carfinallist.push(car)
-           }
+            for (let tag of tagsbusqueda) {
+                if (car.model.includes(tag.toUpperCase()) || car.model.includes(tag.toLowerCase()) || car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase()) || car.series.includes(tag.toUpperCase()) || car.series.includes(tag.toLowerCase())) {
+                    carfinallist.push(car)
+                }
+            }
         });
 
         return {items: carfinallist}

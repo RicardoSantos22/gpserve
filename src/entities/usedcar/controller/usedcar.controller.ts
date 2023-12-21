@@ -82,6 +82,12 @@ export class UsedCarController {
     return await this.service.updateCarCatalogue();
   }
 
+  @Get('sugerencias')
+  async sugerencias()
+  {
+    return this.service.sugerenciasdebusqueda()
+  }
+
 
   @Get('filters')
   async getFiltersValues() {

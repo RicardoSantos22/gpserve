@@ -87,6 +87,12 @@ export class NewCarController {
     return await this.service.updateCarCatalogue();
   }
 
+  @Get('sugerencias')
+  async sugerencias()
+  {
+    return this.service.sugerenciasdebusqueda()
+  }
+
   
   @Get('filters')
   async getFiltersValues() {
@@ -148,10 +154,13 @@ export class NewCarController {
     return this.service.findById(params.id);
   }
 
+
   @Get('vin/:vin')
   async findByvin(@Param('vin') vin: string) {
     return this.service.getcarbyvin(vin)
   }
+
+  
 
   /**
    * #region create
@@ -190,6 +199,7 @@ export class NewCarController {
   {
     return this.service.findForString(body)
   }
+
 
   @Post('bmw')
   async bmw(@Body() body: CreateNewCarDTO) {
