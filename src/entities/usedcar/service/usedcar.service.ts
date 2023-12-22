@@ -139,7 +139,18 @@ export class UsedCarService extends CrudService<typeof x> {
             }
         });
 
-        return {items: carfinallist}
+
+        const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
+        const response = {
+            ...cars,
+            items: groupedCars,
+        }
+        const r = {
+            count: cars.count,
+            items: response.items
+        }
+
+        return r
     }
 
     async carModelVerification(car){

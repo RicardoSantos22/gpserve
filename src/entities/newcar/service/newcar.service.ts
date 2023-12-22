@@ -128,6 +128,7 @@ export class NewCarService extends CrudService<typeof x> {
             {}
             else{sugerencias.push(sugerencia)}
         }
+        
 
         return sugerencias
     }
@@ -149,8 +150,19 @@ export class NewCarService extends CrudService<typeof x> {
                 }
             }
 
-        });     
-        return { items: carfinallist }
+        });   
+        
+        const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
+        const response = {
+            ...cars,
+            items: groupedCars,
+        }
+        const r = {
+            count: cars.count,
+            items: response.items
+        }
+        
+        return r
     }
 
     async getNewCars() {
