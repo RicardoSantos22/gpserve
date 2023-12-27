@@ -212,6 +212,13 @@ export class AdminController {
         SmStream.write({url: 'https://blog.estrenatuauto.com/seminuevos-agencia-vs-lotes', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://blog.estrenatuauto.com/ventajas-seminuevos-agencia', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
 
+        SmStream.write({url: 'https://blog.estrenatuauto.com/seguro-autos', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/autos-electricos-2024', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/tendencias-diseno-2024', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/mejores-suvs-2024', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/marcas-automotrices-prometedoras-2024', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+        SmStream.write({url: 'https://blog.estrenatuauto.com/avances-tecnologia-automotriz', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
+
         SmStream.write({url: 'https://blog.estrenatuauto.com/refacciones-originales-vs-genericas', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://blog.estrenatuauto.com/como-ahorrar-gasolina', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
         SmStream.write({url: 'https://blog.estrenatuauto.com/diferencia-mantenimiento-agencia-taller', rel: 'canonical', changefreq: 'monthly', priority: 0.3})
