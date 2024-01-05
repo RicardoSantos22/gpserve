@@ -17,7 +17,7 @@ import { NewCar } from '../model/newcar.model';
 import { NewCarRepository } from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
-import { model } from 'mongoose';
+import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
 
 
 let x;
@@ -38,7 +38,8 @@ export class NewCarService extends CrudService<typeof x> {
         readonly repository: NewCarRepository,
         readonly config: ConfigService,
         private httpService: HttpService,
-        private finishedcar: FinishedcarsService
+        private finishedcar: FinishedcarsService,
+        private UsedCarRepository: UsedCarRepository
 
     ) {
         super(repository, 'NewCar', config);
@@ -119,11 +120,21 @@ export class NewCarService extends CrudService<typeof x> {
         let sugerencias = []
 
         const cars: any = await this.repository.findAll();
+        const usedcars: any = await this.UsedCarRepository.findAll();
 
         for(let car of cars.items)
         {
             let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase()
 
+            if(sugerencias.includes(sugerencia))
+            {}
+            else{sugerencias.push(sugerencia)}
+        }
+
+        for(let car of usedcars.items)
+        {
+            let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase();
+           
             if(sugerencias.includes(sugerencia))
             {}
             else{sugerencias.push(sugerencia)}
@@ -136,8 +147,6 @@ export class NewCarService extends CrudService<typeof x> {
     async findForString(body: any) {
     
         let tagsbusqueda = body.busqueda.split(' ');
-
-        console.log(body, tagsbusqueda)
 
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];

@@ -6,11 +6,13 @@ import { NewCarService } from './service/newcar.service';
 import { NewCarRepository } from './repository/newcar.repository';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
+import { UsedCarModule } from '../usedcar/usedcar.module';
 
 import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
 
 @Module({
   imports: [
+    UsedCarModule,
     FinishedcarsModule,
     ScheduleModule.forRoot(),
     TypegooseModule.forFeature([NewCar]),
