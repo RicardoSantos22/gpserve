@@ -338,7 +338,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
-                        console.log(sc.agencyID)
                         
                          let BDID: string = '';
                         carlist.items.forEach((car: any) => {
@@ -358,8 +357,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
 
-
-                            console.log(sc.chassisType)
                             let MetaDescription: string;
                             let h1: string;
                             let chasystype: string;
@@ -368,6 +365,10 @@ export class UsedCarService extends CrudService<typeof x> {
                             let parsedSeries: string;
                             let newmodel: string;
                             let promociontext: string;
+                            let parseprice = parseInt(sc.price)
+
+                            console.log('parse data =>', parseprice)
+
                             let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
                             banModelList.forEach((stringindex) =>  { 
@@ -449,7 +450,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 model: parsedModel,
                                 status: 'online',
                                 series: parsedSeries,
-                                price: sc.price,
+                                price: parseInt(sc.price),
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
                                 transmision: sc.transmision.trim(),
@@ -489,7 +490,6 @@ export class UsedCarService extends CrudService<typeof x> {
     
                                         this.finishedcar.create(car)
     
-                                        console.log( 'auto descartado: ', car.vin)
                                         this.repository.delete(car._id)
                                     }
                                 })
