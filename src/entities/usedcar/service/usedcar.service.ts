@@ -355,7 +355,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                      
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200, parseInt(sc.year) >= 2019) {
 
                             let MetaDescription: string;
                             let h1: string;
@@ -365,9 +365,6 @@ export class UsedCarService extends CrudService<typeof x> {
                             let parsedSeries: string;
                             let newmodel: string;
                             let promociontext: string;
-                            let parseprice = parseInt(sc.price)
-
-                            console.log('parse data =>', parseprice)
 
                             let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
@@ -426,9 +423,14 @@ export class UsedCarService extends CrudService<typeof x> {
                                 });
                             }
                             else{
-                                promociontext = sc.promotionDescription;
+                                if(sc.promotionDescription === " ")
+                                {
+                                    promociontext = ""
+                                }
+                                else{
+                                    promociontext = sc.promotionDescription;
+                                }
                             }
-
 
                             parsedModel = newmodel.replace('/','-').trim()                         
                             parsedBrand = sc.brand.replace('/','-').trim()                                                 
@@ -462,10 +464,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 specs: sc.specs
                             }
 
-                            if(sc.agencyID === 17)
-                            {
-                                console.log(sc)
-                            }
+                         
                             
                             if (BDID !== '') {
 

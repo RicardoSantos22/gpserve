@@ -83,7 +83,7 @@ export class NewCarController {
   async updateCarList(@Req() req: Request){
     let hh = new Date().toLocaleString()
     const userAgent = req.headers['user-agent'];
-    console.log('se inicio una actualizacion de catalogo usedcars a las: ' + hh + ' Por: ' + userAgent )
+    console.log('se inicio una actualizacion de catalogo Newcars a las: ' + hh + ' Por: ' + userAgent )
     return await this.service.updateCarCatalogue();
   }
 

@@ -368,8 +368,6 @@ export class NewCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
-                        console.log(sc.agencyID)
-
 
                         let BDID: string = '';
 
@@ -385,10 +383,9 @@ export class NewCarService extends CrudService<typeof x> {
                         let verificacion = await this.carModelVerification(sc)
 
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200, parseInt(sc.year) >= 2019) {
 
-
-
+                            console.log(sc.year)
                             let newmodel: string;
                             let MetaDescription: string;
                             let h1: string;
@@ -453,7 +450,16 @@ export class NewCarService extends CrudService<typeof x> {
                                 });
                             }
                             else {
-                                promociontext = sc.promotionDescription;
+
+                                if(sc.promotionDescription === " ")
+                                {
+                                    promociontext = ""
+                                }
+                                else{
+                                    promociontext = sc.promotionDescription;
+                                }
+
+                                
                             }
 
 
