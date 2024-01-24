@@ -383,7 +383,7 @@ export class NewCarService extends CrudService<typeof x> {
                         let verificacion = await this.carModelVerification(sc)
 
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200, parseInt(sc.year) >= 2019) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
 
                             console.log(sc.year)
                             let newmodel: string;

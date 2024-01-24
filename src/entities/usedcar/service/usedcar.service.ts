@@ -355,7 +355,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                      
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200, parseInt(sc.year) >= 2019) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
 
                             let MetaDescription: string;
                             let h1: string;
