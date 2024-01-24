@@ -25,7 +25,16 @@ export class LibroazulService {
           llave: clave
         }
         let ediciones = await this.http.post('https://api.libroazul.com/Api/Años/?Llave=' + clave).toPromise()
-        return [ediciones.data, llave];
+     
+        let newediciones:any = []
+        for(let edicion of ediciones.data)
+        {
+          if(parseInt(edicion.Clave) >= 2019)
+          {
+            newediciones.push(edicion)
+          }
+        }
+        return [newediciones, llave];
     }
 
     async obtenermarcas(data: any) {
