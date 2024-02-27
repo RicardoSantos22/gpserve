@@ -18,6 +18,7 @@ import { NewCarRepository } from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
+import { Console } from 'console';
 
 
 let x;
@@ -139,8 +140,14 @@ export class NewCarService extends CrudService<typeof x> {
             {}
             else{sugerencias.push(sugerencia)}
         }
-        
 
+        let allbrands = ['HYUNDAI', 'KIA', 'CHEVROLET', 'TOYOTA', 'GEELY', 'CHIREY', 'JEEP', 'GWM', 'GMC', 'BUICK', 'DODGE', 
+        'FIAT', 'PEUGEOT', 'JAC', 'OMODA', 'NISSAN', 'HONDA', 'BMW', 'JAGUAR', 'MINI', 'FORD', 'SUSUKI', 'SEAT', 'VOLKSWAGEN', 'MERCEDES-BENZ', 'MAZDA', 'RENAULT', 'RAM', 'AUDI'];
+
+        for(let brand of allbrands)
+        {
+            sugerencias.push(brand)
+        }
         return sugerencias
     }
 
