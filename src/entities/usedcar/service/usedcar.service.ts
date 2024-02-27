@@ -338,6 +338,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
+                     
                         
                          let BDID: string = '';
                         carlist.items.forEach((car: any) => {
@@ -356,6 +357,7 @@ export class UsedCarService extends CrudService<typeof x> {
                      
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
+
 
                             let MetaDescription: string;
                             let h1: string;
@@ -504,7 +506,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 
                 carlist.items.forEach((car: any) => {
 
-                    let bmwidlist = ['901', '902', '903', '904','905','906','907']
+                    let bmwidlist = ['800', '901', '902', '903', '904','905','906','907']
 
              
                     if(carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)){
