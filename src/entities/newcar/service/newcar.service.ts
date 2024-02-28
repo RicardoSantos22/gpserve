@@ -153,14 +153,14 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findForString(body: any) {
     
-       
+        console.log(body)
         let tagsbusqueda = body.busqueda.split(' ');
       
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
-   
-        console.log(tagsbusqueda.length)
 
+       if(body.type === 'develop')
+       {
         if(tagsbusqueda.length >= 1)
         {
          
@@ -187,7 +187,24 @@ export class NewCarService extends CrudService<typeof x> {
                 }
             })
 
-        } 
+        }
+
+       }
+
+        if(body.type === 'produccion')
+        {
+
+            cars.items.forEach((car: any) => {
+                for(let tag of tagsbusqueda)
+                {
+                    if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase()) ) {
+                        console.log(car)
+                        carfinallist.push(car)
+                    }
+                }
+            })
+        }
+
         
         const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
         const response = {
