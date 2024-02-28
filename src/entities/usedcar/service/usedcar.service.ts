@@ -129,25 +129,37 @@ export class UsedCarService extends CrudService<typeof x> {
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
 
-        cars.items.forEach((car: any) => {
+        console.log(tagsbusqueda.length)
 
-            if( tagsbusqueda.length > 1)
+        if(tagsbusqueda.length >= 1)
+        {
+         
+           cars.items.forEach((car: any)  => {
+            
+            for(let tag of tagsbusqueda)
             {
-                for (let tag of tagsbusqueda) {
-                    if (car.model.includes(tag.toUpperCase()) && car.brand === tagsbusqueda[0].toUpperCase()) {
-                        carfinallist.push(car)
-                    }
+                if (car.model === tag.toUpperCase() && car.brand === tagsbusqueda[0].toUpperCase()) {
+                    console.log(car)
+                    carfinallist.push(car)
                 }
             }
-            else{
-                for (let tag of tagsbusqueda) {
+           });   
+        }
+        else
+        {
+            cars.items.forEach((car: any) => {
+                for(let tag of tagsbusqueda)
+                {
                     if (car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase())) {
+                        console.log(car)
                         carfinallist.push(car)
                     }
                 }
-            }
-        });
+            })
 
+        }
+
+        console.log(carfinallist)
 
         const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
         const response = {
