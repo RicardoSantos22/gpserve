@@ -153,18 +153,31 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findForString(body: any) {
     
+        console.log('limpia =>', body)
         let tagsbusqueda = body.busqueda.split(' ');
-
+        console.log('simplificado =>', tagsbusqueda)
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
+        
 
         cars.items.forEach((car: any) => {
-
-            for (let tag of tagsbusqueda) {
-                if (car.model.includes(tag.toUpperCase()) || car.model.includes(tag.toLowerCase()) || car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase()) || car.series.includes(tag.toUpperCase()) || car.series.includes(tag.toLowerCase())) {
-                    carfinallist.push(car)
+            
+            if( tagsbusqueda.length > 1)
+            {
+                for (let tag of tagsbusqueda) {
+                    if (car.model.includes(tag.toUpperCase()) && car.brand === tagsbusqueda[0].toUpperCase()) {
+                        carfinallist.push(car)
+                    }
                 }
             }
+            else{
+                for (let tag of tagsbusqueda) {
+                    if (car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase())) {
+                        carfinallist.push(car)
+                    }
+                }
+            }
+          
 
         });   
         

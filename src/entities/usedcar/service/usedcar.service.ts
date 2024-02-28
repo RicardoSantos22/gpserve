@@ -131,10 +131,19 @@ export class UsedCarService extends CrudService<typeof x> {
 
         cars.items.forEach((car: any) => {
 
-
-            for (let tag of tagsbusqueda) {
-                if (car.model.includes(tag.toUpperCase()) || car.model.includes(tag.toLowerCase()) || car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase()) || car.series.includes(tag.toUpperCase()) || car.series.includes(tag.toLowerCase())) {
-                    carfinallist.push(car)
+            if( tagsbusqueda.length > 1)
+            {
+                for (let tag of tagsbusqueda) {
+                    if (car.model.includes(tag.toUpperCase()) && car.brand === tagsbusqueda[0].toUpperCase()) {
+                        carfinallist.push(car)
+                    }
+                }
+            }
+            else{
+                for (let tag of tagsbusqueda) {
+                    if (car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase())) {
+                        carfinallist.push(car)
+                    }
                 }
             }
         });
