@@ -125,15 +125,16 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async findForString(body: any){
 
-        console.log(body)
+    
         let tagsbusqueda = body.busqueda.split(' ');
 
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
-
+       console.log(tagsbusqueda)
+        console.log(tagsbusqueda.length)
         if(body.type === 'develop')
         {
-         if(tagsbusqueda.length >= 1)
+         if(tagsbusqueda.length > 1)
          {
           
             cars.items.forEach((car: any)  => {
@@ -141,7 +142,6 @@ export class UsedCarService extends CrudService<typeof x> {
              for(let tag of tagsbusqueda)
              {
                  if (car.model === tag.toUpperCase() && car.brand === tagsbusqueda[0].toUpperCase()) {
-                     console.log(car)
                      carfinallist.push(car)
                  }
              }
@@ -149,14 +149,12 @@ export class UsedCarService extends CrudService<typeof x> {
          }
          else
          {
+            console.log('entro aqui usedcar')
              cars.items.forEach((car: any) => {
-                 for(let tag of tagsbusqueda)
-                 {
-                     if (car.brand.includes(tag.toUpperCase()) || car.brand.includes(tag.toLowerCase())) {
-                         console.log(car)
+                     if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase()) || car.model.includes(body.busqueda.toLowerCase())) {
+                     
                          carfinallist.push(car)
                      }
-                 }
              })
  
          }
@@ -167,15 +165,16 @@ export class UsedCarService extends CrudService<typeof x> {
          {
  
              cars.items.forEach((car: any) => {
-                 for(let tag of tagsbusqueda)
-                 {
+           
                      if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase()) ) {
-                         console.log(car)
+                     
                          carfinallist.push(car)
                      }
-                 }
+                 
              })
          }
+         console.log('usedcar')
+         console.log(carfinallist)
         const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
         const response = {
             ...cars,
@@ -186,6 +185,7 @@ export class UsedCarService extends CrudService<typeof x> {
             items: response.items
         }
 
+        console.log(r)
         return r
     }
 
