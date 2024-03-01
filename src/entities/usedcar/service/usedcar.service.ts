@@ -130,8 +130,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
-       console.log(tagsbusqueda)
-        console.log(tagsbusqueda.length)
+   
         if(body.type === 'develop')
         {
          if(tagsbusqueda.length > 1)
@@ -173,8 +172,7 @@ export class UsedCarService extends CrudService<typeof x> {
                  
              })
          }
-         console.log('usedcar')
-         console.log(carfinallist)
+      
         const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
         const response = {
             ...cars,
@@ -185,7 +183,7 @@ export class UsedCarService extends CrudService<typeof x> {
             items: response.items
         }
 
-        console.log(r)
+
         return r
     }
 

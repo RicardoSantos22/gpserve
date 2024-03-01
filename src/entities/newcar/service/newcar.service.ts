@@ -206,8 +206,7 @@ export class NewCarService extends CrudService<typeof x> {
                 }
             })
         }
-        console.log('newcar')
-        console.log(carfinallist)
+       
         const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
         const response = {
             ...cars,
@@ -218,8 +217,7 @@ export class NewCarService extends CrudService<typeof x> {
             items: response.items
         }
 
-        console.log(r)
-        
+      
         return r
     }
 
