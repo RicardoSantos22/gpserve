@@ -334,6 +334,8 @@ export class UsedCarService extends CrudService<typeof x> {
             1034, //jac mochis
             1035, //geely hermosillo
             1037, //gwm culiacan
+            2037, //gwm  mexicali
+            2038 //gwm tijuana
         ]
         let promises = []
 
