@@ -18,7 +18,6 @@ import { NewCarRepository } from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
-import { Console } from 'console';
 
 
 let x;

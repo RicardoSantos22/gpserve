@@ -3,13 +3,15 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as compression from 'compression';
 
 // Only for dev
 require('dotenv').config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
+  app.use(compression());  
   const port = process.env.PORT;
   app.setGlobalPrefix('api')
   // app.useGlobalPipes(
