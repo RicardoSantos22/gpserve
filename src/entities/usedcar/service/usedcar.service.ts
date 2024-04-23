@@ -476,9 +476,9 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             //if(true) {
                             let usedCar: UsedCar = {
-                                promocioType: sc.promotionDescription,
+                                promocioType: sc.promotionDescription.trim(),
                                 chassisType: chasystype,
-                                promocion: sc.promotionDescription,
+                                promocion: sc.promotionDescription.trim(),
                                 promotionAmount: sc.promotionAmount,
                                 agencyCity: sc.agencyCity,
                                 metaTitulo: ''+sc.brand.trim()+' '+sc.model.trim()+' '+ sc.year.trim()+' Seminuevo en Línea | Estrena tu Auto',
@@ -489,7 +489,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
                                 status: 'online',
-                                series: parsedSeries,
+                                series: parsedSeries.toLowerCase(),
                                 price: parseInt(sc.price),
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),

@@ -232,7 +232,7 @@ export class NewCarService extends CrudService<typeof x> {
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
 
-        if (carID === '' || carID === null || carID.length !== 17) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
+        if (carID === '' || carID === null || carID.length !== 17 ) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
         if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }
         if (car.brand === '' || car.brand === null) { return [{ error: 'sin brand' }, { car }] }
         if (car.model === '' || car.model === null) { return [{ error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales' }, { car }] }
@@ -240,7 +240,7 @@ export class NewCarService extends CrudService<typeof x> {
         if (car.price === '' || car.price === null) { return [{ error: 'sin precio' }, { car }] }
         if (car.chassisType === '' || car.chassisType === null) { return [{ error: 'sin segmento' }, { car }] }
         if (car.year === '' || car.year === null) { return [{ error: 'sin año, verifique los datos ingresados' }, { car }] }
-        if (car.transmision === '' || car.transmision === null) { return [{ error: 'sin transmision, verifique los datos' }, { car }] }
+        if (car.transmision === '' || car.transmision === null && car.transmision) { return [{ error: 'sin transmision, verifique los datos' }, { car }] }
         if (car.fuel === '' || car.fuel === null) { return [{ error: 'sin fuel' }, { car }] }
         if (car.colours === '' || car.colours === null) { return [{ error: 'sin colour' }, { car }] }
         if (car.baseColour === '' || car.baseColour === null) { return [{ error: 'sin colour' }, { car }] }
@@ -432,7 +432,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
 
-                            console.log(sc.year)
+                       
                             let newmodel: string;
                             let MetaDescription: string;
                             let h1: string;
@@ -519,13 +519,13 @@ export class NewCarService extends CrudService<typeof x> {
                             //if(true) {
                             let newCar: NewCar = {
                                 vin: sc.ID,
-                                promocioType: sc.promotionDescription,
+                                promocioType: sc.promotionDescription.trim(),
                                 agencyId: sc.agencyID.toString(),
-                                promocion: promociontext,
+                                promocion: promociontext.trim(),
                                 promotionAmount: sc.promotionAmount,
                                 brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
-                                series: parsedSeries,
+                                series: parsedSeries.toLowerCase(),
                                 agencyCity: sc.agencyCity,
                                 chassisType: chasystype,
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
