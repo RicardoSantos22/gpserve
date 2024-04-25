@@ -390,9 +390,10 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         let verificacion = await this.carModelVerification(sc)
 
-                     
+                    
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
+                  
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200 ) {
 
 
                             let MetaDescription: string;
@@ -470,9 +471,12 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                            parsedModel = newmodel.replace('/','-').trim()                         
-                            parsedBrand = sc.brand.replace('/','-').trim()                                                 
-                            parsedSeries = sc.version.replace('/','-').trim()
+                            parsedModel = sc.model.replace('/', '-')
+                            parsedBrand = sc.brand.replace('/', '-')
+                            parsedSeries = sc.version.replace('/', '-')
+  
+                            let serie = parsedSeries.toLowerCase()
+
 
                             //if(true) {
                             let usedCar: UsedCar = {
@@ -489,7 +493,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
                                 status: 'online',
-                                series: parsedSeries.toLowerCase(),
+                                series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),

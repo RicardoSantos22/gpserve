@@ -514,6 +514,9 @@ export class NewCarService extends CrudService<typeof x> {
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
 
+                            let serie = parsedSeries.toLowerCase();
+
+
 
 
                             //if(true) {
@@ -525,7 +528,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 promotionAmount: sc.promotionAmount,
                                 brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
-                                series: parsedSeries.toLowerCase(),
+                                series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase,
                                 agencyCity: sc.agencyCity,
                                 chassisType: chasystype,
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
