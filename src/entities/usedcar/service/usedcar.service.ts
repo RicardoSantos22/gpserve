@@ -475,7 +475,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
   
-                            let serie = parsedSeries.toLowerCase()
+                            let serie = sc.version.trim().toLowerCase();
 
 
                             //if(true) {
