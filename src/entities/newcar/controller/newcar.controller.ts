@@ -99,6 +99,13 @@ export class NewCarController {
     return this.service.getFiltersValues()
   }
 
+  @Get('getfiltercountnewcar')
+  async getfiltercount(){
+    return this.service.getfiltercount()
+  }
+  
+
+
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Get('filters/models')
   async getModelsByBrands(@Query() { brand }: ModelsByBrandsQuery) {
@@ -155,13 +162,15 @@ export class NewCarController {
   }
 
 
+
+
   @Get('vin/:vin')
   async findByvin(@Param('vin') vin: string) {
     return this.service.getcarbyvin(vin)
   }
 
-  
 
+  
   /**
    * #region create
    * 
@@ -193,6 +202,7 @@ export class NewCarController {
     
     return this.service.create({ ...body });
   }
+  
 
   @Post('busqueda')
   async busqueda(@Body() body: any)

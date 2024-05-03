@@ -90,6 +90,56 @@ export class NewCarService extends CrudService<typeof x> {
 
     }
 
+    async getfiltercount() {
+        let counts: any = {
+            nuevos: 0,
+            brands: [],
+            year: [],
+            transmision: [],
+            colours: [],
+            chassisType: [],
+            agencyId: [],
+        }
+
+
+        let filters = this.getFiltersValues()
+
+        counts.nuevos = (await this.repository.findAll()).items.length;
+
+        for (let brand of (await filters).brand) {
+            let count = await (await this.repository.findAll({ brand: brand })).items.length
+            counts.brands.push({ brand: brand, count: count })
+        }
+
+        for (let year of (await filters).year) {
+            let count = await (await this.repository.findAll({ year: year.toString() })).items.length
+            counts.year.push({ year: year, count: count })
+        }
+
+        for (let transmision of (await filters).transmision) {
+            let count = await (await this.repository.findAll({ transmision: transmision })).items.length
+            counts.transmision.push({ transmision: transmision, count: count })
+        }
+        for (let colour of (await filters).colours) {
+            let count = await (await this.repository.findAll({ colours: colour })).items.length
+            counts.colours.push({ colour: colour, count: count })
+        }
+        for (let chassistype of (await filters).chassisType) {
+            let count = await (await this.repository.findAll({ chassisType: chassistype })).items.length
+            counts.chassisType.push({ chassistype: chassistype, count: count })
+        }
+        for (let agencyId of (await filters).agencyId) {
+            let count = await (await this.repository.findAll({ agencyId: agencyId })).items.length
+            counts.agencyId.push({ agencyId: agencyId, count: count })
+        }
+
+
+
+        return counts
+
+    }
+
+
     async getAllModelOfBrands(query: any) {
 
         const cars = await this.repository.findByBrands(query.brand)

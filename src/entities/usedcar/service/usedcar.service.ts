@@ -1,17 +1,17 @@
-import {HttpService} from '@nestjs/axios';
-import {Injectable, Logger, UnauthorizedException} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {CrudService} from '../../../common/crud/crud.service';
-import {NewCarsFilters} from '../../newcar/dto/new-cars-filters';
-import {NewCarHelps} from '../../newcar/helpers/newcar.helps';
-import {SADUsedCar} from '../entities/sad-used-car';
-import {UsedCar} from '../model/usedcar.model';
-import {Car as finishecar} from '../model/finishedcars.model';
-import {UsedCarRepository} from '../repository/usedcar.repository';
+import { HttpService } from '@nestjs/axios';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { CrudService } from '../../../common/crud/crud.service';
+import { NewCarsFilters } from '../../newcar/dto/new-cars-filters';
+import { NewCarHelps } from '../../newcar/helpers/newcar.helps';
+import { SADUsedCar } from '../entities/sad-used-car';
+import { UsedCar } from '../model/usedcar.model';
+import { Car as finishecar } from '../model/finishedcars.model';
+import { UsedCarRepository } from '../repository/usedcar.repository';
 
-import {Cron} from '@nestjs/schedule'
-import {CronExpression} from '@nestjs/schedule/dist';
-import {FinishedcarsService} from 'src/entities/finishedcars/service/finishedcars.service'
+import { Cron } from '@nestjs/schedule'
+import { CronExpression } from '@nestjs/schedule/dist';
+import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
 import { Agency } from 'src/entities/agency/model/agency.model';
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
@@ -32,7 +32,7 @@ export class UsedCarService extends CrudService<typeof x> {
     constructor(
         readonly repository: UsedCarRepository,
         readonly config: ConfigService,
-        private finishedcar:FinishedcarsService,
+        private finishedcar: FinishedcarsService,
         private httpService: HttpService
     ) {
         super(repository, 'UsedCar', config);
@@ -52,31 +52,31 @@ export class UsedCarService extends CrudService<typeof x> {
     async findAll(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
 
 
-        if(query.model && query.brand)
-        {
-           let newquery = await this.getAllModelOfBrands(query)
+        if (query.model && query.brand) {
+            let newquery = await this.getAllModelOfBrands(query)
 
-           console.log(newquery)
+            console.log(newquery)
 
-           const cars = await this.repository.findAll(newquery)
-   
-   
-           return cars
+            const cars = await this.repository.findAll(newquery)
+
+
+            return cars
         }
-        else{
+        else {
             const cars = await this.repository.findAll(query)
-   
-    
+
+
             return cars
         }
 
 
-  
+
     }
 
 
-    async getAllModelOfBrands(query: any)
-    {
+
+
+    async getAllModelOfBrands(query: any) {
 
         const cars = await this.repository.findByBrands(query.brand)
 
@@ -86,93 +86,132 @@ export class UsedCarService extends CrudService<typeof x> {
             allmodeles.push(c.model)
         }
 
-        
-        for(let model of query.model)
-        {
-           if(allmodeles.includes(model) === false)
-           {
-            query.model = query.model.filter((i) => i !== model)
-           }
+
+        for (let model of query.model) {
+            if (allmodeles.includes(model) === false) {
+                query.model = query.model.filter((i) => i !== model)
+            }
         }
 
-        if(query.model.length === 0)
-        {
+        if (query.model.length === 0) {
             delete query.model;
         }
-        
-       return query
+
+        return query
 
     }
 
-    async sugerenciasdebusqueda()
-    {
+    async sugerenciasdebusqueda() {
         let sugerencias = []
 
         const cars: any = await this.repository.findAll();
 
-        for(let car of cars.items)
-        {
+        for (let car of cars.items) {
             let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase()
 
-            if(sugerencias.includes(sugerencia))
-            {}
-            else{sugerencias.push(sugerencia)}
+            if (sugerencias.includes(sugerencia)) { }
+            else { sugerencias.push(sugerencia) }
         }
 
         return sugerencias
     }
 
 
-    async findForString(body: any){
+    async getfiltercount() {
+        let counts: any = {
+            seminuevos: 0,
+            brands: [],
+            year: [],
+            transmision: [],
+            colours: [],
+            chassisType: [],
+            agencyId: [],
+        }
 
-    
+
+        let filters = this.getFiltersValues()
+
+        counts.seminuevos = (await this.repository.findAll()).items.length;
+
+        for (let brand of (await filters).brand) {
+            let count = await (await this.repository.findAll({ brand: brand })).items.length
+            counts.brands.push({ brand: brand, count: count })
+        }
+
+        for (let year of (await filters).year) {
+            let count = await (await this.repository.findAll({ year: year.toString() })).items.length
+            counts.year.push({ year: year, count: count })
+        }
+
+        for (let transmision of (await filters).transmision) {
+            let count = await (await this.repository.findAll({ transmision: transmision })).items.length
+            counts.transmision.push({ transmision: transmision, count: count })
+        }
+        for (let colour of (await filters).colours) {
+            let count = await (await this.repository.findAll({ colours: colour })).items.length
+            counts.colours.push({ colour: colour, count: count })
+        }
+        for (let chassistype of (await filters).chassisType) {
+            let count = await (await this.repository.findAll({ chassisType: chassistype })).items.length
+            counts.chassisType.push({ chassistype: chassistype, count: count })
+        }
+        for (let agencyId of (await filters).agencyId) {
+            let count = await (await this.repository.findAll({ agencyId: agencyId })).items.length
+            counts.agencyId.push({ agencyId: agencyId, count: count })
+        }
+
+
+
+        return counts
+
+    }
+
+
+    async findForString(body: any) {
+
+
         let tagsbusqueda = body.busqueda.split(' ');
 
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
-   
-        if(body.type === 'develop')
-        {
-         if(tagsbusqueda.length > 1)
-         {
-          
-            cars.items.forEach((car: any)  => {
-             
-             for(let tag of tagsbusqueda)
-             {
-                 if (car.model === tag.toUpperCase() && car.brand === tagsbusqueda[0].toUpperCase()) {
-                     carfinallist.push(car)
-                 }
-             }
-            });   
-         }
-         else
-         {
-            console.log('entro aqui usedcar')
-             cars.items.forEach((car: any) => {
-                     if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase()) || car.model.includes(body.busqueda.toLowerCase())) {
-                     
-                         carfinallist.push(car)
-                     }
-             })
- 
-         }
-         
+
+        if (body.type === 'develop') {
+            if (tagsbusqueda.length > 1) {
+
+                cars.items.forEach((car: any) => {
+
+                    for (let tag of tagsbusqueda) {
+                        if (car.model === tag.toUpperCase() && car.brand === tagsbusqueda[0].toUpperCase()) {
+                            carfinallist.push(car)
+                        }
+                    }
+                });
+            }
+            else {
+                console.log('entro aqui usedcar')
+                cars.items.forEach((car: any) => {
+                    if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase()) || car.model.includes(body.busqueda.toLowerCase())) {
+
+                        carfinallist.push(car)
+                    }
+                })
+
+            }
+
         }
- 
-         if(body.type === 'produccion')
-         {
- 
-             cars.items.forEach((car: any) => {
-           
-                     if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase()) ) {
-                     
-                         carfinallist.push(car)
-                     }
-                 
-             })
-         }
-      
+
+        if (body.type === 'produccion') {
+
+            cars.items.forEach((car: any) => {
+
+                if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase())) {
+
+                    carfinallist.push(car)
+                }
+
+            })
+        }
+
         const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
         const response = {
             ...cars,
@@ -187,26 +226,26 @@ export class UsedCarService extends CrudService<typeof x> {
         return r
     }
 
-    async carModelVerification(car){
+    async carModelVerification(car) {
         let carID = '';
-        if(car.vin) { carID = car.vin}
-        if(car.ID) { carID = car.ID }
+        if (car.vin) { carID = car.vin }
+        if (car.ID) { carID = car.ID }
 
-        if(carID === '' || carID === null || carID.length !== 17){                 return [{error: 'error en vin, no cumple con las condiciones == no nulo, no vacio, vin incompleto (17 caracteres) =='}, {car}]}
-        if(car.agencyID === '' || car.agencyID === null){                          return [{error: 'sin agencyID'}, {car}]}
-        if(car.brand === '' || car.brand === null){                                return [{error: 'sin brand'}, {car}]}
-        if(car.model === '' || car.model === null ){                               return [{error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales'}, {car}]}
-        if(car.series === '' || car.series === null ){                             return [{error: 'serie vacia o con caracteres especiales'}, {car}]}
-        if(car.price === '' || car.price === null) {                               return [{error: 'sin precio'}, {car}]}
-        if(car.chassisType === '' || car.chassisType === null){                    return [{error: 'sin segmento'}, {car}]}
-        if(car.year === '' || car.year === null){                                  return [{error: 'sin año, verifique los datos ingresados'}, {car}]}
-        if(car.transmision === '' || car.transmision === null){                    return [{error: 'sin transmision, verifique los datos'}, {car}]}
-        if(car.fuel === '' || car.fuel === null){                                  return [{error: 'sin fuel'}, {car}]}
-        if(car.colours === '' || car.colours === null){                            return [{error: 'sin colour'}, {car}]}
-        if(car.baseColour === '' || car.baseColour === null) {                     return [{error: 'sin color base'}, {car}]}
+        if (carID === '' || carID === null || carID.length !== 17) { return [{ error: 'error en vin, no cumple con las condiciones == no nulo, no vacio, vin incompleto (17 caracteres) ==' }, { car }] }
+        if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }
+        if (car.brand === '' || car.brand === null) { return [{ error: 'sin brand' }, { car }] }
+        if (car.model === '' || car.model === null) { return [{ error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales' }, { car }] }
+        if (car.series === '' || car.series === null) { return [{ error: 'serie vacia o con caracteres especiales' }, { car }] }
+        if (car.price === '' || car.price === null) { return [{ error: 'sin precio' }, { car }] }
+        if (car.chassisType === '' || car.chassisType === null) { return [{ error: 'sin segmento' }, { car }] }
+        if (car.year === '' || car.year === null) { return [{ error: 'sin año, verifique los datos ingresados' }, { car }] }
+        if (car.transmision === '' || car.transmision === null) { return [{ error: 'sin transmision, verifique los datos' }, { car }] }
+        if (car.fuel === '' || car.fuel === null) { return [{ error: 'sin fuel' }, { car }] }
+        if (car.colours === '' || car.colours === null) { return [{ error: 'sin colour' }, { car }] }
+        if (car.baseColour === '' || car.baseColour === null) { return [{ error: 'sin color base' }, { car }] }
 
         return 200
-    
+
     }
 
 
@@ -275,7 +314,7 @@ export class UsedCarService extends CrudService<typeof x> {
         }
     }
 
-    async zadCarCatalogue(agency, token){
+    async zadCarCatalogue(agency, token) {
 
         let angeci: any = await this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
             `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${agency}`,
@@ -294,7 +333,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
         let carros = []
         let updateitem = 0;
-        const {token} = await this.loginToSAD()
+        const { token } = await this.loginToSAD()
 
         console.log(token)
 
@@ -339,30 +378,30 @@ export class UsedCarService extends CrudService<typeof x> {
         ]
         let promises = []
 
-        let carlist:any = [];
+        let carlist: any = [];
         try {
 
 
-            
+
             for (let id of agencyIds) {
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
-                        `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${id}`,
-                        {
-                            headers: {
-                                'Authorization': 'Bearer ' + token.trim()
-                            }
+                    `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${id}`,
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + token.trim()
                         }
-                    ).toPromise()
+                    }
+                ).toPromise()
                 )
 
-               
+
             }
-            
+
             const responses: any = await Promise.all(promises)
 
-    
 
-        
+
+
             let carlist = await this.repository.findAll();
             let carinlist = [];
             let carlistban = [];
@@ -374,9 +413,9 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
-                     
-                        
-                         let BDID: string = '';
+
+
+                        let BDID: string = '';
                         carlist.items.forEach((car: any) => {
 
                             if (sc.ID === car.vin) {
@@ -390,10 +429,10 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         let verificacion = await this.carModelVerification(sc)
 
-                    
 
-                  
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200 ) {
+
+
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
 
 
                             let MetaDescription: string;
@@ -405,21 +444,21 @@ export class UsedCarService extends CrudService<typeof x> {
                             let newmodel: string;
                             let promociontext: string;
 
-                            let banModelList = ['DENALI', 'MX','PE','4X4', '2PTAS.' ,'MAX' ,' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
+                            let banModelList = ['DENALI', 'MX', 'PE', '4X4', '2PTAS.', 'MAX', ' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
-                            banModelList.forEach((stringindex) =>  { 
+                            banModelList.forEach((stringindex) => {
 
-                            if(sc.model.includes(stringindex) && sc.model.includes('HB20')){
+                                if (sc.model.includes(stringindex) && sc.model.includes('HB20')) {
 
-                                newmodel = sc.model.replace(stringindex, '').trim()
-                            }
-                            else {
-                                newmodel = sc.model
-                            }
+                                    newmodel = sc.model.replace(stringindex, '').trim()
+                                }
+                                else {
+                                    newmodel = sc.model
+                                }
 
-                            
 
-                           })
+
+                            })
 
                             if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
@@ -433,40 +472,36 @@ export class UsedCarService extends CrudService<typeof x> {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Vehiculo de Carga Seminuevo' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
                                 chasystype = 'CHASIS';
-                            } 
+                            }
                             else if (sc.chassisType === 'VAN' || sc.chassisType === 'MINIVAN' || sc.chassisType === 'PASAJEROS') {
                                 chasystype = 'VAN';
-                            } 
+                            }
                             else {
 
 
-                                MetaDescription = 'Compra tu ' + sc.brand.trim()+ ' ' + sc.model.trim() + ' Seminuevo en línea, y te lo llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
+                                MetaDescription = 'Compra tu ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminuevo en línea, y te lo llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Seminuevo ' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
-                                
 
-                                if(sc.chassisType === 'HATCH BACK' || sc.chassisType === 'HATCHBACK' )
-                                {
+
+                                if (sc.chassisType === 'HATCH BACK' || sc.chassisType === 'HATCHBACK') {
                                     chasystype = 'HATCHBACK';
                                 }
-                                else
-                                {
+                                else {
                                     chasystype = sc.chassisType;
                                 }
                             }
 
-                            if(sc.promotionAmount !== 0)
-                            {
+                            if (sc.promotionAmount !== 0) {
                                 promociontext = sc.promotionDescription + ' de ' + sc.promotionAmount.toLocaleString("en", {
                                     style: "currency",
                                     currency: "MXN"
                                 });
                             }
-                            else{
-                                if(sc.promotionDescription === " ")
-                                {
+                            else {
+                                if (sc.promotionDescription === " ") {
                                     promociontext = ""
                                 }
-                                else{
+                                else {
                                     promociontext = sc.promotionDescription;
                                 }
                             }
@@ -474,7 +509,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             parsedModel = sc.model.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
-  
+
                             let serie = sc.version.trim().toLowerCase();
 
 
@@ -485,7 +520,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 promocion: sc.promotionDescription.trim(),
                                 promotionAmount: sc.promotionAmount,
                                 agencyCity: sc.agencyCity,
-                                metaTitulo: ''+sc.brand.trim()+' '+sc.model.trim()+' '+ sc.year.trim()+' Seminuevo en Línea | Estrena tu Auto',
+                                metaTitulo: '' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim() + ' Seminuevo en Línea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
                                 h1Title: h1,
                                 vin: sc.ID,
@@ -506,31 +541,31 @@ export class UsedCarService extends CrudService<typeof x> {
                                 specs: sc.specs
                             }
 
-                         
-                            
+
+
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, usedCar)
                                 updateitem++
                             } else {
 
-                               
+
 
                                 usedCarsArray.push(usedCar)
                             }
                         }
                         else {
 
-                            if(verificacion !== 200){
+                            if (verificacion !== 200) {
                                 carlistban.push(verificacion)
                             }
                             else {
                                 carlist.items.forEach((car: any) => {
 
                                     if (sc.ID === car.vin) {
-    
+
                                         this.finishedcar.create(car)
-    
+
                                         this.repository.delete(car._id)
                                     }
                                 })
@@ -541,17 +576,17 @@ export class UsedCarService extends CrudService<typeof x> {
                 }
             }
 
-            if(carinlist.length > 0){
+            if (carinlist.length > 0) {
 
-                
+
                 carlist.items.forEach((car: any) => {
 
-                    let bmwidlist = ['800', '901', '902', '903', '904','905','906','907']
+                    let bmwidlist = ['800', '901', '902', '903', '904', '905', '906', '907']
 
-             
-                    if(carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)){
+
+                    if (carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)) {
                     }
-                    else{ 
+                    else {
                         let updateCar: finishecar = {
                             id: car._id,
                             vin: car.vin,
@@ -568,7 +603,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             year: car.year,
                             images: car.images,
                             transmision: car.transmision,
-                            fuel: car.fuel, 
+                            fuel: car.fuel,
                             colours: car.colours,
                             baseColour: car.baseColour,
                             specs: car.specs,
@@ -577,7 +612,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         this.finishedcar.create(updateCar)
 
-                        console.log( 'auto descartado: ', car.vin)
+                        console.log('auto descartado: ', car.vin)
                         this.repository.delete(car._id)
                     }
                 });
@@ -588,11 +623,11 @@ export class UsedCarService extends CrudService<typeof x> {
                 banCarlist: carlistban,
                 count: carlistlist.length,
                 results: carros,
-                
+
             }
 
 
-            
+
         } catch (err) {
             console.log('error en update usedcar: ' + err)
             Logger.error(err)
@@ -647,7 +682,7 @@ export class UsedCarService extends CrudService<typeof x> {
             userName: this.sadApiConfig.username,
             password: this.sadApiConfig.password
         }).toPromise()
-        return {token: response.data}
+        return { token: response.data }
     }
 
 

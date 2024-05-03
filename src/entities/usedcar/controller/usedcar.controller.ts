@@ -94,6 +94,12 @@ export class UsedCarController {
     return this.service.getFiltersValues()
   }
 
+  @Get('getfiltercountusedcar')
+  async getfiltercount(){
+    return this.service.getfiltercount()
+  }
+  
+
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
   @Get('filters/models')
   async getModelsByBrands(@Query() { brand }: ModelsByBrandsQuery) {
@@ -140,6 +146,7 @@ export class UsedCarController {
     return this.service.getcarbyvin(vin)
   }
 
+
   /**
    * #region create
    * 
@@ -169,6 +176,7 @@ export class UsedCarController {
   async create(@Body() body: CreateUsedCarDTO) {
     return this.service.create({ ...body });
   }
+
 
   @Post('bmw')
   async BMW(@Body() body: CreateUsedCarDTO) {
