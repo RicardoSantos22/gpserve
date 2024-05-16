@@ -18,6 +18,7 @@ import { NewCarRepository } from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
+import { Console } from 'console';
 
 
 let x;
@@ -214,7 +215,7 @@ export class NewCarService extends CrudService<typeof x> {
        {
         if(tagsbusqueda.length > 1)
         {
-         
+
            cars.items.forEach((car: any)  => {
             
             for(let tag of tagsbusqueda)
@@ -230,7 +231,8 @@ export class NewCarService extends CrudService<typeof x> {
         {
             console.log('entro aqui newcar')
             cars.items.forEach((car: any) => {
-            
+
+                console.log(car.brand, car.model)
                     if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase())) {
 
                         carfinallist.push(car)
@@ -244,12 +246,11 @@ export class NewCarService extends CrudService<typeof x> {
 
         if(body.type === 'produccion')
         {
-
             cars.items.forEach((car: any) => {
                 for(let tag of tagsbusqueda)
                 {
-                    if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase())) {
-                        console.log(car)
+                
+                    if (car.brand.includes(body.busqueda.toUpperCase()) || car.model.toLowerCase().includes(body.busqueda.toLowerCase())) {
                         carfinallist.push(car)
                     }
                 }
@@ -483,6 +484,10 @@ export class NewCarService extends CrudService<typeof x> {
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
 
                        
+                            if(sc.agencyID === 1030){
+                                console.log(sc.ID)
+                                console.log(sc.images)
+                            }
                             let newmodel: string;
                             let MetaDescription: string;
                             let h1: string;

@@ -204,7 +204,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
             cars.items.forEach((car: any) => {
 
-                if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase())) {
+                if (car.brand.includes(body.busqueda.toUpperCase()) || car.model.toLowerCase().includes(body.busqueda.toLowerCase())){
 
                     carfinallist.push(car)
                 }
