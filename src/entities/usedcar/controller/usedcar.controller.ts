@@ -88,6 +88,11 @@ export class UsedCarController {
     return this.service.sugerenciasdebusqueda()
   }
 
+  @Get('getpromotion/:chasis')
+  async sliderpromotion(@Param('chasis') chasis: string) {
+    return this.service.findfpromotions(chasis);
+  }
+  
 
   @Get('filters')
   async getFiltersValues() {

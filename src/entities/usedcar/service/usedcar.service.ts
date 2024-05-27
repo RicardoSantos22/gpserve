@@ -167,6 +167,23 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
 
+    
+    async findfpromotions(chassisType: string){
+
+        let promociones = []
+        const cars: any = await this.repository.findAll({chassisType: chassisType});
+
+        cars.items.forEach((car: any) => {
+            if(car.promocion !== '' && car.promocion !== ' ' && car.promocion !== null)
+            {
+                promociones.push(car)
+            }
+        });
+
+        return promociones
+    }
+
+
     async findForString(body: any) {
 
 

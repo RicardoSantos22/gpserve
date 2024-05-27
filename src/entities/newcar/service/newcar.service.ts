@@ -201,6 +201,20 @@ export class NewCarService extends CrudService<typeof x> {
         return sugerencias
     }
 
+    async findfpromotions(chassisType: string){
+
+        let promociones = []
+        const cars: any = await this.repository.findAll({chassisType: chassisType});
+
+        cars.items.forEach((car: any) => {
+            if(car.promocion !== '' && car.promocion !== ' ' && car.promocion !== null)
+            {
+                promociones.push(car)
+            }
+        });
+
+        return promociones
+    }
 
     async findForString(body: any) {
     
@@ -210,7 +224,6 @@ export class NewCarService extends CrudService<typeof x> {
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
 
-        console.log(tagsbusqueda.length)
        if(body.type === 'develop')
        {
         if(tagsbusqueda.length > 1)
@@ -229,7 +242,6 @@ export class NewCarService extends CrudService<typeof x> {
         }
         else
         {
-            console.log('entro aqui newcar')
             cars.items.forEach((car: any) => {
 
                 console.log(car.brand, car.model)

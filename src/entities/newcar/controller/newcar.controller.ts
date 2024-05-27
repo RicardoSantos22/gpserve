@@ -156,6 +156,12 @@ export class NewCarController {
 
   // #endregion findById
 
+  @Get('getpromotion/:chasis')
+  async sliderpromotion(@Param('chasis') chasis: string) {
+    return this.service.findfpromotions(chasis);
+  }
+
+
   @Get(':id')
   async findById(@Param() params: FindByIdParams) {
     return this.service.findById(params.id);
