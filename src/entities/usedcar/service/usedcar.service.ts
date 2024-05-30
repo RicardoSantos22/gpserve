@@ -187,6 +187,7 @@ export class UsedCarService extends CrudService<typeof x> {
     async findForString(body: any) {
 
 
+
         let tagsbusqueda = body.busqueda.split(' ');
 
         const cars: any = await this.repository.findAll();
@@ -219,13 +220,21 @@ export class UsedCarService extends CrudService<typeof x> {
 
         if (body.type === 'produccion') {
 
-            cars.items.forEach((car: any) => {
+              cars.items.forEach((car: any) => {
 
-                if (car.brand.includes(body.busqueda.toUpperCase()) || car.model.toLowerCase().includes(body.busqueda.toLowerCase())){
+                let modalsarray = car.model.split(' ')
 
-                    carfinallist.push(car)
-                }
-
+                    for(let model of modalsarray)
+                        {
+                          for(let tag of tagsbusqueda)
+                            {
+                               if(car.brand.toLowerCase() === tag.toLowerCase() || model.toLowerCase() === tag.toLowerCase())
+                                {
+                                    carfinallist.push(car)
+                                } 
+                            }
+                        }
+                
             })
         }
 

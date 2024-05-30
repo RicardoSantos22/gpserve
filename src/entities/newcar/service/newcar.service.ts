@@ -259,13 +259,20 @@ export class NewCarService extends CrudService<typeof x> {
         if(body.type === 'produccion')
         {
             cars.items.forEach((car: any) => {
-                for(let tag of tagsbusqueda)
-                {
+
+                let modalsarray = car.model.split(' ')
+
+                    for(let model of modalsarray)
+                        {
+                          for(let tag of tagsbusqueda)
+                            {
+                               if(car.brand.toLowerCase() === tag.toLowerCase() || model.toLowerCase() === tag.toLowerCase())
+                                {
+                                    carfinallist.push(car)
+                                } 
+                            }
+                        }
                 
-                    if (car.brand.includes(body.busqueda.toUpperCase()) || car.model.toLowerCase().includes(body.busqueda.toLowerCase())) {
-                        carfinallist.push(car)
-                    }
-                }
             })
         }
        
