@@ -55,37 +55,38 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
+        return this.repository.findAll(query)
 
-        if (query.model && query.brand) {
-            let newquery = await this.getAllModelOfBrands(query)
+        // if (query.model && query.brand) {
+        //     let newquery = await this.getAllModelOfBrands(query)
 
-            const cars = await this.repository.findAll(newquery)
-            const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-            const response = {
-                ...cars,
-                items: groupedCars,
-            }
-            const r = {
-                count: cars.count,
-                items: response.items
-            }
+        //     const cars = await this.repository.findAll(newquery)
+        //     const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+        //     const response = {
+        //         ...cars,
+        //         items: groupedCars,
+        //     }
+        //     const r = {
+        //         count: cars.count,
+        //         items: response.items
+        //     }
 
-            return r
-        }
-        else {
-            const cars = await this.repository.findAll(query)
-            const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-            const response = {
-                ...cars,
-                items: groupedCars,
-            }
-            const r = {
-                count: cars.count,
-                items: response.items
-            }
+        //     return r
+        // }
+        // else {
+        //     const cars = await this.repository.findAll(query)
+        //     const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+        //     const response = {
+        //         ...cars,
+        //         items: groupedCars,
+        //     }
+        //     const r = {
+        //         count: cars.count,
+        //         items: response.items
+        //     }
 
-            return r
-        }
+        //     return r
+        // }
 
 
 
@@ -143,7 +144,10 @@ export class NewCarService extends CrudService<typeof x> {
 
     async getAllModelOfBrands(query: any) {
 
+    
         const cars = await this.repository.findByBrands(query.brand)
+
+        console.log(query)
 
         let allmodeles: any = [];
 
@@ -151,6 +155,7 @@ export class NewCarService extends CrudService<typeof x> {
             allmodeles.push(c.model)
         }
 
+        console.log(allmodeles)
 
         for (let model of query.model) {
             if (allmodeles.includes(model) === false) {

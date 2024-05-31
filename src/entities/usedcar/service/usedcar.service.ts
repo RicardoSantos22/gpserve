@@ -51,23 +51,24 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
 
+        return await this.repository.findAll(query)
 
-        if (query.model && query.brand) {
-            let newquery = await this.getAllModelOfBrands(query)
+        // if (query.model && query.brand) {
+        //     let newquery = await this.getAllModelOfBrands(query)
 
-            console.log(newquery)
+        //     console.log(newquery)
 
-            const cars = await this.repository.findAll(newquery)
-
-
-            return cars
-        }
-        else {
-            const cars = await this.repository.findAll(query)
+        //     const cars = await this.repository.findAll(newquery)
 
 
-            return cars
-        }
+        //     return cars
+        // }
+        // else {
+        //     const cars = await this.repository.findAll(query)
+
+
+        //     return cars
+        // }
 
 
 
@@ -96,7 +97,7 @@ export class UsedCarService extends CrudService<typeof x> {
         if (query.model.length === 0) {
             delete query.model;
         }
-
+        console.log(query)
         return query
 
     }
