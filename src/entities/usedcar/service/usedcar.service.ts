@@ -8,13 +8,13 @@ import { SADUsedCar } from '../entities/sad-used-car';
 import { UsedCar } from '../model/usedcar.model';
 import { Car as finishecar } from '../model/finishedcars.model';
 import { UsedCarRepository } from '../repository/usedcar.repository';
-
+import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
 import { Cron } from '@nestjs/schedule'
 import { CronExpression } from '@nestjs/schedule/dist';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
-import { Agency } from 'src/entities/agency/model/agency.model';
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
+
 
 let x;
 
@@ -33,7 +33,8 @@ export class UsedCarService extends CrudService<typeof x> {
         readonly repository: UsedCarRepository,
         readonly config: ConfigService,
         private finishedcar: FinishedcarsService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private agencyrepository: AgencyRepository
     ) {
         super(repository, 'UsedCar', config);
         this.sadApiConfig = {
@@ -362,8 +363,6 @@ export class UsedCarService extends CrudService<typeof x> {
         let updateitem = 0;
         const { token } = await this.loginToSAD()
 
-        console.log(token)
-
         // const deletedRecords = await this.repository.deleteMany({})
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
@@ -401,7 +400,8 @@ export class UsedCarService extends CrudService<typeof x> {
             1035, //geely hermosillo
             1037, //gwm culiacan
             2037, //gwm  mexicali
-            2038 //gwm tijuana
+            2038, //gwm tijuana
+            3038, //gwm mazatlan 
         ]
         let promises = []
 
@@ -461,6 +461,11 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
 
+                            let agencia = await this.agencyrepository.findOne({ number: sc.agencyID })
+
+              
+                            let lat = agencia.geoposition.lat || 0;
+                            let lng = agencia.geoposition.lng || 0;
 
                             let MetaDescription: string;
                             let h1: string;
@@ -565,9 +570,17 @@ export class UsedCarService extends CrudService<typeof x> {
                                 baseColour: NewCarHelps.getBaseColour(sc.color),
                                 km: +sc.kmCount,
                                 location: sc.agencyCity.trim(),
-                                specs: sc.specs
+                                specs: sc.specs,
+                                geoposition: {
+                                    lat: lat.toString(),
+                                    lng: lng.toString()
+                                }
                             }
 
+                            if(sc.agencyID === 20)
+                                {
+                                    console.log(usedCar)
+                                }
 
 
                             if (BDID !== '') {

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop, Severity } from '@typegoose/typegoose';
+import { double } from 'aws-sdk/clients/lightsail';
 
 @modelOptions({
   schemaOptions: { timestamps: true },
@@ -144,4 +145,11 @@ export class NewCar {
   
   @prop()
   promocioType: string;
+
+  @prop({default: []})
+  geoposition:{
+    lat: string,
+    lng: string
+  }
+
 }

@@ -141,6 +141,10 @@ export class UsedCar {
   @prop()
   status: string;
 
-
+  @prop({default: []})
+  geoposition:{
+    lat: string,
+    lng: string
+  }
 
 }

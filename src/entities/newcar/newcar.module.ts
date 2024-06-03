@@ -7,11 +7,12 @@ import { NewCarRepository } from './repository/newcar.repository';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
 import { UsedCarModule } from '../usedcar/usedcar.module';
-
+import { AgencyModule } from '../agency/agency.module';
 import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
 
 @Module({
   imports: [
+  AgencyModule,
     UsedCarModule,
     FinishedcarsModule,
     ScheduleModule.forRoot(),

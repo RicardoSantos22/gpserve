@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop, Severity } from '@typegoose/typegoose';
 import * as mongoose from 'mongoose'
 import { TestDriveSchedule } from './test-drive-schedule.model';
+import { double } from 'aws-sdk/clients/lightsail';
 
 @modelOptions({
   schemaOptions: { timestamps: true },
@@ -11,6 +12,7 @@ import { TestDriveSchedule } from './test-drive-schedule.model';
 })
 
 export class Agency {
+  [x: string]: any;
   constructor(data?: any) {
     Object.assign(this, data);
   }
@@ -118,5 +120,11 @@ export class Agency {
   webUrls: {
     id: string,
     urls: string[],
+  }
+
+  @prop()
+  geoposition: {
+    lat: double,
+    lng: double,
   }
 }

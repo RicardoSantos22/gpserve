@@ -186,6 +186,7 @@ export class UsedCarController {
   @Post('bmw')
   async BMW(@Body() body: CreateUsedCarDTO) {
 
+    console.log(body)
     let code = await this.service.carModelVerification(body)
 
     if(code === 200){return this.service.create({ ...body });}
@@ -239,6 +240,8 @@ export class UsedCarController {
 
   @Patch(':id')
   async update(@Param() params: FindByIdParams, @Body() body: UpdateUsedCarDTO) {
+
+    console.log(body)
     return this.service.update(params.id, body);
   }
 

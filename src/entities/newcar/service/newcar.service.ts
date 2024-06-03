@@ -18,7 +18,7 @@ import { NewCarRepository } from '../repository/newcar.repository';
 import { Car as finishecar } from '../model/finishedcars.model';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
-import { Console } from 'console';
+import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
 
 
 let x;
@@ -40,7 +40,8 @@ export class NewCarService extends CrudService<typeof x> {
         readonly config: ConfigService,
         private httpService: HttpService,
         private finishedcar: FinishedcarsService,
-        private UsedCarRepository: UsedCarRepository
+        private UsedCarRepository: UsedCarRepository,
+        private agencyRepository: AgencyRepository,
 
     ) {
         super(repository, 'NewCar', config);
@@ -458,7 +459,8 @@ export class NewCarService extends CrudService<typeof x> {
             1035, //geely hermosillo
             1037, //gwm culiacan
             2037, //gwm  mexicali
-            2038 //gwm tijuana
+            2038, //gwm tijuana
+            3038, //gwm mazatlan 
         ]
         let promises = []
         try {
@@ -507,11 +509,13 @@ export class NewCarService extends CrudService<typeof x> {
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
 
-                       
-                            if(sc.agencyID === 1030){
-                                console.log(sc.ID)
-                                console.log(sc.images)
-                            }
+                            let agencia = await this.agencyRepository.findOne({ number: sc.agencyID })
+
+              
+                            let lat = agencia.geoposition.lat || 0;
+                            let lng = agencia.geoposition.lng || 0;
+
+
                             let newmodel: string;
                             let MetaDescription: string;
                             let h1: string;
@@ -623,8 +627,14 @@ export class NewCarService extends CrudService<typeof x> {
                                 fuel: sc.fuelType,
                                 colours: sc.color,
                                 baseColour: NewCarHelps.getBaseColour(sc.color),
-                                specs: sc.specs
+                                specs: sc.specs,
+                                geoposition: {
+                                    lat: lat.toString(),
+                                    lng: lng.toString()
+                                }
                             }
+
+                  
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, newCar)
