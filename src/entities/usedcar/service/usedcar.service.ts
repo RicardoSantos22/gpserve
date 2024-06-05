@@ -34,7 +34,7 @@ export class UsedCarService extends CrudService<typeof x> {
         readonly config: ConfigService,
         private finishedcar: FinishedcarsService,
         private httpService: HttpService,
-        private agencyrepository: AgencyRepository
+        private agencyrepository: AgencyRepository,
     ) {
         super(repository, 'UsedCar', config);
         this.sadApiConfig = {
@@ -169,15 +169,14 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
 
-    
-    async findfpromotions(chassisType: string){
+
+    async findfpromotions(chassisType: string) {
 
         let promociones = []
-        const cars: any = await this.repository.findAll({chassisType: chassisType});
+        const cars: any = await this.repository.findAll({ chassisType: chassisType });
 
         cars.items.forEach((car: any) => {
-            if(car.promocion !== '' && car.promocion !== ' ' && car.promocion !== null)
-            {
+            if (car.promocion !== '' && car.promocion !== ' ' && car.promocion !== null) {
                 promociones.push(car)
             }
         });
@@ -191,7 +190,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
         let tagsbusqueda = body.busqueda.split(' ');
-
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
 
@@ -208,12 +206,14 @@ export class UsedCarService extends CrudService<typeof x> {
                 });
             }
             else {
-                console.log('entro aqui usedcar')
                 cars.items.forEach((car: any) => {
-                    if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase()) || car.model.includes(body.busqueda.toLowerCase())) {
+
+                    console.log(car.brand, car.model)
+                    if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase())) {
 
                         carfinallist.push(car)
                     }
+
                 })
 
             }
@@ -222,21 +222,17 @@ export class UsedCarService extends CrudService<typeof x> {
 
         if (body.type === 'produccion') {
 
-              cars.items.forEach((car: any) => {
+            cars.items.forEach((car: any) => {
 
                 let modalsarray = car.model.split(' ')
-
-                    for(let model of modalsarray)
-                        {
-                          for(let tag of tagsbusqueda)
-                            {
-                               if(car.brand.toLowerCase() === tag.toLowerCase() || model.toLowerCase() === tag.toLowerCase())
-                                {
-                                    carfinallist.push(car)
-                                } 
-                            }
+                for (let model of modalsarray) {
+                    for (let tag of tagsbusqueda) {
+                        if (car.brand.toLowerCase() === tag.toLowerCase() || model.toLowerCase() === tag.toLowerCase()) {
+                            carfinallist.push(car)
                         }
-                
+                    }
+                }
+
             })
         }
 
@@ -278,7 +274,54 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
     async getFiltersValues(): Promise<NewCarsFilters> {
+
+        let estadosCiudades = {
+            "bajacalifornia": ["ensenada","mexicali","playas de rosarito","tecate","tijuana"],
+            "bajacaliforniasur": ["comondu","la paz","loreto","los cabos","mulege"],
+            "sinaloa": ["ahome","angostura","badiraguato","choix","concordia","cosala","culiacan","el fuerte","elota","escuinapa","guasave","mazatlan","mocorito","navolato","rosario","salvador alvarado","san ignacio","sinaloa"],
+            "sonora": ["aconchi","agua prieta","alamos","altar","arivechi","arizpe","atil","bacadehuachi","bacanora","bacerac","bacoachi","bacum","banamichi","baviacora","bavispe","benito juarez","benjamin hill","caborca","cajeme","cananea","carbo","cucurpe","cumpas","divisaderos","empalme","etchojoa","fronteras","general plutarco elias calles","granados","guaymas","hermosillo","huachinera","huasabas","huatabampo","huepac","imuris","la colorada","magdalena","mazatan","moctezuma","naco","nacori chico","nacozari de garcia","navojoa","nogales","onavas","opodepe","oquitoa","pitiquito","puerto penasco","quiriego","rayon","rosario","sahuaripa","san felipe de jesus","san ignacio rio muerto","san javier","san luis rio colorado","san miguel de horcasitas","san pedro de la cueva","santa ana","santa cruz","saric","soyopa","suaqui grande","tepache","trincheras","tubutama","ures","villa hidalgo","villa pesqueira","yecora"],
+            "nuevoleon": ["abasolo","agualeguas","allende","anahuac","apodaca","aramberri","bustamante","cadereyta jimenez","cerralvo","china","cienega de flores","doctor arroyo","doctor coss","doctor gonzalez","el carmen","galeana","garcia","general bravo","general escobedo","general teran","general trevino","general zaragoza","general zuazua","guadalupe","hidalgo","higueras","hualahuises","iturbide","juarez","lampazos de naranjo","linares","los aldama","los herreras","los ramones","marin","melchor ocampo","mier y noriega","mina","montemorelos","monterrey","paras","pesqueria","rayones","sabinas hidalgo","salinas victoria","san nicolas de los garza","san pedro garza garcia","santa catarina","santiago","vallecillo","villaldama"],
+            "ciudadmexico": ["alvaro obregon","azcapotzalco","benito juarez","coyoacan","cuajimalpa de morelos","cuauhtemoc","gustavo a. madero","iztacalco","iztapalapa","la magdalena contreras","miguel hidalgo","milpa alta","tlalpan","tlahuac","venustiano carranza","xochimilco"]
+        }
+
+        let estados = {
+            'sinaloa': [],
+            'sonora': [],
+            'Baja California norte': [],
+            'Baja California sur': [],
+            'Nuevo Leon': [],
+            'Ciudad de  Mexico': [],
+        }
+
         const allCars = await this.repository.findAll()
+
+       
+        for (let car of allCars.items) {
+            if (estadosCiudades.bajacaliforniasur.includes(car.agencyCity.toLowerCase()) && estados['Baja California sur'].includes(car.agencyCity) === false) {
+                estados['Baja California sur'].push(car.agencyCity)
+            }
+
+            if (estadosCiudades.bajacalifornia.includes(car.agencyCity.toLowerCase()) && estados['Baja California norte'].includes(car.agencyCity) === false) {
+                estados['Baja California norte'].push(car.agencyCity)
+            }
+            if (estadosCiudades.sinaloa.includes(car.agencyCity.toLowerCase()) && estados['sinaloa'].includes(car.agencyCity) === false) {
+                estados['sinaloa'].push(car.agencyCity)
+            }
+
+            if (estadosCiudades.sonora.includes(car.agencyCity.toLowerCase()) && estados['sonora'].includes(car.agencyCity) === false) {
+                estados['sonora'].push(car.agencyCity)
+            }
+
+            if (estadosCiudades.nuevoleon.includes(car.agencyCity.toLowerCase()) && estados['Nuevo Leon'].includes(car.agencyCity) === false) {
+                estados['Nuevo Leon'].push(car.agencyCity)
+            }
+
+            if (estadosCiudades.ciudadmexico.includes(car.agencyCity.toLowerCase()) && estados['Ciudad de  Mexico'].includes(car.agencyCity) === false) {
+                estados['Ciudad de  Mexico'].push(car.agencyCity)
+            }
+          
+        }
+
         const sets = {
             brand: new Set<string>(),
             year: new Set<number>(),
@@ -288,7 +331,8 @@ export class UsedCarService extends CrudService<typeof x> {
             km: new Set<number>(),
             chassistype: new Set<string>(),
             agencyId: new Set<string>(),
-            promocioType: new Set<string>()
+            promocioType: new Set<string>(),
+            ubucacion: new Set<any>(),   
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -308,6 +352,8 @@ export class UsedCarService extends CrudService<typeof x> {
         sets.prices.add(minPrice)
         sets.prices.add(maxPrice)
 
+        sets.ubucacion.add(estados)
+
         const result: NewCarsFilters = {
             brand: [...sets.brand],
             year: [...sets.year].sort((y1, y2) => y1 - y2),
@@ -317,7 +363,8 @@ export class UsedCarService extends CrudService<typeof x> {
             km: [...sets.km],
             chassisType: [...sets.chassistype],
             agencyId: [...sets.agencyId],
-            promocioType: [...sets.promocioType]
+            promocioType: [...sets.promocioType],
+            ubication: [...sets.ubucacion]
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
@@ -325,6 +372,7 @@ export class UsedCarService extends CrudService<typeof x> {
             result.colours.splice(otrosIndex, 1)
             result.colours.push('Otros')
         }
+
         return result
 
     }
@@ -463,7 +511,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             let agencia = await this.agencyrepository.findOne({ number: sc.agencyID })
 
-              
+
                             let lat = agencia.geoposition.lat || 0;
                             let lng = agencia.geoposition.lng || 0;
 
@@ -577,10 +625,9 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                            if(sc.agencyID === 20)
-                                {
-                                    console.log(usedCar)
-                                }
+                            if (sc.agencyID === 20) {
+                                console.log(usedCar)
+                            }
 
 
                             if (BDID !== '') {
@@ -659,6 +706,14 @@ export class UsedCarService extends CrudService<typeof x> {
             }
             const createdCars = await this.repository.createMany(usedCarsArray)
 
+            let cars = await this.repository.findAll();
+
+            for (let car of cars.items) {
+                if (car.geoposition.length === 0) {
+                    console.log(car.vin)
+                    this.repository.delete(car._id)
+                }
+            }
             return {
                 banCarlist: carlistban,
                 count: carlistlist.length,
@@ -724,6 +779,4 @@ export class UsedCarService extends CrudService<typeof x> {
         }).toPromise()
         return { token: response.data }
     }
-
-
 };

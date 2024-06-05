@@ -19,6 +19,9 @@ import { ConfigService } from '@nestjs/config';
 import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
 import { banners } from '../model/banners.model';
 import { bannersrepository } from '../repository/banners.repository';
+import { NewCarRepository } from 'src/entities/newcar/repository/newcar.repository';
+import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
+
 
 @Injectable()
 export class AdminService extends CrudService<Admin> {
@@ -27,7 +30,9 @@ export class AdminService extends CrudService<Admin> {
     readonly repository: AdminRepository,
     readonly config: ConfigService,
     readonly s3Service: AwsS3Service,
-    readonly bannersrepository: bannersrepository
+    readonly bannersrepository: bannersrepository,
+    private readonly NewCarRepository: NewCarRepository,
+    private readonly UsedCarRepository: UsedCarRepository,
   ) {
     super(repository, 'Admin', config);
   }
@@ -121,7 +126,6 @@ export class AdminService extends CrudService<Admin> {
 
 
     return this.bannersrepository.delete(item.items[0]._id)
-
   }
 
   async updateBannersForHome( body: any, file: Express.Multer.File){
@@ -297,5 +301,113 @@ export class AdminService extends CrudService<Admin> {
       return e
     }
 
+  }
+
+
+  async getmodelsforimagepro()
+  {
+    let newcarslist = await this.NewCarRepository.findAll({agencyId : "14"});
+    let UsedCarlist = await this.NewCarRepository.findAll({agencyId : "14"});
+    
+    let document: any = [];
+
+    let modelimagepro = {
+      'dealerid': '',
+      'vin': '',
+      'type': '',
+      'year': '',
+      'make': '',
+      'model': '',
+      'body': '',
+      'transmission': '',
+      'trim': '',
+      'doorcount': '',
+      'enginecylinder': '',
+      'enginedisplacement': '',
+      'drivetrain': '',
+      'extcolor': '',
+      'intcolor': '',
+      'price': '',
+      'msrp': '',
+      'features': '',
+      'inventorysdate': '',
+      'photos': []
+    }
+
+
+    for(let newcar of UsedCarlist.items)
+      {
+
+        let fotos: any = []
+        let specs = ''
+        for(let foto of newcar.images)
+          {
+            fotos.push({'dealeid': newcar._id, 'vin': newcar.vin,'photos': foto })
+          }
+
+          if(newcar.specs)
+            {
+              if(newcar.specs[8])
+                {
+                  specs = newcar.specs[8].descriptionSpec;
+                }
+            }
+
+        modelimagepro.dealerid = newcar._id
+        modelimagepro.vin = newcar.vin
+        modelimagepro.year = newcar.year
+        modelimagepro.make = newcar.brand
+        modelimagepro.model = newcar.model
+        modelimagepro.body = newcar.series
+        modelimagepro.type = newcar.chassisType
+        modelimagepro.transmission = newcar.transmission
+        modelimagepro.enginedisplacement = specs
+        modelimagepro.extcolor = newcar.colours
+        modelimagepro.intcolor = newcar.baseColour
+        modelimagepro.price = newcar.price
+        modelimagepro.photos = fotos
+
+        document.push(modelimagepro)
+
+      }
+
+      for(let newcar of newcarslist.items)
+        {
+  
+          let fotos: any = []
+          let specs = ''
+          for(let foto of newcar.images)
+            {
+              fotos.push({'dealeid': newcar._id, 'vin': newcar.vin,'photos': foto })
+            }
+  
+            if(newcar.specs)
+              {
+                if(newcar.specs[8])
+                  {
+                    specs = newcar.specs[8].descriptionSpec;
+                  }
+              }
+  
+          modelimagepro.dealerid = newcar._id
+          modelimagepro.vin = newcar.vin
+          modelimagepro.year = newcar.year
+          modelimagepro.make = newcar.brand
+          modelimagepro.model = newcar.model
+          modelimagepro.body = newcar.series
+          modelimagepro.type = newcar.chassisType
+          modelimagepro.transmission = newcar.transmission
+          modelimagepro.enginedisplacement = specs
+          modelimagepro.extcolor = newcar.colours
+          modelimagepro.intcolor = newcar.baseColour
+          modelimagepro.price = newcar.price
+          modelimagepro.photos = fotos
+  
+          document.push(modelimagepro)
+  
+        }
+      
+
+      return document
   }
 }

@@ -58,6 +58,8 @@ export class AdminController {
         return this.service.findAll(query);
     };
 
+
+
     /**
      * #region findById
      *
@@ -313,6 +315,14 @@ export class AdminController {
     async banners()
     {
         return this.service.activebanners()
+    }
+
+    
+    
+    @Get('modelimagepro')
+    async getmodelsforimagepro()
+    {
+       return this.service.getmodelsforimagepro()
     }
 
     @Get('bannersadmin')
