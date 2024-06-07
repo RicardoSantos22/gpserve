@@ -146,6 +146,9 @@ export class NewCar {
   @prop()
   promocioType: string;
 
+  @prop()
+  estado: string;
+
   @prop({default: []})
   geoposition:{
     lat: string,

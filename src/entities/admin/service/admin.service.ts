@@ -312,6 +312,7 @@ export class AdminService extends CrudService<Admin> {
     let document: any = [];
 
     let modelimagepro = {
+      'distributorid': '', 
       'dealerid': '',
       'vin': '',
       'type': '',
@@ -366,6 +367,7 @@ export class AdminService extends CrudService<Admin> {
         modelimagepro.intcolor = newcar.baseColour
         modelimagepro.price = newcar.price
         modelimagepro.photos = fotos
+        modelimagepro.inventorysdate = new Date(newcar.createdAt).toLocaleString() 
 
         document.push(modelimagepro)
 
@@ -388,7 +390,7 @@ export class AdminService extends CrudService<Admin> {
                     specs = newcar.specs[8].descriptionSpec;
                   }
               }
-  
+         
           modelimagepro.dealerid = newcar._id
           modelimagepro.vin = newcar.vin
           modelimagepro.year = newcar.year
@@ -402,7 +404,7 @@ export class AdminService extends CrudService<Admin> {
           modelimagepro.intcolor = newcar.baseColour
           modelimagepro.price = newcar.price
           modelimagepro.photos = fotos
-  
+          modelimagepro.inventorysdate = new Date(newcar.createdAt).toLocaleString()  
           document.push(modelimagepro)
   
         }

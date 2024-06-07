@@ -276,50 +276,78 @@ export class UsedCarService extends CrudService<typeof x> {
     async getFiltersValues(): Promise<NewCarsFilters> {
 
         let estadosCiudades = {
-            "bajacalifornia": ["ensenada","mexicali","playas de rosarito","tecate","tijuana"],
-            "bajacaliforniasur": ["comondu","la paz","loreto","los cabos","mulege"],
-            "sinaloa": ["ahome","angostura","badiraguato","choix","concordia","cosala","culiacan","el fuerte","elota","escuinapa","guasave","mazatlan","mocorito","navolato","rosario","salvador alvarado","san ignacio","sinaloa"],
-            "sonora": ["aconchi","agua prieta","alamos","altar","arivechi","arizpe","atil","bacadehuachi","bacanora","bacerac","bacoachi","bacum","banamichi","baviacora","bavispe","benito juarez","benjamin hill","caborca","cajeme","cananea","carbo","cucurpe","cumpas","divisaderos","empalme","etchojoa","fronteras","general plutarco elias calles","granados","guaymas","hermosillo","huachinera","huasabas","huatabampo","huepac","imuris","la colorada","magdalena","mazatan","moctezuma","naco","nacori chico","nacozari de garcia","navojoa","nogales","onavas","opodepe","oquitoa","pitiquito","puerto penasco","quiriego","rayon","rosario","sahuaripa","san felipe de jesus","san ignacio rio muerto","san javier","san luis rio colorado","san miguel de horcasitas","san pedro de la cueva","santa ana","santa cruz","saric","soyopa","suaqui grande","tepache","trincheras","tubutama","ures","villa hidalgo","villa pesqueira","yecora"],
-            "nuevoleon": ["abasolo","agualeguas","allende","anahuac","apodaca","aramberri","bustamante","cadereyta jimenez","cerralvo","china","cienega de flores","doctor arroyo","doctor coss","doctor gonzalez","el carmen","galeana","garcia","general bravo","general escobedo","general teran","general trevino","general zaragoza","general zuazua","guadalupe","hidalgo","higueras","hualahuises","iturbide","juarez","lampazos de naranjo","linares","los aldama","los herreras","los ramones","marin","melchor ocampo","mier y noriega","mina","montemorelos","monterrey","paras","pesqueria","rayones","sabinas hidalgo","salinas victoria","san nicolas de los garza","san pedro garza garcia","santa catarina","santiago","vallecillo","villaldama"],
-            "ciudadmexico": ["alvaro obregon","azcapotzalco","benito juarez","coyoacan","cuajimalpa de morelos","cuauhtemoc","gustavo a. madero","iztacalco","iztapalapa","la magdalena contreras","miguel hidalgo","milpa alta","tlalpan","tlahuac","venustiano carranza","xochimilco"]
+            "bajacalifornia": ["ensenada", "mexicali", "playas de rosarito", "tecate", "tijuana"],
+            "bajacaliforniasur": ["comondu", "la paz", "loreto", "los cabos", "mulege"],
+            "sinaloa": ["ahome", "angostura", "badiraguato", "choix", "concordia", "cosala", "culiacan", "el fuerte", "elota", "escuinapa", "guasave", "mazatlan", "mocorito", "navolato", "rosario", "salvador alvarado", "san ignacio", "sinaloa"],
+            "sonora": ["aconchi", "agua prieta", "alamos", "altar", "arivechi", "arizpe", "atil", "bacadehuachi", "bacanora", "bacerac", "bacoachi", "bacum", "banamichi", "baviacora", "bavispe", "benito juarez", "benjamin hill", "caborca", "cajeme", "cananea", "carbo", "cucurpe", "cumpas", "divisaderos", "empalme", "etchojoa", "fronteras", "general plutarco elias calles", "granados", "guaymas", "hermosillo", "huachinera", "huasabas", "huatabampo", "huepac", "imuris", "la colorada", "magdalena", "mazatan", "moctezuma", "naco", "nacori chico", "nacozari de garcia", "navojoa", "nogales", "onavas", "opodepe", "oquitoa", "pitiquito", "puerto penasco", "quiriego", "rayon", "rosario", "sahuaripa", "san felipe de jesus", "san ignacio rio muerto", "san javier", "san luis rio colorado", "san miguel de horcasitas", "san pedro de la cueva", "santa ana", "santa cruz", "saric", "soyopa", "suaqui grande", "tepache", "trincheras", "tubutama", "ures", "villa hidalgo", "villa pesqueira", "yecora"],
+            "nuevoleon": ["abasolo", "agualeguas", "allende", "anahuac", "apodaca", "aramberri", "bustamante", "cadereyta jimenez", "cerralvo", "china", "cienega de flores", "doctor arroyo", "doctor coss", "doctor gonzalez", "el carmen", "galeana", "garcia", "general bravo", "general escobedo", "general teran", "general trevino", "general zaragoza", "general zuazua", "guadalupe", "hidalgo", "higueras", "hualahuises", "iturbide", "juarez", "lampazos de naranjo", "linares", "los aldama", "los herreras", "los ramones", "marin", "melchor ocampo", "mier y noriega", "mina", "montemorelos", "monterrey", "paras", "pesqueria", "rayones", "sabinas hidalgo", "salinas victoria", "san nicolas de los garza", "san pedro garza garcia", "santa catarina", "santiago", "vallecillo", "villaldama"],
+            "ciudadmexico": ["alvaro obregon", "azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
         }
 
-        let estados = {
-            'sinaloa': [],
-            'sonora': [],
-            'Baja California norte': [],
-            'Baja California sur': [],
-            'Nuevo Leon': [],
-            'Ciudad de  Mexico': [],
-        }
+        let estados: { estado: string, ciudades: string[] }[] = [
+            { estado: 'Sinaloa', ciudades: [] },
+            { estado: 'Baja california sur', ciudades: [] },
+            { estado: 'Baja california norte', ciudades: [] },
+            { estado: 'Sonora', ciudades: [] },
+            { estado: 'Nuevo Leon', ciudades: [] },
+            { estado: 'Ciudad de Mexico', ciudades: [] }
+        ]
 
         const allCars = await this.repository.findAll()
 
-       
+
         for (let car of allCars.items) {
-            if (estadosCiudades.bajacaliforniasur.includes(car.agencyCity.toLowerCase()) && estados['Baja California sur'].includes(car.agencyCity) === false) {
-                estados['Baja California sur'].push(car.agencyCity)
+            if (estadosCiudades.bajacaliforniasur.includes(car.agencyCity.toLowerCase())) {
+
+                const resultado = estados.find(estado => estado.estado === 'Baja california sur')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
+
             }
 
-            if (estadosCiudades.bajacalifornia.includes(car.agencyCity.toLowerCase()) && estados['Baja California norte'].includes(car.agencyCity) === false) {
-                estados['Baja California norte'].push(car.agencyCity)
+            if (estadosCiudades.bajacalifornia.includes(car.agencyCity.toLowerCase())) {
+
+                const resultado = estados.find(estado => estado.estado === 'Baja california norte')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
-            if (estadosCiudades.sinaloa.includes(car.agencyCity.toLowerCase()) && estados['sinaloa'].includes(car.agencyCity) === false) {
-                estados['sinaloa'].push(car.agencyCity)
+            if (estadosCiudades.sinaloa.includes(car.agencyCity.toLowerCase())) {
+
+                const resultado = estados.find(estado => estado.estado === 'Sinaloa')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
 
-            if (estadosCiudades.sonora.includes(car.agencyCity.toLowerCase()) && estados['sonora'].includes(car.agencyCity) === false) {
-                estados['sonora'].push(car.agencyCity)
+            if (estadosCiudades.sonora.includes(car.agencyCity.toLowerCase())) {
+                const resultado = estados.find(estado => estado.estado === 'Sonora')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
 
-            if (estadosCiudades.nuevoleon.includes(car.agencyCity.toLowerCase()) && estados['Nuevo Leon'].includes(car.agencyCity) === false) {
-                estados['Nuevo Leon'].push(car.agencyCity)
+            if (estadosCiudades.nuevoleon.includes(car.agencyCity.toLowerCase())) {
+                const resultado = estados.find(estado => estado.estado === 'Nuevo Leon')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
 
-            if (estadosCiudades.ciudadmexico.includes(car.agencyCity.toLowerCase()) && estados['Ciudad de  Mexico'].includes(car.agencyCity) === false) {
-                estados['Ciudad de  Mexico'].push(car.agencyCity)
+            if (estadosCiudades.ciudadmexico.includes(car.agencyCity.toLowerCase())) {
+                const resultado = estados.find(estado => estado.estado === 'Ciudad de  Mexico')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
-          
+
         }
 
         const sets = {
@@ -332,7 +360,7 @@ export class UsedCarService extends CrudService<typeof x> {
             chassistype: new Set<string>(),
             agencyId: new Set<string>(),
             promocioType: new Set<string>(),
-            ubucacion: new Set<any>(),   
+            ubucacion: new Set<any>(),
         }
 
         let minPrice = Number.MAX_SAFE_INTEGER
@@ -364,7 +392,7 @@ export class UsedCarService extends CrudService<typeof x> {
             chassisType: [...sets.chassistype],
             agencyId: [...sets.agencyId],
             promocioType: [...sets.promocioType],
-            ubication: [...sets.ubucacion]
+            ubication: estados
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
@@ -406,6 +434,18 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async updateCarCatalogue() {
+
+
+        let estadosCiudades = {
+            "bajacalifornia": ["ensenada", "mexicali", "playas de rosarito", "tecate", "tijuana"],
+            "bajacaliforniasur": ["comondu", "la paz", "loreto", "los cabos", "mulege"],
+            "sinaloa": ["ahome", "angostura", "badiraguato", "choix", "concordia", "cosala", "culiacan", "el fuerte", "elota", "escuinapa", "guasave", "mazatlan", "mocorito", "navolato", "rosario", "salvador alvarado", "san ignacio", "sinaloa"],
+            "sonora": ["aconchi", "agua prieta", "alamos", "altar", "arivechi", "arizpe", "atil", "bacadehuachi", "bacanora", "bacerac", "bacoachi", "bacum", "banamichi", "baviacora", "bavispe", "benito juarez", "benjamin hill", "caborca", "cajeme", "cananea", "carbo", "cucurpe", "cumpas", "divisaderos", "empalme", "etchojoa", "fronteras", "general plutarco elias calles", "granados", "guaymas", "hermosillo", "huachinera", "huasabas", "huatabampo", "huepac", "imuris", "la colorada", "magdalena", "mazatan", "moctezuma", "naco", "nacori chico", "nacozari de garcia", "navojoa", "nogales", "onavas", "opodepe", "oquitoa", "pitiquito", "puerto penasco", "quiriego", "rayon", "rosario", "sahuaripa", "san felipe de jesus", "san ignacio rio muerto", "san javier", "san luis rio colorado", "san miguel de horcasitas", "san pedro de la cueva", "santa ana", "santa cruz", "saric", "soyopa", "suaqui grande", "tepache", "trincheras", "tubutama", "ures", "villa hidalgo", "villa pesqueira", "yecora"],
+            "nuevoleon": ["abasolo", "agualeguas", "allende", "anahuac", "apodaca", "aramberri", "bustamante", "cadereyta jimenez", "cerralvo", "china", "cienega de flores", "doctor arroyo", "doctor coss", "doctor gonzalez", "el carmen", "galeana", "garcia", "general bravo", "general escobedo", "general teran", "general trevino", "general zaragoza", "general zuazua", "guadalupe", "hidalgo", "higueras", "hualahuises", "iturbide", "juarez", "lampazos de naranjo", "linares", "los aldama", "los herreras", "los ramones", "marin", "melchor ocampo", "mier y noriega", "mina", "montemorelos", "monterrey", "paras", "pesqueria", "rayones", "sabinas hidalgo", "salinas victoria", "san nicolas de los garza", "san pedro garza garcia", "santa catarina", "santiago", "vallecillo", "villaldama"],
+            "ciudadmexico": ["alvaro obregon", "azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
+        }
+
+        let vins = []
 
         let carros = []
         let updateitem = 0;
@@ -504,13 +544,40 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         let verificacion = await this.carModelVerification(sc)
 
-
+                        
+                        vins.push(sc.ID)
 
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
 
                             let agencia = await this.agencyrepository.findOne({ number: sc.agencyID })
 
+
+                            let estate = ''
+
+                            if (estadosCiudades.bajacalifornia.includes(sc.agencyCity.toLowerCase())) {
+                                estate = 'Baja california norte'
+                            }
+
+                            if (estadosCiudades.bajacaliforniasur.includes(sc.agencyCity.toLowerCase())) {
+                                estate = 'Baja california sur'
+                            }
+
+                            if (estadosCiudades.sinaloa.includes(sc.agencyCity.toLowerCase())) {
+                                estate = 'Sinaloa'
+                            }
+
+                            if (estadosCiudades.sonora.includes(sc.agencyCity.toLowerCase())) {
+                                estate = 'Sonora'
+                            }
+
+                            if (estadosCiudades.nuevoleon.includes(sc.agencyCity.toLowerCase())) {
+                                estate = 'Nuevo Leon'
+                            }
+
+                            if(estadosCiudades.ciudadmexico.includes(sc.agencyCity.toLowerCase())) {
+                                estate = 'Ciudad de  Mexico'
+                            }
 
                             let lat = agencia.geoposition.lat || 0;
                             let lng = agencia.geoposition.lng || 0;
@@ -619,6 +686,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 km: +sc.kmCount,
                                 location: sc.agencyCity.trim(),
                                 specs: sc.specs,
+                                estado: estate,
                                 geoposition: {
                                     lat: lat.toString(),
                                     lng: lng.toString()
@@ -710,14 +778,33 @@ export class UsedCarService extends CrudService<typeof x> {
 
             for (let car of cars.items) {
                 if (car.geoposition.length === 0) {
-                    console.log(car.vin)
                     this.repository.delete(car._id)
                 }
             }
+
+            let counts = {};
+            let duplicates = [];
+
+            for (let i = 0; i < vins.length; i++) {
+                if (counts[vins[i]]) {
+                    counts[vins[i]] += 1;
+                } else {
+                    counts[vins[i]] = 1;
+                }
+            }
+            
+            for (let vin in counts) {
+                if (counts[vin] > 1) {
+                    duplicates.push(vin);
+                }
+            }
+
+            console.log(duplicates)
+            
             return {
                 banCarlist: carlistban,
                 count: carlistlist.length,
-                results: carros,
+                results: duplicates,
 
             }
 
