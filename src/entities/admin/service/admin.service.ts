@@ -311,33 +311,36 @@ export class AdminService extends CrudService<Admin> {
     
     let document: any = [];
 
-    let modelimagepro = {
-      'distributorid': '', 
-      'dealerid': '',
-      'vin': '',
-      'type': '',
-      'year': '',
-      'make': '',
-      'model': '',
-      'body': '',
-      'transmission': '',
-      'trim': '',
-      'doorcount': '',
-      'enginecylinder': '',
-      'enginedisplacement': '',
-      'drivetrain': '',
-      'extcolor': '',
-      'intcolor': '',
-      'price': '',
-      'msrp': '',
-      'features': '',
-      'inventorysdate': '',
-      'photos': []
-    }
+
 
 
     for(let newcar of UsedCarlist.items)
       {
+
+        let modelimagepro = {
+          'inventorydi': '', 
+          'dealerid': '',
+          'vin': '',
+          'type': '',
+          'year': '',
+          'make': '',
+          'model': '',
+          'body': '',
+          'transmission': '',
+          'trim': '',
+          'doorcount': '',
+          'enginecylinder': '',
+          'enginedisplacement': '',
+          'drivetrain': '',
+          'extcolor': '',
+          'intcolor': '',
+          'price': '',
+          'msrp': '',
+          'features': '',
+          'inventorysdate': '',
+          'photos': []
+        }
+
 
         let fotos: any = []
         let specs = ''
@@ -354,7 +357,7 @@ export class AdminService extends CrudService<Admin> {
                 }
             }
 
-        modelimagepro.dealerid = newcar._id
+        modelimagepro.inventorydi = newcar._id
         modelimagepro.vin = newcar.vin
         modelimagepro.year = newcar.year
         modelimagepro.make = newcar.brand
@@ -369,6 +372,8 @@ export class AdminService extends CrudService<Admin> {
         modelimagepro.photos = fotos
         modelimagepro.inventorysdate = new Date(newcar.createdAt).toLocaleString() 
 
+
+
         document.push(modelimagepro)
 
       }
@@ -376,6 +381,30 @@ export class AdminService extends CrudService<Admin> {
       for(let newcar of newcarslist.items)
         {
   
+          let modelimagepro = {
+            'inventorydi': '', 
+            'dealerid': '',
+            'vin': '',
+            'type': '',
+            'year': '',
+            'make': '',
+            'model': '',
+            'body': '',
+            'transmission': '',
+            'trim': '',
+            'doorcount': '',
+            'enginecylinder': '',
+            'enginedisplacement': '',
+            'drivetrain': '',
+            'extcolor': '',
+            'intcolor': '',
+            'price': '',
+            'msrp': '',
+            'features': '',
+            'inventorysdate': '',
+            'photos': []
+          }
+
           let fotos: any = []
           let specs = ''
           for(let foto of newcar.images)
@@ -391,7 +420,7 @@ export class AdminService extends CrudService<Admin> {
                   }
               }
          
-          modelimagepro.dealerid = newcar._id
+          modelimagepro.inventorydi = newcar._id
           modelimagepro.vin = newcar.vin
           modelimagepro.year = newcar.year
           modelimagepro.make = newcar.brand

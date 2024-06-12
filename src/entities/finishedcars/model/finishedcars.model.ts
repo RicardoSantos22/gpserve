@@ -137,4 +137,7 @@ export class Car {
   @prop()
   cartype: string;
   
+  @prop()
+  other: any[]
+  
 }

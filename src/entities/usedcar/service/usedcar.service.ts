@@ -104,17 +104,24 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async sugerenciasdebusqueda() {
-        let sugerencias = []
+        let sugerencias: {brand:string, model: String[]}[] = []
 
         const cars: any = await this.repository.findAll();
 
         for (let car of cars.items) {
-            let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase()
+           
+            const resultado = sugerencias.find(brand => brand.brand === car.brand)
 
-            if (sugerencias.includes(sugerencia)) { }
-            else { sugerencias.push(sugerencia) }
+            if(resultado)
+                {
+                    if (resultado.model.includes(car.model) === false) {
+                        resultado.model.push(car.model)
+                    }
+                }
+                else{
+                    sugerencias.push({brand: car.brand, model: [car.model]})
+                }
         }
-
         return sugerencias
     }
 
@@ -514,7 +521,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
             const responses: any = await Promise.all(promises)
 
-
+            let data = []
 
 
             let carlist = await this.repository.findAll();
@@ -526,20 +533,24 @@ export class UsedCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADUsedCar[]
 
+                    data = sadNewCars
                     for (let sc of sadNewCars) {
 
 
 
                         let BDID: string = '';
+
                         carlist.items.forEach((car: any) => {
-
                             if (sc.ID === car.vin) {
-
                                 BDID = car._id;
                                 carinlist.push(sc.ID)
 
                             }
+
                         })
+                      
+
+                   
 
 
                         let verificacion = await this.carModelVerification(sc)
@@ -693,11 +704,6 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                            if (sc.agencyID === 20) {
-                                console.log(usedCar)
-                            }
-
-
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, usedCar)
@@ -764,6 +770,9 @@ export class UsedCarService extends CrudService<typeof x> {
                             specs: car.specs,
                             cartype: 'used',
                             km: car.km,
+                            createmenys: [],
+                            vins: [],
+                            duplicates: [],
                         }
                         this.finishedcar.create(updateCar)
 
@@ -772,19 +781,16 @@ export class UsedCarService extends CrudService<typeof x> {
                     }
                 });
             }
+
+         
             const createdCars = await this.repository.createMany(usedCarsArray)
 
             let cars = await this.repository.findAll();
 
-            for (let car of cars.items) {
-                if (car.geoposition.length === 0) {
-                    this.repository.delete(car._id)
-                }
-            }
-
+        
             let counts = {};
             let duplicates = [];
-
+            
             for (let i = 0; i < vins.length; i++) {
                 if (counts[vins[i]]) {
                     counts[vins[i]] += 1;
@@ -798,14 +804,21 @@ export class UsedCarService extends CrudService<typeof x> {
                     duplicates.push(vin);
                 }
             }
+        
+            let bitacora = {
+                status: 'zad',
+                vins: vins,
+                createmenys: createdCars,
+                duplicates: duplicates,
+            }
+            let a = await this.finishedcar.create(bitacora)
+        
 
-            console.log(duplicates)
-            
             return {
                 banCarlist: carlistban,
                 count: carlistlist.length,
-                results: duplicates,
-
+                results: vins,
+                duplicates: duplicates
             }
 
 

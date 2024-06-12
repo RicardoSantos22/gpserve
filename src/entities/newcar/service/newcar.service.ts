@@ -186,35 +186,23 @@ export class NewCarService extends CrudService<typeof x> {
 
     async sugerenciasdebusqueda()
     {
-        let sugerencias = []
+        let sugerencias: {brand:string, model: String[]}[] = []
 
         const cars: any = await this.repository.findAll();
-        const usedcars: any = await this.UsedCarRepository.findAll();
 
-        for(let car of cars.items)
-        {
-            let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase()
-
-            if(sugerencias.includes(sugerencia))
-            {}
-            else{sugerencias.push(sugerencia)}
-        }
-
-        for(let car of usedcars.items)
-        {
-            let sugerencia = car.brand.toUpperCase() + ' ' + car.model.toUpperCase();
+        for (let car of cars.items) {
            
-            if(sugerencias.includes(sugerencia))
-            {}
-            else{sugerencias.push(sugerencia)}
-        }
+            const resultado = sugerencias.find(brand => brand.brand === car.brand)
 
-        let allbrands = ['HYUNDAI', 'KIA', 'CHEVROLET', 'TOYOTA', 'GEELY', 'CHIREY', 'JEEP', 'GWM', 'GMC', 'BUICK', 'DODGE', 
-        'FIAT', 'PEUGEOT', 'JAC', 'OMODA', 'NISSAN', 'HONDA', 'BMW', 'JAGUAR', 'MINI', 'FORD', 'SUSUKI', 'SEAT', 'VOLKSWAGEN', 'MERCEDES-BENZ', 'MAZDA', 'RENAULT', 'RAM', 'AUDI'];
-
-        for(let brand of allbrands)
-        {
-            sugerencias.push(brand)
+            if(resultado)
+                {
+                    if (resultado.model.includes(car.model) === false) {
+                        resultado.model.push(car.model)
+                    }
+                }
+                else{
+                    sugerencias.push({brand: car.brand, model: [car.model]})
+                }
         }
         return sugerencias
     }
@@ -856,14 +844,6 @@ export class NewCarService extends CrudService<typeof x> {
 
             let cars = await this.repository.findAll();
 
-            for (let car of cars.items) {
-                if (car.geoposition.length === 0) {
-                    console.log(car.vin)
-                    this.repository.delete(car._id)
-                }
-            }
-
-
             let counts = {};
             let duplicates = [];
 
@@ -884,7 +864,7 @@ export class NewCarService extends CrudService<typeof x> {
             return {
                 banCarlist: carlistban,
                 count: newCarsArray.length,
-                results: vins,
+                results: responses,
 
             }
             
@@ -910,8 +890,6 @@ export class NewCarService extends CrudService<typeof x> {
         } else {
             this.updateCarCatalogue();
         }
-
-
     }
 
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

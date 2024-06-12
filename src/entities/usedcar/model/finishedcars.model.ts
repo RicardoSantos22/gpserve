@@ -136,5 +136,15 @@ export class Car {
   })
   @prop()
   cartype: string;
+
+  @prop({default: []})
+  createmenys: any[]
+
   
+  @prop({default: []})
+  vins: string[]
+
+  @prop({default: []})
+  duplicates: any[]
+
 }
