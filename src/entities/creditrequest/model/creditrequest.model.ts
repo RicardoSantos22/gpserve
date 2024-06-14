@@ -119,4 +119,7 @@ export class CreditRequest {
 
   @prop()
   informativestatus: string;
+
+  @prop({default: []})
+  userGuest:[];
 }

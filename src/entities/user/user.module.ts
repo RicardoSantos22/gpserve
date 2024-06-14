@@ -3,6 +3,7 @@ import { UserController } from './controller/user.controller';
 import { UserService } from './service/user.service';
 import { UserRepository } from './repository/user.repository';
 
+
 import { Module } from '@nestjs/common';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { BucketModule } from '../../bucket/bucket.module';
@@ -15,8 +16,6 @@ import { OrderModule } from '../order/order.module';
 import { InspectionAppointmentModule } from '../inspectionappointment/inspectionappointment.module';
 import { AgencyModule } from '../agency/agency.module';
 import { InitialAssessmentModule } from '../initialassessment/initial-assessment.module';
-import { InitialAssessmentService } from '../initialassessment/service/initial-assessment.service';
-import { InitialAssessmentRepository } from '../initialassessment/repository/initial-assessment.repository';
 
 @Module({
   imports: [
@@ -31,21 +30,12 @@ import { InitialAssessmentRepository } from '../initialassessment/repository/ini
     AgencyModule,
     InspectionAppointmentModule,
     InitialAssessmentModule,
-     InitialAssessmentModule
+     InitialAssessmentModule,
   ],
   controllers: [UserController],
-  providers: [UserService,
-     UserRepository, 
-     CreditRequestModule, 
-     InsuranceRequestsModule,
-    NewCarModule,
-    UsedCarModule, 
-    TestDriveAppointmentsModule, 
-    OrderModule, 
-    InspectionAppointmentModule,
-    AgencyModule],
+  providers: [UserService, UserRepository],
 
-  exports: [UserService]
+  exports: [UserService, UserRepository, UserModule]
 })
 
 export class UserModule {}

@@ -14,4 +14,7 @@ export class AgencyService extends CrudService<Agency> {
   ) {
     super(repository, 'Agency', config);
   }
-};
+  
+
+  
+}

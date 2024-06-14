@@ -12,6 +12,7 @@ import { UsedCarModule } from '../usedcar/usedcar.module';
 import { BucketModule } from '../../bucket/bucket.module';
 import { banners } from './model/banners.model';
 import { bannersrepository } from './repository/banners.repository';
+import { CreditRequestModule } from '../creditrequest/creditrequest.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { bannersrepository } from './repository/banners.repository';
     UserModule,
     PassportModule,
     TypegooseModule.forFeature([Admin, banners]),
-    BucketModule
+    BucketModule,
+    CreditRequestModule
   ],
   controllers: [AdminController],
   providers: [AdminService, AdminRepository, bannersrepository],

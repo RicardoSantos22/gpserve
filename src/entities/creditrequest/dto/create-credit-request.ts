@@ -63,6 +63,7 @@ export class CreateCreditRequestDTO {
   })
 
   @IsString()
+  @IsOptional()
 
   readonly userId: string;
 
@@ -120,4 +121,12 @@ export class CreateCreditRequestDTO {
   @IsString()
 
   readonly informativestatus?: string;
+
+  @ApiProperty({
+    description: 'usuarios sin registro',
+    example: 'Cotizacion',
+  })
+
+  @IsOptional()
+  readonly userGuest: any
 };

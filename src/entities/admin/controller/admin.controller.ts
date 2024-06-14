@@ -174,6 +174,12 @@ export class AdminController {
 
        return urls
     }
+
+    @Get('allcredist')
+    async allcredits()
+    {
+        return await this.service.modulecredits()
+    }
     
     @Get('sitemap')
     async getsitemap(@Res() res) {

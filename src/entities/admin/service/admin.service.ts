@@ -7,6 +7,7 @@ import { CrudService } from '../../../common/crud/crud.service';
 import { Admin } from '../model/admin.model';
 import { AdminRepository } from '../repository/admin.repository';
 import { CreateAdminDTO } from '../dto/create-admin.dto';
+import { Parser } from 'json2csv';
 
 import {
   BadRequestException,
@@ -21,6 +22,9 @@ import { banners } from '../model/banners.model';
 import { bannersrepository } from '../repository/banners.repository';
 import { NewCarRepository } from 'src/entities/newcar/repository/newcar.repository';
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
+import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
+import { UserRepository } from 'src/entities/user/repository/user.repository';
+import { userInfo } from 'os';
 
 
 @Injectable()
@@ -33,6 +37,8 @@ export class AdminService extends CrudService<Admin> {
     readonly bannersrepository: bannersrepository,
     private readonly NewCarRepository: NewCarRepository,
     private readonly UsedCarRepository: UsedCarRepository,
+    private readonly CreditRequestRepository: CreditRequestRepository,
+    private readonly userRepository: UserRepository
   ) {
     super(repository, 'Admin', config);
   }
@@ -118,6 +124,76 @@ export class AdminService extends CrudService<Admin> {
 
     return [{bannershome, bannerscarlist}]
 
+
+  }
+
+  async modulecredits(){
+
+    let list: any= []
+
+
+        let credist:any = await this.CreditRequestRepository.findAll({limit: '1000', })
+
+    for(let credit of credist.items)
+      {
+        let credito: any = {
+          telefono: '',
+          correo: '',
+          nombre: '',
+          estado: '',
+          status: '',
+          meses: '',
+          pago: '',
+          creditInfo: [],
+          carInfo: []
+        }
+
+        credito.creditInfo = credit
+
+        let user:any = await this.userRepository.findAll({_id: credit.userId})
+  
+        if(user.items[0])
+          {
+            credito.telefono = user.items[0].phone || ''
+            credito.correo = user.items[0].email || ''
+            credito.nombre = user.items[0].firstName+ ' ' + user.items[0].lastName || ''
+            credito.estado = user.items[0].state || ''
+          }
+
+        credito.status = credit.status,
+        credito.meses = credit.creditMonths,
+        credito.pago = credit.downPayment
+
+
+        if(credit.carType === 'new')
+        {
+          let car = await this.NewCarRepository.findOne({vin: credit.carId})
+          if(car)
+            {
+              credito.carInfo = car
+            }
+            else 
+            {
+              credito.carInfo = ['Carro no encontrado o vendido']
+            }
+        }
+        else{
+          let car = await this.UsedCarRepository.findOne({vin: credit.carId})
+          if(car)
+            {
+              credito.carInfo = car
+            }
+            else 
+            {
+              credito.carInfo = ['Carro no encontrado o vendido']
+            }
+        }   
+
+
+        list.push(credito)
+      }
+
+    return list
 
   }
 
