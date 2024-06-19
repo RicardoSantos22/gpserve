@@ -9,13 +9,14 @@ import { CreditRequestController } from './controller/creditrequest.controller';
 import { CreditRequestRepository } from './repository/creditrequest.repository';
 import { asesorsrespository } from '../asesores/repository/asesores.repository'
 import { asesoresservice } from '../asesores/service/asesores.service'
-import { Asesores } from '../asesores/model/asesores.model'
 import { BucketModule } from '../../bucket/bucket.module';
+import { BugsModule } from '../bugs/bugs.module';
+import { AsesoresModule } from '../asesores/asesores.module';
 
 @Module({
-  imports: [TypegooseModule.forFeature([CreditRequest, Asesores]), BucketModule, HttpModule.register({})],
+  imports: [TypegooseModule.forFeature([CreditRequest]), BucketModule, HttpModule.register({}), BugsModule],
   controllers: [CreditRequestController],
-  providers: [CreditRequestService, CreditRequestRepository, asesoresservice, asesorsrespository],
+  providers: [CreditRequestService, CreditRequestRepository,],
   exports: [CreditRequestModule, CreditRequestRepository, CreditRequestService]
 })
 

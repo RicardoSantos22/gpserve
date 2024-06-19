@@ -9,8 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
 import { HttpService } from '@nestjs/axios';
 import { KarbotModel, CreateLeadModel, karbotCreateLead} from '../model/Karbot.response';
-import { authenticate, authorize } from 'passport';
-import { promises } from 'dns';
+import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 
 @Injectable()
 export class asesoresservice extends CrudService<Asesores> {
@@ -22,7 +21,8 @@ export class asesoresservice extends CrudService<Asesores> {
         protected readonly repository: asesorsrespository,
         protected readonly config: ConfigService,
         protected readonly s3Service: AwsS3Service,
-        private httpservice: HttpService
+        private httpservice: HttpService,
+        private bugRepository: BugRepository,
       ) {
         super(repository, 'Asesores', config);
       }
@@ -87,7 +87,8 @@ export class asesoresservice extends CrudService<Asesores> {
 
       async createLead(payload:karbotCreateLead){
 
-
+   
+        
         let modelKarbotCreateLead = {
           lineName: "Estrenatuauto",
           referenceId: (Math.floor(Math.random() * (100 - 1 + 1)) + 1).toString(),
@@ -105,6 +106,11 @@ export class asesoresservice extends CrudService<Asesores> {
           additionalData1: payload.vin,
           }
 
+          this.bugRepository.create({
+            type: 'karbot',
+            notas: modelKarbotCreateLead,
+            error: 'Bitacora',
+          })
           
           const reponse: any = await this.httpservice.post(this.karbotProd + '/ws/create-lead-inbound', modelKarbotCreateLead ,
           {
@@ -113,11 +119,18 @@ export class asesoresservice extends CrudService<Asesores> {
             }
           }).toPromise()
 
-        return reponse.data.statusCode
+          let dataresponse =  reponse.data
 
-      
-        
-      
+          console.log(dataresponse)
+
+          this.bugRepository.create({
+            type: 'karbotResponse',
+            notas: dataresponse,
+            error: 'Bitacora',
+          })
+ 
+        return dataresponse.statusCode
+
       }
 
 }

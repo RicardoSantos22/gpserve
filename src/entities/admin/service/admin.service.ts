@@ -132,7 +132,7 @@ export class AdminService extends CrudService<Admin> {
     let list: any= []
 
 
-        let credist:any = await this.CreditRequestRepository.findAll({limit: '1000', })
+        let credist:any = await this.CreditRequestRepository.findAll({limit: '100', sort: '-createdAt'})
 
     for(let credit of credist.items)
       {
@@ -142,15 +142,22 @@ export class AdminService extends CrudService<Admin> {
           nombre: '',
           estado: '',
           status: '',
+          karbotStatus: 'enviado',
           meses: '',
           pago: '',
           creditInfo: [],
-          carInfo: []
+          carInfo: [],
+          GuestInfo:[]
         }
 
         credito.creditInfo = credit
 
         let user:any = await this.userRepository.findAll({_id: credit.userId})
+
+        if(credit.userType === 'Guest')
+          {
+            credito.GuestInfo = credit.userGuest;
+          }
   
         if(user.items[0])
           {
@@ -401,6 +408,7 @@ export class AdminService extends CrudService<Admin> {
           'year': '',
           'make': '',
           'model': '',
+          'cartype': '',
           'body': '',
           'transmission': '',
           'trim': '',
@@ -433,6 +441,7 @@ export class AdminService extends CrudService<Admin> {
                 }
             }
 
+        modelimagepro.cartype = 'used'
         modelimagepro.inventorydi = newcar._id
         modelimagepro.vin = newcar.vin
         modelimagepro.year = newcar.year
@@ -447,9 +456,6 @@ export class AdminService extends CrudService<Admin> {
         modelimagepro.price = newcar.price
         modelimagepro.photos = fotos
         modelimagepro.inventorysdate = new Date(newcar.createdAt).toLocaleString() 
-
-
-
         document.push(modelimagepro)
 
       }
@@ -465,6 +471,7 @@ export class AdminService extends CrudService<Admin> {
             'year': '',
             'make': '',
             'model': '',
+            'cartype': '',
             'body': '',
             'transmission': '',
             'trim': '',
@@ -496,7 +503,8 @@ export class AdminService extends CrudService<Admin> {
                   }
               }
          
-          modelimagepro.inventorydi = newcar._id
+          modelimagepro.inventorydi = newcar._id, 
+          modelimagepro.cartype = 'new'
           modelimagepro.vin = newcar.vin
           modelimagepro.year = newcar.year
           modelimagepro.make = newcar.brand

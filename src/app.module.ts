@@ -23,6 +23,7 @@ import { AsesoresModule } from './entities/asesores/asesores.module';
 import { OrderModule } from './entities/order/order.module';
 import { InitialAssessmentModule } from './entities/initialassessment/initial-assessment.module';
 import { FinishedcarsModule } from './entities/finishedcars/finishedcars.module';
+import { BugsModule } from './entities/bugs/bugs.module';
 
 
 @Module({
@@ -55,6 +56,7 @@ import { FinishedcarsModule } from './entities/finishedcars/finishedcars.module'
     NoteModule,
     AsesoresModule,
     FinishedcarsModule,
+    BugsModule,
   ],
 })
 

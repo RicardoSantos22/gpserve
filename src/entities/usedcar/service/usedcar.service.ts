@@ -14,6 +14,7 @@ import { CronExpression } from '@nestjs/schedule/dist';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
+import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 
 
 let x;
@@ -35,8 +36,9 @@ export class UsedCarService extends CrudService<typeof x> {
         private finishedcar: FinishedcarsService,
         private httpService: HttpService,
         private agencyrepository: AgencyRepository,
+        private bugRepository: BugRepository,
     ) {
-        super(repository, 'UsedCar', config);
+        super(repository, 'bug', config);
         this.sadApiConfig = {
             baseUrl: this.config.get('sadAPI.baseUrl'),
             username: this.config.get('sadAPI.username'),
@@ -53,26 +55,6 @@ export class UsedCarService extends CrudService<typeof x> {
     async findAll(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
 
         return await this.repository.findAll(query)
-
-        // if (query.model && query.brand) {
-        //     let newquery = await this.getAllModelOfBrands(query)
-
-        //     console.log(newquery)
-
-        //     const cars = await this.repository.findAll(newquery)
-
-
-        //     return cars
-        // }
-        // else {
-        //     const cars = await this.repository.findAll(query)
-
-
-        //     return cars
-        // }
-
-
-
     }
 
 

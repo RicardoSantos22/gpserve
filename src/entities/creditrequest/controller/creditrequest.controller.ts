@@ -19,7 +19,7 @@ import {
   ApiUnprocessableEntityResponse
 } from '@nestjs/swagger';
 
-import { asesoresservice } from '../../asesores/service/asesores.service'
+
 
 import { DatabaseErrorDto, NotFoundErrorDto } from '../../../common/models/dto/errors';
 import { FindByIdParams, DeleteParams } from '../../../common/models/dto/params';
@@ -30,13 +30,12 @@ import { CreditRequestService } from '../service/creditrequest.service';
 import { CreateCreditRequestDTO } from '../dto/create-credit-request';
 import { FindAllCreditRequestsQuery } from '../dto/find-all-credit-requests-query';
 import { UpdateCreditRequestDTO } from '../dto/update-credit-request';
-import { FindAllAsesoresDto } from 'src/entities/asesores/dto/findall-query';
 
 
 @ApiTags('creditrequest')
 @Controller('creditrequest')
 export class CreditRequestController {
-  constructor(private readonly service: CreditRequestService, private readonly asesoreservices: asesoresservice) {}
+  constructor(private readonly service: CreditRequestService) {}
 
   /**
    * #region findAll

@@ -6,11 +6,12 @@ import { asesoresservice } from './service/asesores.service'
 import { asesorsrespository } from './repository/asesores.repository'
 import { BucketModule } from '../../bucket/bucket.module';
 import { HttpModule } from '@nestjs/axios';
+import { BugsModule } from '../bugs/bugs.module';
 
 @Module({
-  imports:[TypegooseModule.forFeature([ Asesores ]), BucketModule, HttpModule.register({})],
+  imports:[TypegooseModule.forFeature([ Asesores ]), BucketModule, HttpModule.register({}),BugsModule ],
   controllers: [ Asesorescontroller ],
   providers: [asesoresservice, asesorsrespository],
-  exports:[ asesoresservice]
+  exports:[ asesoresservice, asesorsrespository,]
 })
 export class AsesoresModule {}

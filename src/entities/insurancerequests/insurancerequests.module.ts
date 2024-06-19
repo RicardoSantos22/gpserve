@@ -10,13 +10,14 @@ import { InsuranceRequestRepository } from './repository/insurancerequest.reposi
 
 import { asesorsrespository } from '../asesores/repository/asesores.repository'
 import { asesoresservice } from '../asesores/service/asesores.service'
-import { Asesores } from '../asesores/model/asesores.model'
 import { BucketModule } from '../../bucket/bucket.module';
+import { BugsModule } from '../bugs/bugs.module';
+import { AsesoresModule } from '../asesores/asesores.module';
 
 @Module({
-  imports: [TypegooseModule.forFeature([InsuranceRequests, Asesores]), BucketModule, HttpModule.register({})],
+  imports: [TypegooseModule.forFeature([InsuranceRequests]), BucketModule, HttpModule.register({}), BugsModule, AsesoresModule],
   controllers: [InsuranceRequestsController],
-  providers: [InsuranceRequestsService, InsuranceRequestRepository, asesoresservice, asesorsrespository],
+  providers: [InsuranceRequestsService, InsuranceRequestRepository],
   exports: [InsuranceRequestRepository, InsuranceRequestsModule, InsuranceRequestsService]
 })
 
