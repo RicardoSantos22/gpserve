@@ -120,9 +120,6 @@ export class asesoresservice extends CrudService<Asesores> {
           }).toPromise()
 
           let dataresponse =  reponse.data
-
-          console.log(dataresponse)
-
           this.bugRepository.create({
             type: 'karbotResponse',
             notas: dataresponse,
