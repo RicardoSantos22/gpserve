@@ -44,7 +44,7 @@ export class Asesorescontroller {
 
        @Get('/karbotlogin')
        async karbotLogin(){
-        return this.service.login();
+        return this.service.getKarbotTokenForClient();
        }
 
        @Post('/Createlead')

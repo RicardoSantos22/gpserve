@@ -24,6 +24,7 @@ import { OrderModule } from './entities/order/order.module';
 import { InitialAssessmentModule } from './entities/initialassessment/initial-assessment.module';
 import { FinishedcarsModule } from './entities/finishedcars/finishedcars.module';
 import { BugsModule } from './entities/bugs/bugs.module';
+import { RecursosModule } from './entities/recursos/recursos.module';
 
 
 @Module({
@@ -57,6 +58,7 @@ import { BugsModule } from './entities/bugs/bugs.module';
     AsesoresModule,
     FinishedcarsModule,
     BugsModule,
+    RecursosModule,
   ],
 })
 
