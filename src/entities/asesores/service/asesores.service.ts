@@ -88,6 +88,8 @@ export class asesoresservice extends CrudService<Asesores> {
 
       async createLead(payload:karbotCreateLead){ 
         
+       try
+       {
         let modelKarbotCreateLead = {
           lineName: "Estrenatuauto",
           referenceId: (Math.floor(Math.random() * (100 - 1 + 1)) + 1).toString(),
@@ -125,18 +127,18 @@ export class asesoresservice extends CrudService<Asesores> {
             error: 'Bitacora',
           })
 
-          if(dataresponse.status !== 200)
-            {
-              return dataresponse.statusCode
-            }
-            else{
-              this.bugRepository.create({
-                detalles: modelKarbotCreateLead,
-                type: 'bug',
-                notas: dataresponse,
-                error: 'karbot',
-              })
-            }
+  
+            return dataresponse.statusCode
+       }
+       catch(e)
+       {
+        this.bugRepository.create({
+          detalles: 'error al crear el lead de karbot',
+          type: 'bug',
+          notas: e.message,
+          error: 'karbot',
+        })
+       }
       }
 
       async getKarbotTokenForClient(){
