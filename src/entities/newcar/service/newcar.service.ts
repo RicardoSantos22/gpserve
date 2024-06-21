@@ -307,7 +307,7 @@ export class NewCarService extends CrudService<typeof x> {
 
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
-
+        if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
         if (carID === '' || carID === null || carID.length !== 17 ) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
         if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }
         if (car.brand === '' || car.brand === null) { return [{ error: 'sin brand' }, { car }] }

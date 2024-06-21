@@ -49,7 +49,7 @@ export class Asesorescontroller {
 
        @Post('/Createlead')
        async Createlead(@Body() karbotSesion: any){
-
+ 
         return this.service.createLead(karbotSesion)
         // return 0
        }

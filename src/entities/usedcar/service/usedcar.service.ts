@@ -240,7 +240,11 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async carModelVerification(car) {
+
+     
+
         let carID = '';
+        if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
 
