@@ -12,6 +12,7 @@ import { KarbotModel, CreateLeadModel, karbotCreateLead} from '../model/Karbot.r
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 import { recursosRepository } from 'src/entities/recursos/repository/recursos.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { carType } from 'src/entities/shared/enums';
 
 @Injectable()
 export class asesoresservice extends CrudService<Asesores> {
@@ -146,24 +147,25 @@ export class asesoresservice extends CrudService<Asesores> {
       }
 
       async getKarbotToken(){
-        let token:any = await this.login() 
 
-        if(token !== 500)
-          {
-            this.recursosRepository.create({
-              name: 'karbotToken',
-              value: token.session.access_token,
-              description: 'Token de Karbot',
-              date: new Date()
-            })
-          }
-          else{
-            this.bugRepository.create({
-              type: 'bug',
-              notas: "Error al obtener token de Karbot, reinterntar obtener el token lo antes posible",
-              error: 'karbot',
-            })
-          }
+        try
+        {
+          let token:any = await this.login() 
+          this.recursosRepository.create({
+            name: 'karbotToken',
+            value: token.session.access_token,
+            description: 'Token de Karbot',
+            date: new Date()
+          })
+        }
+        catch(e)
+        {
+          this.bugRepository.create({
+            type: 'bug',
+            notas: "Error al obtener token de Karbot, reinterntar obtener el token lo antes posible",
+            error: 'karbot',
+          })
+        }
       }
 
 
