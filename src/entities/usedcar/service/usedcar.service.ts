@@ -244,7 +244,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
         
     let sheetsIDs = ['902', '800', '802', '901']
-        
 
         let carID = '';
         if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
@@ -259,8 +258,6 @@ export class UsedCarService extends CrudService<typeof x> {
                         const response = await this.httpService.get(car.images[0].imageUrl).toPromise()
                         
                     }
-     
-                
             }
             catch(e)
             {
@@ -287,6 +284,8 @@ export class UsedCarService extends CrudService<typeof x> {
         return 200
 
     }
+
+ 
 
 
     async getFiltersValues(): Promise<NewCarsFilters> {
@@ -449,6 +448,25 @@ export class UsedCarService extends CrudService<typeof x> {
 
     }
 
+    async imgprincipal(images: any)
+    {
+        let imagesvalidate = images;
+        let i = 0;
+        for(let image of images)
+            {
+                i - i + 1;
+                try{
+                    const response = await this.httpService.get(image.imageUrl).toPromise()
+
+                }
+                catch(e)
+                {
+                    imagesvalidate.splice(i, 1)
+                }
+            }
+          return imagesvalidate
+    }
+
     async updateCarCatalogue() {
 
 
@@ -564,8 +582,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         let verificacion = await this.carModelVerification(sc)
 
-                        console.log(verificacion)
-                        
+            
                         vins.push(sc.ID)
 
 
@@ -674,6 +691,9 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
+
+                            let images = await this.imgprincipal(sc.images)
+
                             parsedModel = sc.model.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
@@ -699,7 +719,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
                                 year: sc.year,
-                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
+                                images: !images ? [] : images.map(i => i.imageUrl),
                                 transmision: sc.transmision.trim(),
                                 fuel: sc.fuelType.trim(),
                                 colours: sc.color.trim(),

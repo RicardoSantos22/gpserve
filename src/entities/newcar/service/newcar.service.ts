@@ -521,6 +521,25 @@ export class NewCarService extends CrudService<typeof x> {
 
     }
 
+    async imgprincipal(images: any)
+    {
+        let imagesvalidate = images;
+        let i = 0;
+        for(let image of images)
+            {
+                i - i + 1;
+                try{
+                    const response = await this.httpService.get(image.imageUrl).toPromise()
+
+                }
+                catch(e)
+                {
+                    imagesvalidate.splice(i, 1)
+                }
+            }
+          return imagesvalidate
+    }
+
     async updateCarCatalogue() {
 
         let estadosCiudades = {
@@ -741,7 +760,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                            
                             let serie = sc.version.trim().toLowerCase();
-
+                            let images = await this.imgprincipal(sc.images)
                     
                             //if(true) {
                             let newCar: NewCar = {
@@ -764,7 +783,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
                                 price: +sc.price,
                                 year: sc.year,
-                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
+                                images: !images ? [] : images.map(i => i.imageUrl),
                                 transmision: sc.transmision,
                                 fuel: sc.fuelType,
                                 colours: sc.color,
