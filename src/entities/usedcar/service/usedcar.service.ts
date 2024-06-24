@@ -241,18 +241,31 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async carModelVerification(car) {
 
-     
+
+        
+    let sheetsIDs = ['902', '800', '802', '901']
         
 
         let carID = '';
         if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
         else{
             try{
-                 const response = await this.httpService.get(car.images[0].imageUrl).toPromise()
+                if(sheetsIDs.includes(car.agencyId))
+                    {
+                        const response = await this.httpService.get(car.images[0]).toPromise()
+                 
+                    }
+                    else{
+                        const response = await this.httpService.get(car.images[0].imageUrl).toPromise()
+                        
+                    }
+     
+                
             }
             catch(e)
             {
-                return [{error: 'no hay imagenes en la dirreccion' }, {car}]
+          
+                return [{error: 'no hay imagenes en la direccion' }, {car}]
             }
         }
         if (car.vin) { carID = car.vin }
@@ -551,6 +564,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         let verificacion = await this.carModelVerification(sc)
 
+                        console.log(verificacion)
                         
                         vins.push(sc.ID)
 
