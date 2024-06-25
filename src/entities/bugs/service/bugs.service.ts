@@ -32,7 +32,18 @@ export class BugsService extends CrudService<typeof x> {
         this.setupCarsSecret = this.config.get('setupCarsSecret')
     }
     async findAll(query: FindAllQuery): Promise<PaginatedEntities<any>> {
-        return await this.repository.findAll(query)
+
+        return await this.repository.findAll({type: 'bug'})
     }
 
+
+   async findById(id: string){
+        return await this.repository.findById(id)
+    }
+
+    async update(id: string, item: Partial<any>): Promise<any> {
+        return await this.repository.update(id, item)
+    }
+
+    
   }

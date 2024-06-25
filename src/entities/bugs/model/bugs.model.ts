@@ -24,12 +24,21 @@ export class Bug {
 
   @prop() 
   notas: [];
+  
+  @prop()
+  detalles: string
 
   @prop()
   Iduser: string;
 
   @prop()
   Condiciones: string;
+
+  @prop()
+  userId: string;
+
+  @prop()
+  status: string
   
 
 }

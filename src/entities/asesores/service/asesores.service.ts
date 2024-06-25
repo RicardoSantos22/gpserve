@@ -132,8 +132,10 @@ export class asesoresservice extends CrudService<Asesores> {
       await this.bugRepository.create({
         detalles: 'error al crear el lead de karbot',
         type: 'bug',
-        notas: e.message,
+        notas: [e.message, payload],
         error: 'karbot',
+        userId: '',
+        status: 'Sin Procesar'
       })
     }
   }
@@ -161,8 +163,11 @@ export class asesoresservice extends CrudService<Asesores> {
     catch (e) {
       await this.bugRepository.create({
         type: 'bug',
-        notas: "Error al obtener token de Karbot, reinterntar obtener el token lo antes posible",
+        detalles: "Error al obtener token de Karbot, verifique en api asesores.services.ts en la duncion de getKarbotToken()",
         error: 'karbot',
+        userId: '',
+        status: 'Sin Procesar',
+        notas: e.message
       })
     }
   }
