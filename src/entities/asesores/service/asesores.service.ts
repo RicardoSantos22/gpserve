@@ -163,7 +163,7 @@ export class asesoresservice extends CrudService<Asesores> {
     catch (e) {
       await this.bugRepository.create({
         type: 'bug',
-        detalles: "Error al obtener token de Karbot, verifique en api asesores.services.ts en la duncion de getKarbotToken()",
+        detalles: "Error al obtener token de Karbot, verifique en api asesores.services.ts en la funcion de getKarbotToken()",
         error: 'karbot',
         userId: '',
         status: 'Sin Procesar',
