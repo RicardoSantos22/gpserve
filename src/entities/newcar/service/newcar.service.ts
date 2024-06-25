@@ -760,7 +760,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                            
                             let serie = sc.version.trim().toLowerCase();
-                            let images = await this.imgprincipal(sc.images)
+                            
                     
                             //if(true) {
                             let newCar: NewCar = {
@@ -783,7 +783,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
                                 price: +sc.price,
                                 year: sc.year,
-                                images: !images ? [] : images.map(i => i.imageUrl),
+                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
                                 transmision: sc.transmision,
                                 fuel: sc.fuelType,
                                 colours: sc.color,

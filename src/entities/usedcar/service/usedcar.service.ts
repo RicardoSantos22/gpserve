@@ -692,7 +692,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             }
 
 
-                            let images = await this.imgprincipal(sc.images)
+                            // let images = await this.imgprincipal(sc.images)
 
                             parsedModel = sc.model.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
@@ -719,7 +719,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
                                 year: sc.year,
-                                images: !images ? [] : images.map(i => i.imageUrl),
+                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
                                 transmision: sc.transmision.trim(),
                                 fuel: sc.fuelType.trim(),
                                 colours: sc.color.trim(),

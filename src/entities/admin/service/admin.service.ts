@@ -132,7 +132,7 @@ export class AdminService extends CrudService<Admin> {
     let list: any= []
 
 
-        let credist:any = await this.CreditRequestRepository.findAll({limit: '100', sort: '-createdAt'})
+        let credist:any = await this.CreditRequestRepository.findAll({limit: '20', sort: '-createdAt'})
 
     for(let credit of credist.items)
       {
@@ -401,8 +401,8 @@ export class AdminService extends CrudService<Admin> {
       {
 
         let modelimagepro = {
-          'inventorydi': '', 
           'dealerid': '',
+          'inventorydi': '', 
           'vin': '',
           'type': '',
           'year': '',
@@ -430,7 +430,7 @@ export class AdminService extends CrudService<Admin> {
         let specs = ''
         for(let foto of newcar.images)
           {
-            fotos.push({'dealeid': newcar._id, 'vin': newcar.vin,'photos': foto })
+            fotos.push({'dealerid': 'grupocdj', 'vin': newcar.vin,'photos': foto })
           }
 
           if(newcar.specs)
@@ -442,6 +442,7 @@ export class AdminService extends CrudService<Admin> {
             }
 
         modelimagepro.cartype = 'used'
+        modelimagepro.dealerid = 'grupocdj'
         modelimagepro.inventorydi = newcar._id
         modelimagepro.vin = newcar.vin
         modelimagepro.year = newcar.year
@@ -464,8 +465,8 @@ export class AdminService extends CrudService<Admin> {
         {
   
           let modelimagepro = {
-            'inventorydi': '', 
             'dealerid': '',
+          'inventorydi': '', 
             'vin': '',
             'type': '',
             'year': '',
@@ -492,7 +493,7 @@ export class AdminService extends CrudService<Admin> {
           let specs = ''
           for(let foto of newcar.images)
             {
-              fotos.push({'dealeid': newcar._id, 'vin': newcar.vin,'photos': foto })
+              fotos.push({'dealerid': 'grupocdj', 'vin': newcar.vin,'photos': foto })
             }
   
             if(newcar.specs)
@@ -503,8 +504,10 @@ export class AdminService extends CrudService<Admin> {
                   }
               }
          
-          modelimagepro.inventorydi = newcar._id, 
           modelimagepro.cartype = 'new'
+          modelimagepro.dealerid = 'grupocdj'
+          modelimagepro.inventorydi = newcar._id, 
+  
           modelimagepro.vin = newcar.vin
           modelimagepro.year = newcar.year
           modelimagepro.make = newcar.brand
