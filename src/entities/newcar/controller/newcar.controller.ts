@@ -220,9 +220,9 @@ export class NewCarController {
   @Post('bmw')
   async bmw(@Body() body: CreateNewCarDTO) {
 
-    let code = await this.service.carModelVerification(body)
+    let code:any = await this.service.carModelVerification(body)
 
-    if(code === 200){return this.service.create({ ...body });}
+    if(code.status === 200){return this.service.create({ ...body });}
     else { return code }
 
     

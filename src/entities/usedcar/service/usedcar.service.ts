@@ -86,23 +86,22 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async sugerenciasdebusqueda() {
-        let sugerencias: {brand:string, model: String[]}[] = []
+        let sugerencias: { brand: string, model: String[] }[] = []
 
         const cars: any = await this.repository.findAll();
 
         for (let car of cars.items) {
-           
+
             const resultado = sugerencias.find(brand => brand.brand === car.brand)
 
-            if(resultado)
-                {
-                    if (resultado.model.includes(car.model) === false) {
-                        resultado.model.push(car.model)
-                    }
+            if (resultado) {
+                if (resultado.model.includes(car.model) === false) {
+                    resultado.model.push(car.model)
                 }
-                else{
-                    sugerencias.push({brand: car.brand, model: [car.model]})
-                }
+            }
+            else {
+                sugerencias.push({ brand: car.brand, model: [car.model] })
+            }
         }
         return sugerencias
     }
@@ -241,29 +240,67 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async carModelVerification(car) {
 
-
-        
-    let sheetsIDs = ['902', '800', '802', '901']
+        let sheetsIDs = ['902', '800', '802', '901']
 
         let carID = '';
-        if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
-        else{
-            try{
-                if(sheetsIDs.includes(car.agencyId))
-                    {
-                        const response = await this.httpService.get(car.images[0]).toPromise()
-                 
-                    }
-                    else{
-                        const response = await this.httpService.get(car.images[0].imageUrl).toPromise()
-                        
-                    }
+        if (car.images.length === 0) { return [{ error: 'no hay imagenes' }, { car }] }
+        else {
+
+            if (sheetsIDs.includes(car.agencyId)) {
+                try {
+                    const response = await this.httpService.get(car.images[0]).toPromise()
+                }
+                catch (e) {
+                    return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                }
+
+
             }
-            catch(e)
-            {
-          
-                return [{error: 'no hay imagenes en la direccion' }, {car}]
+            else {
+
+                let imageurl = ''
+                car.images.map((img: any) => {
+                    
+                    if (img.imageUrl.includes('fi')) {
+                    
+                        imageurl = img.imageUrl
+                    }
+                })
+           
+
+                if (imageurl !== '') {
+                    try {
+                        const response: any = await this.httpService.get(imageurl).toPromise()
+                      
+                    }
+                    catch (e) {
+
+                      
+                     
+                        let imgfinal: any = await this.imgprincipal(car.images)
+                     
+                        if (imgfinal.length > 0) {
+                            car.images = imgfinal
+                        }
+                        else {
+                          
+                            return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                        }
+                    }
+
+                }
+                else{
+                    let imgfinal: any = await this.imgprincipal(car.images)
+                    console.log(imgfinal)
+                    if (imgfinal.length > 0) {
+                        car.images = imgfinal
+                    }
+                    else {
+                        return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                    }
+                }
             }
+
         }
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
@@ -281,11 +318,11 @@ export class UsedCarService extends CrudService<typeof x> {
         if (car.colours === '' || car.colours === null) { return [{ error: 'sin colour' }, { car }] }
         if (car.baseColour === '' || car.baseColour === null) { return [{ error: 'sin color base' }, { car }] }
 
-        return 200
+        return { status: 200, car: car }
 
     }
 
- 
+
 
 
     async getFiltersValues(): Promise<NewCarsFilters> {
@@ -448,23 +485,22 @@ export class UsedCarService extends CrudService<typeof x> {
 
     }
 
-    async imgprincipal(images: any)
-    {
+    async imgprincipal(images: any) {
+        
         let imagesvalidate = images;
         let i = 0;
-        for(let image of images)
-            {
-                i - i + 1;
-                try{
-                    const response = await this.httpService.get(image.imageUrl).toPromise()
-
-                }
-                catch(e)
-                {
-                    imagesvalidate.splice(i, 1)
-                }
+        for (let image of images) {
+            i - i + 1;
+            try {
+                const response: any= await this.httpService.get(image.imageUrl).toPromise()
+             
             }
-          return imagesvalidate
+            catch (e) {
+               
+                imagesvalidate = imagesvalidate.filter((img: any) => img.imageUrl !== image.imageUrl)
+            }
+        }
+        return imagesvalidate
     }
 
     async updateCarCatalogue() {
@@ -575,18 +611,19 @@ export class UsedCarService extends CrudService<typeof x> {
                             }
 
                         })
+
+
+
+
+
+                        let verificacion: any = await this.carModelVerification(sc)
+
                       
 
-                   
-
-
-                        let verificacion = await this.carModelVerification(sc)
-
-            
                         vins.push(sc.ID)
 
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion === 200) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion.status === 200) {
 
                             let agencia = await this.agencyrepository.findOne({ number: sc.agencyID })
 
@@ -613,7 +650,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 estate = 'Nuevo Leon'
                             }
 
-                            if(estadosCiudades.ciudadmexico.includes(sc.agencyCity.toLowerCase())) {
+                            if (estadosCiudades.ciudadmexico.includes(sc.agencyCity.toLowerCase())) {
                                 estate = 'Ciudad de  Mexico'
                             }
 
@@ -699,8 +736,9 @@ export class UsedCarService extends CrudService<typeof x> {
                             parsedSeries = sc.version.replace('/', '-')
 
                             let serie = sc.version.trim().toLowerCase();
+                            let img =  verificacion.car.images;
 
-
+                  
                             //if(true) {
                             let usedCar: UsedCar = {
                                 promocioType: sc.promotionDescription.trim(),
@@ -719,7 +757,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
                                 year: sc.year,
-                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
+                                images: !img ? [] : img.map(i => i.imageUrl),
                                 transmision: sc.transmision.trim(),
                                 fuel: sc.fuelType.trim(),
                                 colours: sc.color.trim(),
@@ -734,6 +772,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
+                       
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, usedCar)
@@ -747,7 +786,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                            if (verificacion !== 200) {
+                            if (verificacion.status !== 200) {
                                 carlistban.push(verificacion)
                             }
                             else {
@@ -812,15 +851,15 @@ export class UsedCarService extends CrudService<typeof x> {
                 });
             }
 
-         
+
             const createdCars = await this.repository.createMany(usedCarsArray)
 
             let cars = await this.repository.findAll();
 
-        
+
             let counts = {};
             let duplicates = [];
-            
+
             for (let i = 0; i < vins.length; i++) {
                 if (counts[vins[i]]) {
                     counts[vins[i]] += 1;
@@ -828,21 +867,21 @@ export class UsedCarService extends CrudService<typeof x> {
                     counts[vins[i]] = 1;
                 }
             }
-            
+
             for (let vin in counts) {
                 if (counts[vin] > 1) {
                     duplicates.push(vin);
                 }
             }
-        
-            let bitacora = {
-                status: 'zad',
-                vins: vins,
-                createmenys: createdCars,
-                duplicates: duplicates,
-            }
-            let a = await this.finishedcar.create(bitacora)
-        
+
+            // let bitacora = {
+            //     status: 'zad',
+            //     vins: vins,
+            //     createmenys: createdCars,
+            //     duplicates: duplicates,
+            // }
+            // let a = await this.finishedcar.create(bitacora)
+
 
             return {
                 banCarlist: carlistban,

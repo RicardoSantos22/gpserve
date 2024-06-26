@@ -168,7 +168,7 @@ export class NewCarService extends CrudService<typeof x> {
             allmodeles.push(c.model)
         }
 
-        console.log(allmodeles)
+    
 
         for (let model of query.model) {
             if (allmodeles.includes(model) === false) {
@@ -307,14 +307,49 @@ export class NewCarService extends CrudService<typeof x> {
 
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
+        
         if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
         else{
-            try{
-                 const response = await this.httpService.get(car.images[0].imageUrl).toPromise()
+            let imageurl = ''
+            car.images.map((img: any) => {
+                
+                if (img.imageUrl.includes('fi')) {
+                
+                    imageurl = img.imageUrl
+                }
+            })
+       
+
+            if (imageurl !== '') {
+                try {
+                    const response: any = await this.httpService.get(imageurl).toPromise()
+                  
+                }
+                catch (e) {
+
+                  
+                 
+                    let imgfinal: any = await this.imgprincipal(car.images)
+                 
+                    if (imgfinal.length > 0) {
+                        car.images = imgfinal
+                    }
+                    else {
+                      
+                        return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                    }
+                }
+
             }
-            catch(e)
-            {
-                return [{error: 'no hay imagenes en la dirreccion' }, {car}]
+            else{
+                let imgfinal: any = await this.imgprincipal(car.images)
+                console.log(imgfinal)
+                if (imgfinal.length > 0) {
+                    car.images = imgfinal
+                }
+                else {
+                    return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                }
             }
         }
         if (carID === '' || carID === null || carID.length !== 17 ) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
@@ -330,7 +365,7 @@ export class NewCarService extends CrudService<typeof x> {
         if (car.colours === '' || car.colours === null) { return [{ error: 'sin colour' }, { car }] }
         if (car.baseColour === '' || car.baseColour === null) { return [{ error: 'sin colour' }, { car }] }
 
-        return 200
+        return { status: 200, car: car }
 
     }
 
@@ -534,7 +569,7 @@ export class NewCarService extends CrudService<typeof x> {
                 }
                 catch(e)
                 {
-                    imagesvalidate.splice(i, 1)
+                    imagesvalidate = imagesvalidate.filter((img: any) => img.imageUrl !== image.imageUrl)
                 }
             }
           return imagesvalidate
@@ -637,10 +672,10 @@ export class NewCarService extends CrudService<typeof x> {
 
                         })
 
-                        let verificacion = await this.carModelVerification(sc)
+                        let verificacion:any = await this.carModelVerification(sc)
 
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion === 200) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion.status === 200) {
 
 
                             vins.push(sc.ID)
@@ -757,10 +792,11 @@ export class NewCarService extends CrudService<typeof x> {
                             parsedModel = newmodel.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
-
+                            let img =  verificacion.car.images;
                            
                             let serie = sc.version.trim().toLowerCase();
-                            
+                            console.log("___________________")
+                            console.log(img.length)
                     
                             //if(true) {
                             let newCar: NewCar = {
@@ -783,7 +819,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
                                 price: +sc.price,
                                 year: sc.year,
-                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
+                                images: !img ? [] : img.map(i => i.imageUrl),
                                 transmision: sc.transmision,
                                 fuel: sc.fuelType,
                                 colours: sc.color,
@@ -796,10 +832,10 @@ export class NewCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                  
+                  console.log(newCar.images.length)
                             if (BDID !== '') {
 
-                                await this.repository.update(BDID, newCar)
+                                // await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
                                 newCarsArray.push(newCar)
@@ -809,7 +845,7 @@ export class NewCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                            if (verificacion !== 200) {
+                            if (verificacion.status !== 200) {
                                 carlistban.push(verificacion)
                             }
                             else {
@@ -831,7 +867,7 @@ export class NewCarService extends CrudService<typeof x> {
 
             // const createdCars = newCarsArray;
 
-            const createdCars = await this.repository.createMany(newCarsArray)
+            // const createdCars = await this.repository.createMany(newCarsArray)
 
             if (carinlist.length > 0) {
                 carlist.items.forEach((car: any) => {

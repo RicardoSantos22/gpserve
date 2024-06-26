@@ -186,10 +186,9 @@ export class UsedCarController {
   @Post('bmw')
   async BMW(@Body() body: CreateUsedCarDTO) {
 
-    console.log(body)
     let code = await this.service.carModelVerification(body)
 
-    if(code === 200){return this.service.create({ ...body });}
+    if(code[0].status === 200){return this.service.create({ ...body });}
     else { return code }
 
     

@@ -33,7 +33,7 @@ export class BugsService extends CrudService<typeof x> {
     }
     async findAll(query: FindAllQuery): Promise<PaginatedEntities<any>> {
 
-        return await this.repository.findAll({type: 'bug'})
+        return await this.repository.findAll({type: 'bug', sort: '-createdAt'})
     }
 
 
@@ -45,5 +45,5 @@ export class BugsService extends CrudService<typeof x> {
         return await this.repository.update(id, item)
     }
 
-    
+
   }
