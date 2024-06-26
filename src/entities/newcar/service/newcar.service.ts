@@ -311,46 +311,46 @@ export class NewCarService extends CrudService<typeof x> {
         if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
         else{
             let imageurl = ''
-            car.images.map((img: any) => {
-                
-                if (img.imageUrl.includes('fi')) {
-                
-                    imageurl = img.imageUrl
-                }
-            })
-       
+                car.images.map((img: any) => {
 
-            if (imageurl !== '') {
-                try {
-                    const response: any = await this.httpService.get(imageurl).toPromise()
-                  
-                }
-                catch (e) {
+                    if (img.imageUrl.includes('fi')) {
 
-                  
-                 
+                        imageurl = img.imageUrl
+                    }
+                })
+
+
+                if (imageurl !== '') {
+                    try {
+                        const response: any = await this.httpService.get(imageurl).toPromise()
+
+                    }
+                    catch (e) {
+
+
+
+                        let imgfinal: any = await this.imgprincipal(car.images)
+
+                        if (imgfinal.length > 0) {
+                            car.images = imgfinal
+                        }
+                        else {
+
+                            return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                        }
+                    }
+
+                }
+                else {
                     let imgfinal: any = await this.imgprincipal(car.images)
-                 
+                    console.log(imgfinal)
                     if (imgfinal.length > 0) {
                         car.images = imgfinal
                     }
                     else {
-                      
                         return [{ error: 'no hay imagenes en la direccion' }, { car }]
                     }
                 }
-
-            }
-            else{
-                let imgfinal: any = await this.imgprincipal(car.images)
-                console.log(imgfinal)
-                if (imgfinal.length > 0) {
-                    car.images = imgfinal
-                }
-                else {
-                    return [{ error: 'no hay imagenes en la direccion' }, { car }]
-                }
-            }
         }
         if (carID === '' || carID === null || carID.length !== 17 ) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
         if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }

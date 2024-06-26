@@ -86,7 +86,7 @@ export class asesoresservice extends CrudService<Asesores> {
   }
 
   async createLead(payload: karbotCreateLead) {
-
+    let karbot: any = []
     try {
       let modelKarbotCreateLead = {
         lineName: "Estrenatuauto",
@@ -105,13 +105,15 @@ export class asesoresservice extends CrudService<Asesores> {
         additionalData1: payload.vin,
       }
 
+      karbot = modelKarbotCreateLead
+
       await this.bugRepository.create({
         type: 'karbot',
         notas: modelKarbotCreateLead,
         error: 'Bitacora',
       })
 
-      const reponse: any = await this.httpservice.post(this.karbotProd + '/ws/create-lead-inbound', modelKarbotCreateLead,
+      const reponse: any = await this.httpservice.post('https://back-production.karbot.mx/api/ws/create-lead-inbound', modelKarbotCreateLead,
         {
           headers: {
             'Authorization': 'Bearer ' + payload.token
@@ -132,7 +134,7 @@ export class asesoresservice extends CrudService<Asesores> {
       await this.bugRepository.create({
         detalles: 'error al crear el lead de karbot',
         type: 'bug',
-        notas: [e.message, payload],
+        notas: [e.message, karbot],
         error: 'karbot',
         userId: '',
         status: 'Sin Procesar'
