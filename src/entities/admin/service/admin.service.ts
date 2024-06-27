@@ -25,6 +25,7 @@ import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repos
 import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
 import { UserRepository } from 'src/entities/user/repository/user.repository';
 import { userInfo } from 'os';
+import { parse } from 'path';
 
 
 @Injectable()
@@ -45,12 +46,15 @@ export class AdminService extends CrudService<Admin> {
 
   async findAdminByEmail(email: string): Promise<any> {
     const admin = await this.repository.findOne({ email });
+
+   
     if (!admin) {
       throw new NotFoundException(ERROR_FINDING_DOCUMENT('Admin'));
     }
     return admin;
   }
 
+  
 
   async create(dto: CreateAdminDTO): Promise<Admin> {
     try {
@@ -132,12 +136,12 @@ export class AdminService extends CrudService<Admin> {
     let list: any= []
 
 
-        let credist:any = await this.CreditRequestRepository.findAll({limit: '20', sort: '-createdAt'})
+        let credist:any = await this.CreditRequestRepository.findAll({limit: '200', sort: '-createdAt'})
 
     for(let credit of credist.items)
       {
         let credito: any = {
-          telefono: '',
+          telefono: '', 
           correo: '',
           nombre: '',
           estado: '',
@@ -390,7 +394,7 @@ export class AdminService extends CrudService<Admin> {
   async getmodelsforimagepro()
   {
     let newcarslist = await this.NewCarRepository.findAll({agencyId : "14"});
-    let UsedCarlist = await this.NewCarRepository.findAll({agencyId : "14"});
+    let UsedCarlist = await this.UsedCarRepository.findAll({agencyId : "14"});
     
     let document: any = [];
 
@@ -525,7 +529,9 @@ export class AdminService extends CrudService<Admin> {
   
         }
       
+        const  csvparse = new Parser();
 
-      return document
+        let csv  = csvparse.parse(document);
+      return csv
   }
 }

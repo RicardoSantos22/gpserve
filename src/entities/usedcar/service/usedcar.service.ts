@@ -260,36 +260,36 @@ export class UsedCarService extends CrudService<typeof x> {
 
                 let imageurl = ''
                 car.images.map((img: any) => {
-                    
+
                     if (img.imageUrl.includes('fi')) {
-                    
+
                         imageurl = img.imageUrl
                     }
                 })
-           
+
 
                 if (imageurl !== '') {
                     try {
                         const response: any = await this.httpService.get(imageurl).toPromise()
-                      
+
                     }
                     catch (e) {
 
-                      
-                     
+
+
                         let imgfinal: any = await this.imgprincipal(car.images)
-                     
+
                         if (imgfinal.length > 0) {
                             car.images = imgfinal
                         }
                         else {
-                          
+
                             return [{ error: 'no hay imagenes en la direccion' }, { car }]
                         }
                     }
 
                 }
-                else{
+                else {
                     let imgfinal: any = await this.imgprincipal(car.images)
                     console.log(imgfinal)
                     if (imgfinal.length > 0) {
@@ -417,6 +417,10 @@ export class UsedCarService extends CrudService<typeof x> {
 
         let minPrice = Number.MAX_SAFE_INTEGER
         let maxPrice = 0
+
+        let minkm = 0;
+        let maxkm = 0;
+
         for (let car of allCars.items) {
             sets.brand.add(car.brand)
             sets.year.add(+car.year)
@@ -424,6 +428,7 @@ export class UsedCarService extends CrudService<typeof x> {
             sets.colours.add(car.baseColour as string)
             maxPrice = Math.max(maxPrice, +car.price)
             minPrice = Math.min(minPrice, +car.price)
+            maxkm = Math.max(maxkm, +car.km)
             sets.chassistype.add(car.chassisType)
             sets.agencyId.add(car.agencyId)
             sets.promocioType.add(car.promocioType)
@@ -431,6 +436,9 @@ export class UsedCarService extends CrudService<typeof x> {
         //Logger.debug({minPrice, maxPrice})
         sets.prices.add(minPrice)
         sets.prices.add(maxPrice)
+
+        sets.km.add(minkm)
+        sets.km.add(maxkm)
 
         sets.ubucacion.add(estados)
 
@@ -486,17 +494,17 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async imgprincipal(images: any) {
-        
+
         let imagesvalidate = images;
         let i = 0;
         for (let image of images) {
             i - i + 1;
             try {
-                const response: any= await this.httpService.get(image.imageUrl).toPromise()
-             
+                const response: any = await this.httpService.get(image.imageUrl).toPromise()
+
             }
             catch (e) {
-               
+
                 imagesvalidate = imagesvalidate.filter((img: any) => img.imageUrl !== image.imageUrl)
             }
         }
@@ -618,7 +626,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                         let verificacion: any = await this.carModelVerification(sc)
 
-                      
+
 
                         vins.push(sc.ID)
 
@@ -736,9 +744,9 @@ export class UsedCarService extends CrudService<typeof x> {
                             parsedSeries = sc.version.replace('/', '-')
 
                             let serie = sc.version.trim().toLowerCase();
-                            let img =  verificacion.car.images;
+                            let img = verificacion.car.images;
 
-                  
+
                             //if(true) {
                             let usedCar: UsedCar = {
                                 promocioType: sc.promotionDescription.trim(),
@@ -772,7 +780,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                       
+
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, usedCar)

@@ -63,7 +63,7 @@ export class NewCarService extends CrudService<typeof x> {
                 items: groupedCars,
             }
             const r = {
-                count: cars.count,
+                count: groupedCars.length,
                 items: response.items
             }
 
