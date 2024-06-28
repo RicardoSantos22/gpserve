@@ -791,7 +791,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             if (BDID !== '') {
 
-                                // await this.repository.update(BDID, usedCar)
+                                await this.repository.update(BDID, usedCar)
                                 updateitem++
                             } else {
                                 usedCarsArray.push(usedCar)
@@ -864,7 +864,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 });
             }
             
-            // const createdCars = await this.repository.createMany(usedCarsArray)
+            const createdCars = await this.repository.createMany(usedCarsArray)
 
             let cars = await this.repository.findAll();
 
