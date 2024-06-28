@@ -707,7 +707,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                         })
 
-                        let verificacion:any = await this.carModelVerification(sc)
+                        let verificacion:any = await this.carverification(sc)
 
          
 
@@ -848,7 +848,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
                                 h1Title: h1,
-                                status: 'online',
+                                status: verificacion,
                                 brandUrl: NewCarHelps.stringToUrl(sc.brand),
                                 modelUrl: NewCarHelps.stringToUrl(sc.model),
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
