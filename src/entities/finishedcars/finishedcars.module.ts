@@ -10,6 +10,6 @@ import { CarRepository } from './repository/finishedcar.repository';
   imports:[TypegooseModule.forFeature([Car])],
   controllers: [FinishedcarsController],
   providers: [FinishedcarsService, CarRepository],
-  exports: [FinishedcarsService],
+  exports: [FinishedcarsService, CarRepository],
 })
 export class FinishedcarsModule {}

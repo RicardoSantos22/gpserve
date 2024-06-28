@@ -56,6 +56,9 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
+ 
+        query.status = 'online'
+
             const cars = await this.repository.findAll(query)
             const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
             const response = {
@@ -301,14 +304,9 @@ export class NewCarService extends CrudService<typeof x> {
         return this.repository.findAll();
     }
 
-    async carModelVerification(car) {
+    async carverification(car) {
 
-        let carID = '';
-
-        if (car.vin) { carID = car.vin }
-        if (car.ID) { carID = car.ID }
-        
-        if(car.images.length === 0){return [{error: 'no hay imagenes' }, {car}]}
+        if(car.images.length === 0){ return 'offline'}
         else{
             let imageurl = ''
                 car.images.map((img: any) => {
@@ -336,7 +334,7 @@ export class NewCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                            return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                            return 'offline'
                         }
                     }
 
@@ -348,10 +346,44 @@ export class NewCarService extends CrudService<typeof x> {
                         car.images = imgfinal
                     }
                     else {
-                        return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                        return 'offline'
                     }
                 }
         }
+
+        let carID = '';
+
+        if (car.vin) { carID = car.vin }
+        if (car.ID) { carID = car.ID }
+        
+        
+        if (carID === '' || carID === null || carID.length !== 17 ) { return 'offline' }
+        if (car.agencyID === '' || car.agencyID === null) { return 'offline' }
+        if (car.brand === '' || car.brand === null) { return 'offline' }
+        if (car.model === '' || car.model === null) { return 'offline' }
+        if (car.series === '' || car.series === null) { return 'offline' }
+        if (car.price === '' || car.price === null) { return 'offline' }
+        if (car.chassisType === '' || car.chassisType === null) { return 'offline' }
+        if (car.year === '' || car.year === null) { return 'offline' }
+        if (car.transmision === '' || car.transmision === null && car.transmision) { return 'offline' }
+        if (car.fuel === '' || car.fuel === null) { return 'offline' }
+        if (car.colours === '' || car.colours === null) { return 'offline' }
+        if (car.baseColour === '' || car.baseColour === null) { return 'offline' }
+
+
+
+        return 'online'
+
+    }
+
+    async carModelVerification(car) {
+
+        let carID = '';
+
+        if (car.vin) { carID = car.vin }
+        if (car.ID) { carID = car.ID }
+        
+        
         if (carID === '' || carID === null || carID.length !== 17 ) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
         if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }
         if (car.brand === '' || car.brand === null) { return [{ error: 'sin brand' }, { car }] }
@@ -594,6 +626,7 @@ export class NewCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = []
         let agencyIds = [
+            29,
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -619,7 +652,7 @@ export class NewCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregó
             28, // JAC Cualiacán
-            29, // Chirey Culiacan
+            // 29,  Chirey Culiacan
             1030, // Omoda Hermosillo
             1032, //Stallantis caballito
             1033, //geely culiacan
@@ -642,6 +675,8 @@ export class NewCarService extends CrudService<typeof x> {
                     }
                 ).toPromise()
                 )
+
+               
             }
             const responses = await Promise.all(promises)
 
@@ -656,7 +691,7 @@ export class NewCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
-
+                    console.log(sadNewCars)
 
                     for (let sc of sadNewCars) {
 
@@ -674,8 +709,9 @@ export class NewCarService extends CrudService<typeof x> {
 
                         let verificacion:any = await this.carModelVerification(sc)
 
+         
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' && verificacion.status === 200) {
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' ) {
 
 
                             vins.push(sc.ID)
@@ -792,12 +828,11 @@ export class NewCarService extends CrudService<typeof x> {
                             parsedModel = newmodel.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
-                            let img =  verificacion.car.images;
+                        
                            
                             let serie = sc.version.trim().toLowerCase();
-                            console.log("___________________")
-                            console.log(img.length)
-                    
+               
+                   
                             //if(true) {
                             let newCar: NewCar = {
                                 vin: sc.ID,
@@ -819,7 +854,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
                                 price: +sc.price,
                                 year: sc.year,
-                                images: !img ? [] : img.map(i => i.imageUrl),
+                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
                                 transmision: sc.transmision,
                                 fuel: sc.fuelType,
                                 colours: sc.color,
@@ -832,10 +867,10 @@ export class NewCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                  console.log(newCar.images.length)
+                
                             if (BDID !== '') {
 
-                                // await this.repository.update(BDID, newCar)
+                                await this.repository.update(BDID, newCar)
                                 updateitem++
                             } else {
                                 newCarsArray.push(newCar)
@@ -843,31 +878,14 @@ export class NewCarService extends CrudService<typeof x> {
 
 
                         }
-                        else {
-
-                            if (verificacion.status !== 200) {
-                                carlistban.push(verificacion)
-                            }
-                            else {
-                                carlist.items.forEach((car: any) => {
-
-                                    if (sc.ID === car.vin) {
-
-                                        this.finishedcar.create(car)
-
-                                        console.log('auto descartado: ', car.vin)
-                                        this.repository.delete(car._id)
-                                    }
-                                })
-                            }
-                        }
+                      
                     }
                 }
             }
 
             // const createdCars = newCarsArray;
 
-            // const createdCars = await this.repository.createMany(newCarsArray)
+            const createdCars = await this.repository.createMany(newCarsArray)
 
             if (carinlist.length > 0) {
                 carlist.items.forEach((car: any) => {

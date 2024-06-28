@@ -30,7 +30,7 @@ import { InitialAssessmentModule } from '../initialassessment/initial-assessment
     AgencyModule,
     InspectionAppointmentModule,
     InitialAssessmentModule,
-     InitialAssessmentModule,
+    InitialAssessmentModule,
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository],

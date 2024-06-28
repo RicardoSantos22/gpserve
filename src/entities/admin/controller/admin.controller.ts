@@ -309,20 +309,32 @@ export class AdminController {
     async banners() {
         return this.service.activebanners()
     }
+    
+
+    @Get('karbotbackup')
+    async karbotcredits() {
+
+        return this.service.karbotcreditsbackup()
+    }
 
 
 
     @Get('modelimagepro')
-    async getmodelsforimagepro(@Res() res) {
-        try{
-            res.setHeader('Content-Disposition', 'attachment; filename="testcars.csv"');
-        res.setHeader('Content-Type', 'text/csv');
-        const csv = this.service.getmodelsforimagepro()
-        res.status(200).send(csv);
-        }
-        catch(e){
-            res.status(500).send(e.message)
-        }
+    async getmodelsforimagepro() {
+        // try{
+        //     res.setHeader('Content-Disposition', 'attachment; filename="testcars.csv"');
+        // res.setHeader('Content-Type', 'text/csv');
+        // const csv = this.service.getmodelsforimagepro()
+        // res.status(200).send(csv);
+        // }
+        // catch(e){
+        //     res.status(500).send(e.message)
+        // }
+
+        let json =  await this.service.getmodelsforimagepro()
+
+        console.log(json)
+        return json
     }
 
     @Get('bannersadmin')

@@ -97,6 +97,9 @@ export class FindAllNewCarsQuery extends PartialType(FindAllQuery) implements Pa
   })
 
   @IsOptional()
+  status: string;
+
+  @IsOptional()
 
   @Expose({name: 'colours'})
 

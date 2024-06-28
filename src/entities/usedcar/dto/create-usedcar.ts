@@ -30,4 +30,9 @@ export class CreateUsedCarDTO {
   @IsString()
 
   readonly model: string;
+
+  
+  @IsString()
+  status: string;
+
 };

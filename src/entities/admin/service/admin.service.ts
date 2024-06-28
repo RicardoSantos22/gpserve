@@ -24,8 +24,9 @@ import { NewCarRepository } from 'src/entities/newcar/repository/newcar.reposito
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
 import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
 import { UserRepository } from 'src/entities/user/repository/user.repository';
-import { userInfo } from 'os';
-import { parse } from 'path';
+import { CarRepository } from 'src/entities/finishedcars/repository/finishedcar.repository';
+import { recursosRepository } from 'src/entities/recursos/repository/recursos.repository';
+
 
 
 @Injectable()
@@ -39,7 +40,9 @@ export class AdminService extends CrudService<Admin> {
     private readonly NewCarRepository: NewCarRepository,
     private readonly UsedCarRepository: UsedCarRepository,
     private readonly CreditRequestRepository: CreditRequestRepository,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
+    private readonly CarRepository: CarRepository,
+    private readonly recursosRepository: recursosRepository
   ) {
     super(repository, 'Admin', config);
   }
@@ -129,6 +132,84 @@ export class AdminService extends CrudService<Admin> {
     return [{bannershome, bannerscarlist}]
 
 
+
+    
+  }
+
+  async karbotcreditsbackup(){
+    let credist = await this.CreditRequestRepository.findAll({_id: ['66608be534a5a10012d86e7f'], })
+    console.log(credist)
+  
+
+    let karbot = await this.recursosRepository.findAll({name: 'karbotToken'})
+    console.log(karbot)
+
+    let token = karbot.items[0].value
+    
+    for(let credit of credist.items)
+      {
+
+        let payload = {
+          categoryLead: '',
+          token: token,
+          canalLead: 'SITIO WEB',
+          phoneNumber: '',
+          user_nombre: '',
+          user_apellido: '',
+          product: '', 
+          origin: 'Credito',
+          vin: '',
+          additionalData1: '',
+        }  
+        if(credit.userType === 'User')
+          {
+            let user = await this.userRepository.findAll({_id: credit.userId.toString()})
+
+            payload.user_nombre = user.items[0].firstName
+            payload.user_apellido = user.items[0].lastName
+            payload.phoneNumber = user.items[0].phone
+
+            if(credit.carType.toString() === 'Used')
+              {
+                payload.categoryLead = 'ventas seminuevos'
+                 let car = await this.UsedCarRepository.findAll({vin: credit.carId})
+                 if(car.count > 0)
+                  {
+                    payload.vin = car.items[0].vin
+                    payload.product = car.items[0].brand + ' ' + car.items[0].model + ' ' + car.items[0].year
+                  }
+                  else
+                  {
+                    let careliminate = await this.CarRepository.findAll({vin: credit.carId})
+                 
+
+                    if(careliminate.count > 0)
+                      {
+                        let carfinal = careliminate.items[0]
+                        payload.vin = carfinal.vin
+                        payload.product = carfinal.brand + ' ' + carfinal.model + ' ' + carfinal.year
+                      }
+                  }
+              }
+              else
+              {
+                payload.categoryLead = 'ventas nuevos'
+                let car = await this.NewCarRepository.findAll({vin: credit.carId})
+                
+
+              }
+              
+          }
+          else 
+          {
+
+            payload.categoryLead = 'ventas nuevos'
+
+          }
+
+          console.log(payload)
+      }
+    return 0
   }
 
   async modulecredits(){
@@ -393,12 +474,13 @@ export class AdminService extends CrudService<Admin> {
 
   async getmodelsforimagepro()
   {
-    let newcarslist = await this.NewCarRepository.findAll({agencyId : "14"});
-    let UsedCarlist = await this.UsedCarRepository.findAll({agencyId : "14"});
+    console.log('se inicio el csv imagepro')
+    let newcarslist = await this.NewCarRepository.findAll();
+    let UsedCarlist = await this.UsedCarRepository.findAll();
     
     let document: any = [];
 
-
+    let bmwidlist = ['800', '802','901', '902', '903', '904', '905', '906', '907']
 
 
     for(let newcar of UsedCarlist.items)
@@ -429,12 +511,19 @@ export class AdminService extends CrudService<Admin> {
           'photos': []
         }
 
+        let dealerid = 'grupocdj'
+
+        if(bmwidlist.includes(newcar.agencyId))
+          {
+            dealerid = 'gprmercedesbmw'
+          }
+
 
         let fotos: any = []
         let specs = ''
         for(let foto of newcar.images)
           {
-            fotos.push({'dealerid': 'grupocdj', 'vin': newcar.vin,'photos': foto })
+            fotos.push({'dealerid': dealerid, 'vin': newcar.vin,'photos': foto })
           }
 
           if(newcar.specs)
@@ -445,8 +534,10 @@ export class AdminService extends CrudService<Admin> {
                 }
             }
 
+            console.log(newcar.vin)
+
         modelimagepro.cartype = 'used'
-        modelimagepro.dealerid = 'grupocdj'
+        modelimagepro.dealerid = dealerid
         modelimagepro.inventorydi = newcar._id
         modelimagepro.vin = newcar.vin
         modelimagepro.year = newcar.year
@@ -492,12 +583,19 @@ export class AdminService extends CrudService<Admin> {
             'inventorysdate': '',
             'photos': []
           }
+          console.log(newcar.vin)
+          let dealerid = 'grupocdj'
+
+          if(bmwidlist.includes(newcar.agencyId))
+            {
+              dealerid = 'gprmercedesbmw'
+            }
 
           let fotos: any = []
           let specs = ''
           for(let foto of newcar.images)
             {
-              fotos.push({'dealerid': 'grupocdj', 'vin': newcar.vin,'photos': foto })
+              fotos.push({'dealerid': dealerid, 'vin': newcar.vin,'photos': foto })
             }
   
             if(newcar.specs)
@@ -509,7 +607,7 @@ export class AdminService extends CrudService<Admin> {
               }
          
           modelimagepro.cartype = 'new'
-          modelimagepro.dealerid = 'grupocdj'
+          modelimagepro.dealerid = dealerid
           modelimagepro.inventorydi = newcar._id, 
   
           modelimagepro.vin = newcar.vin
@@ -528,10 +626,10 @@ export class AdminService extends CrudService<Admin> {
           document.push(modelimagepro)
   
         }
-      
-        const  csvparse = new Parser();
 
-        let csv  = csvparse.parse(document);
-      return csv
+        // const  csvparse = new Parser();
+
+        // let csv  = csvparse.parse(document);
+      return await document
   }
 }

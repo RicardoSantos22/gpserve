@@ -13,16 +13,24 @@ import { BucketModule } from '../../bucket/bucket.module';
 import { banners } from './model/banners.model';
 import { bannersrepository } from './repository/banners.repository';
 import { CreditRequestModule } from '../creditrequest/creditrequest.module';
+import { AsesoresModule } from '../asesores/asesores.module';
+import { RecursosModule } from '../recursos/recursos.module';
+import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
 
 @Module({
   imports: [
     NewCarModule,
     UsedCarModule,
+    
     UserModule,
     PassportModule,
     TypegooseModule.forFeature([Admin, banners]),
     BucketModule,
-    CreditRequestModule
+
+    CreditRequestModule,
+    FinishedcarsModule,
+    RecursosModule,
+    AsesoresModule,
   ],
   controllers: [AdminController],
   providers: [AdminService, AdminRepository, bannersrepository],

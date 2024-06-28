@@ -85,12 +85,16 @@ export class asesoresservice extends CrudService<Asesores> {
 
   }
 
+  async backUpLeads(){
+      
+  }
+
   async createLead(payload: karbotCreateLead) {
     let karbot: any = []
     try {
       let modelKarbotCreateLead = {
         lineName: "Estrenatuauto",
-        referenceId: (Math.floor(Math.random() * (100 - 1 + 1)) + 1).toString(),
+        referenceId: (Math.floor(Math.random() * (20000 - 1 + 1)) + 1).toString(),
         categoryLead: payload.categoryLead,
         canalLead: payload.canalLead,
         origin: "solicitud " + payload.origin,

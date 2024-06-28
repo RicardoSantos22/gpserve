@@ -54,6 +54,8 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
 
+        query.status = 'online'
+
         return await this.repository.findAll(query)
     }
 
@@ -238,12 +240,14 @@ export class UsedCarService extends CrudService<typeof x> {
         return r
     }
 
-    async carModelVerification(car) {
 
-        let sheetsIDs = ['902', '800', '802', '901']
+    
+    async carverification(car) {
+
+        let sheetsIDs = ['800', '802','901', '902', '903', '904', '905', '906', '907']
 
         let carID = '';
-        if (car.images.length === 0) { return [{ error: 'no hay imagenes' }, { car }] }
+        if (car.images.length === 0) { return 'offline' }
         else {
 
             if (sheetsIDs.includes(car.agencyId)) {
@@ -251,7 +255,7 @@ export class UsedCarService extends CrudService<typeof x> {
                     const response = await this.httpService.get(car.images[0]).toPromise()
                 }
                 catch (e) {
-                    return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                    return 'offline'
                 }
 
 
@@ -284,7 +288,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                            return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                            return 'offline'
                         }
                     }
 
@@ -296,7 +300,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         car.images = imgfinal
                     }
                     else {
-                        return [{ error: 'no hay imagenes en la direccion' }, { car }]
+                        return 'offline'
                     }
                 }
             }
@@ -305,20 +309,21 @@ export class UsedCarService extends CrudService<typeof x> {
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
 
-        if (carID === '' || carID === null || carID.length !== 17) { return [{ error: 'error en vin, no cumple con las condiciones == no nulo, no vacio, vin incompleto (17 caracteres) ==' }, { car }] }
-        if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }
-        if (car.brand === '' || car.brand === null) { return [{ error: 'sin brand' }, { car }] }
-        if (car.model === '' || car.model === null) { return [{ error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales' }, { car }] }
-        if (car.series === '' || car.series === null) { return [{ error: 'serie vacia o con caracteres especiales' }, { car }] }
-        if (car.price === '' || car.price === null) { return [{ error: 'sin precio' }, { car }] }
-        if (car.chassisType === '' || car.chassisType === null) { return [{ error: 'sin segmento' }, { car }] }
-        if (car.year === '' || car.year === null) { return [{ error: 'sin año, verifique los datos ingresados' }, { car }] }
-        if (car.transmision === '' || car.transmision === null) { return [{ error: 'sin transmision, verifique los datos' }, { car }] }
-        if (car.fuel === '' || car.fuel === null) { return [{ error: 'sin fuel' }, { car }] }
-        if (car.colours === '' || car.colours === null) { return [{ error: 'sin colour' }, { car }] }
-        if (car.baseColour === '' || car.baseColour === null) { return [{ error: 'sin color base' }, { car }] }
+        if (carID === '' || carID === null || carID.length !== 17) { return 'offline' }
+        if (car.agencyID === '' || car.agencyID === null) { return 'offline' }
+        if (car.brand === '' || car.brand === null) { return 'offline' }
+        if (car.model === '' || car.model === null) { return 'offline' }
+        if (car.series === '' || car.series === null) { return 'offline' }
+        if (car.price === '' || car.price === null) { return 'offline' }
+        if (car.chassisType === '' || car.chassisType === null) { return 'offline' }
+        if (car.year === '' || car.year === null) { return 'offline' }
+        if (car.transmision === '' || car.transmision === null) { return 'offline' }
+        if (car.fuel === '' || car.fuel === null) { return 'offline' }
+        if (car.colours === '' || car.colours === null) { return 'offline' }
+        if (car.baseColour === '' || car.baseColour === null) { return 'offline' }
 
-        return { status: 200, car: car }
+
+        return 'online'
 
     }
 
@@ -533,6 +538,7 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
         let agencyIds = [
+            29,
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -558,7 +564,7 @@ export class UsedCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregón
             28, // JAC Cualiacán
-            29, // Chirey Culiacan
+            //29,  Chirey Culiacan
             1030, // Omoda Hermosillo 
             1032, //Stallantis caballito
             1033, //geely culiacan
@@ -624,14 +630,16 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
 
-                        let verificacion: any = await this.carModelVerification(sc)
+                        let verificacion: string = await this.carverification(sc)
 
 
 
                         vins.push(sc.ID)
 
+                      
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && verificacion.status === 200) {
+
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
 
                             let agencia = await this.agencyrepository.findOne({ number: sc.agencyID })
 
@@ -744,7 +752,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             parsedSeries = sc.version.replace('/', '-')
 
                             let serie = sc.version.trim().toLowerCase();
-                            let img = verificacion.car.images;
+                    
 
 
                             //if(true) {
@@ -761,11 +769,11 @@ export class UsedCarService extends CrudService<typeof x> {
                                 agencyId: sc.agencyID.toString(),
                                 brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
-                                status: 'online',
+                                status: verificacion,
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
                                 year: sc.year,
-                                images: !img ? [] : img.map(i => i.imageUrl),
+                                images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
                                 transmision: sc.transmision.trim(),
                                 fuel: sc.fuelType.trim(),
                                 colours: sc.color.trim(),
@@ -783,33 +791,30 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             if (BDID !== '') {
 
-                                await this.repository.update(BDID, usedCar)
+                                // await this.repository.update(BDID, usedCar)
                                 updateitem++
                             } else {
-
-
-
                                 usedCarsArray.push(usedCar)
                             }
                         }
-                        else {
+                        // else {
 
-                            if (verificacion.status !== 200) {
-                                carlistban.push(verificacion)
-                            }
-                            else {
-                                carlist.items.forEach((car: any) => {
+                        //     if (verificacion.status !== 200) {
+                        //         carlistban.push(verificacion)
+                        //     }
+                        //     else {
+                        //         carlist.items.forEach((car: any) => {
 
-                                    if (sc.ID === car.vin) {
+                        //             if (sc.ID === car.vin) {
 
-                                        this.finishedcar.create(car)
+                        //                 this.finishedcar.create(car)
 
-                                        this.repository.delete(car._id)
-                                    }
-                                })
-                            }
+                        //                 this.repository.delete(car._id)
+                        //             }
+                        //         })
+                        //     }
 
-                        }
+                        // }
                     }
                 }
             }
@@ -858,9 +863,8 @@ export class UsedCarService extends CrudService<typeof x> {
                     }
                 });
             }
-
-
-            const createdCars = await this.repository.createMany(usedCarsArray)
+            
+            // const createdCars = await this.repository.createMany(usedCarsArray)
 
             let cars = await this.repository.findAll();
 

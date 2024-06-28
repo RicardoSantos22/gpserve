@@ -9,6 +9,8 @@ import { HttpModule } from '@nestjs/axios';
 import { BugsModule } from '../bugs/bugs.module';
 import { RecursosModule } from '../recursos/recursos.module';
 
+
+
 @Module({
   imports:[TypegooseModule.forFeature([ Asesores ]), BucketModule, HttpModule.register({}),BugsModule, RecursosModule ],
   controllers: [ Asesorescontroller ],
