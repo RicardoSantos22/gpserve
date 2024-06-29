@@ -188,7 +188,9 @@ export class UsedCarController {
 
     let code:any = await this.service.carverification(body)
 
-    body.status = code.status
+    body.status = code
+
+
     
     return this.service.create({ ...body });
   }

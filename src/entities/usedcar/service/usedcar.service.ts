@@ -244,6 +244,8 @@ export class UsedCarService extends CrudService<typeof x> {
     
     async carverification(car) {
 
+    
+
         let sheetsIDs = ['800', '802','901', '902', '903', '904', '905', '906', '907']
 
         let carID = '';

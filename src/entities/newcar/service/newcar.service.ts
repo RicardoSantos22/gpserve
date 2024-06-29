@@ -691,8 +691,6 @@ export class NewCarService extends CrudService<typeof x> {
                 if (response.data.success) {
                     const sadNewCars = response.data.data as SADNewCar[]
 
-                    console.log(sadNewCars)
-
                     for (let sc of sadNewCars) {
 
 
@@ -984,6 +982,8 @@ export class NewCarService extends CrudService<typeof x> {
             userName: this.sadApiConfig.username,
             password: this.sadApiConfig.password
         }).toPromise()
+
+        console.log(response.data)
         return { token: response.data }
     }
 };
