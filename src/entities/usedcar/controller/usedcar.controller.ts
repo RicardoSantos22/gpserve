@@ -241,7 +241,10 @@ export class UsedCarController {
   @Patch(':id')
   async update(@Param() params: FindByIdParams, @Body() body: UpdateUsedCarDTO) {
 
-    console.log(body)
+    let code = await this.service.carverification(body)
+ 
+    body.status = code
+   
     return this.service.update(params.id, body);
   }
 

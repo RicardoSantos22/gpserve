@@ -443,7 +443,7 @@ export class NewCarService extends CrudService<typeof x> {
             {estado: 'Ciudad de  Mexico', ciudades: [] }
         ]
 
-        const allCars = await this.repository.findAll()
+        const allCars = await this.repository.findAll({status: 'online'})
 
        
         for (let car of allCars.items) {
