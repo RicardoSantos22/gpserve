@@ -74,20 +74,18 @@ export class AdminService extends CrudService<Admin> {
   }
 
   async updateVinculoBanner(body: UpdateViculoBanner) {
-
     let banners = await this.bannersrepository.findAll({
       banner: body.banner,
     });
 
-    let updates = []
-
-  for (let banner of banners.items) {
-    let b: any = banner;
-    let update = await this.bannersrepository.update(b._id, {vinculo: body.vinculo})
-
-    updates.push(update)
-  }
-
+    let updates = [];
+    for (let banner of banners.items) {
+      let b: any = banner;
+      let update = await this.bannersrepository.update(b._id, {
+        vinculo: body.vinculo,
+      });
+      updates.push(update);
+    }
     return updates;
   }
 
