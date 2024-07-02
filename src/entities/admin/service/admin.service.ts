@@ -1,36 +1,32 @@
+import { Parser } from 'json2csv';
 import {
   DatabaseException,
   ERROR_CREATING_DOCUMENT,
   ERROR_FINDING_DOCUMENT,
 } from 'src/common/models/errors/database.errors';
 import { CrudService } from '../../../common/crud/crud.service';
+import { CreateAdminDTO } from '../dto/create-admin.dto';
 import { Admin } from '../model/admin.model';
 import { AdminRepository } from '../repository/admin.repository';
-import { CreateAdminDTO } from '../dto/create-admin.dto';
-import { Parser } from 'json2csv';
 
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  Inject
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
-import { banners } from '../model/banners.model';
-import { bannersrepository } from '../repository/banners.repository';
+import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
 import { NewCarRepository } from 'src/entities/newcar/repository/newcar.repository';
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
-import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
 import { UserRepository } from 'src/entities/user/repository/user.repository';
-import { userInfo } from 'os';
-import { parse } from 'path';
-
+import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
+import { UpdateViculoBanner } from '../dto/banner.dto';
+import { banners } from '../model/banners.model';
+import { bannersrepository } from '../repository/banners.repository';
 
 @Injectable()
 export class AdminService extends CrudService<Admin> {
-
   constructor(
     readonly repository: AdminRepository,
     readonly config: ConfigService,
@@ -39,7 +35,7 @@ export class AdminService extends CrudService<Admin> {
     private readonly NewCarRepository: NewCarRepository,
     private readonly UsedCarRepository: UsedCarRepository,
     private readonly CreditRequestRepository: CreditRequestRepository,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
   ) {
     super(repository, 'Admin', config);
   }
@@ -47,14 +43,11 @@ export class AdminService extends CrudService<Admin> {
   async findAdminByEmail(email: string): Promise<any> {
     const admin = await this.repository.findOne({ email });
 
-   
     if (!admin) {
       throw new NotFoundException(ERROR_FINDING_DOCUMENT('Admin'));
     }
     return admin;
   }
-
-  
 
   async create(dto: CreateAdminDTO): Promise<Admin> {
     try {
@@ -76,462 +69,445 @@ export class AdminService extends CrudService<Admin> {
     }
   }
 
-  async activebanners()
-  {
-    return this.bannersrepository.findAll()
+  async activebanners() {
+    return this.bannersrepository.findAll();
   }
 
-  async bannelist()
-  {
-    let banerslist = await this.bannersrepository.findAll()
+  async updateVinculoBanner(body: UpdateViculoBanner) {
+    let bannerMovil = await this.bannersrepository.findOne({
+      banner: body.banner,
+      type: 'movil',
+    });
+    let bannerDesktop = await this.bannersrepository.findOne({
+      banner: body.banner,
+      type: 'desktop',
+    });
 
-
-    let bannershome = {banner: 'home', desktopUrl: '', movilUrl: '' }
-    let bannerscarlist = {banner: 'carlist', desktopUrl: '', movilUrl: ''}
-
-    for(let banner of banerslist.items)
-    {
-
-      if(banner.type === 'desktop')
+    let bannerMovilUpdate = await this.bannersrepository.update(
+      '656e63829123360012e5c2f4',
       {
-        if(banner.banner === 'home')
-        {
-          let desktopUrl = banner.imgurl
+        vinculo: body.vinculo,
+      },
+    );
+    let bannerDesktopUpdate = await this.bannersrepository.update(
+      bannerDesktop._id,
+      {
+        vinculo: body.vinculo,
+      },
+    );
 
-          bannershome.desktopUrl = desktopUrl
+    console.log(bannerMovilUpdate, bannerDesktopUpdate);
+
+    return [bannerMovil, bannerDesktop];
+  }
+
+  async bannelist() {
+    let banerslist = await this.bannersrepository.findAll();
+
+    let bannershome = {
+      banner: 'home',
+      desktopUrl: '',
+      movilUrl: '',
+      vinculo: '',
+    };
+    let bannerscarlist = {
+      banner: 'carlist',
+      desktopUrl: '',
+      movilUrl: '',
+      vinculo: '',
+    };
+
+    for (let banner of banerslist.items) {
+      if (banner.type === 'desktop') {
+        if (banner.banner === 'home') {
+          let desktopUrl = banner.imgurl;
+          bannershome.desktopUrl = desktopUrl;
+          bannershome.vinculo = banner.vinculo;
+        } else if (banner.banner === 'carlist') {
+          let desktopUrl = banner.imgurl;
+          bannerscarlist.desktopUrl = desktopUrl;
+          bannerscarlist.vinculo = banner.vinculo;
         }
-        else if(banner.banner === 'carlist')
-        {
-          let desktopUrl = banner.imgurl
-          bannerscarlist.desktopUrl = desktopUrl
-        }
-
-
       }
 
-      if(banner.type === 'movil')
-      {
-        if(banner.banner === 'home')
-        {
-          let movilUrl = banner.imgurl
-          bannershome.movilUrl = movilUrl
-        }
-        else if(banner.banner === 'carlist')
-        {
-          let movilUrl = banner.imgurl
-          bannerscarlist.movilUrl = movilUrl
+      if (banner.type === 'movil') {
+        if (banner.banner === 'home') {
+          let movilUrl = banner.imgurl;
+          bannershome.movilUrl = movilUrl;
+          bannershome.vinculo = banner.vinculo;
+        } else if (banner.banner === 'carlist') {
+          let movilUrl = banner.imgurl;
+          bannerscarlist.movilUrl = movilUrl;
+          bannerscarlist.vinculo = banner.vinculo;
         }
       }
-      
-
     }
 
-    return [{bannershome, bannerscarlist}]
-
-
+    return [{ bannershome, bannerscarlist }];
   }
 
-  async modulecredits(){
+  async modulecredits() {
+    let list: any = [];
 
-    let list: any= []
+    let credist: any = await this.CreditRequestRepository.findAll({
+      limit: '200',
+      sort: '-createdAt',
+    });
 
+    for (let credit of credist.items) {
+      let credito: any = {
+        telefono: '',
+        correo: '',
+        nombre: '',
+        estado: '',
+        status: '',
+        karbotStatus: 'enviado',
+        meses: '',
+        pago: '',
+        creditInfo: [],
+        carInfo: [],
+        GuestInfo: [],
+      };
 
-        let credist:any = await this.CreditRequestRepository.findAll({limit: '200', sort: '-createdAt'})
+      credito.creditInfo = credit;
 
-    for(let credit of credist.items)
-      {
-        let credito: any = {
-          telefono: '', 
-          correo: '',
-          nombre: '',
-          estado: '',
-          status: '',
-          karbotStatus: 'enviado',
-          meses: '',
-          pago: '',
-          creditInfo: [],
-          carInfo: [],
-          GuestInfo:[]
-        }
+      let user: any = await this.userRepository.findAll({ _id: credit.userId });
 
-        credito.creditInfo = credit
-
-        let user:any = await this.userRepository.findAll({_id: credit.userId})
-
-        if(credit.userType === 'Guest')
-          {
-            credito.GuestInfo = credit.userGuest;
-          }
-  
-        if(user.items[0])
-          {
-            credito.telefono = user.items[0].phone || ''
-            credito.correo = user.items[0].email || ''
-            credito.nombre = user.items[0].firstName+ ' ' + user.items[0].lastName || ''
-            credito.estado = user.items[0].state || ''
-          }
-
-        credito.status = credit.status,
-        credito.meses = credit.creditMonths,
-        credito.pago = credit.downPayment
-
-
-        if(credit.carType === 'new')
-        {
-          let car = await this.NewCarRepository.findOne({vin: credit.carId})
-          if(car)
-            {
-              credito.carInfo = car
-            }
-            else 
-            {
-              credito.carInfo = ['Carro no encontrado o vendido']
-            }
-        }
-        else{
-          let car = await this.UsedCarRepository.findOne({vin: credit.carId})
-          if(car)
-            {
-              credito.carInfo = car
-            }
-            else 
-            {
-              credito.carInfo = ['Carro no encontrado o vendido']
-            }
-        }   
-
-
-        list.push(credito)
+      if (credit.userType === 'Guest') {
+        credito.GuestInfo = credit.userGuest;
       }
 
-    return list
+      if (user.items[0]) {
+        credito.telefono = user.items[0].phone || '';
+        credito.correo = user.items[0].email || '';
+        credito.nombre =
+          user.items[0].firstName + ' ' + user.items[0].lastName || '';
+        credito.estado = user.items[0].state || '';
+      }
 
+      (credito.status = credit.status),
+        (credito.meses = credit.creditMonths),
+        (credito.pago = credit.downPayment);
+
+      if (credit.carType === 'new') {
+        let car = await this.NewCarRepository.findOne({ vin: credit.carId });
+        if (car) {
+          credito.carInfo = car;
+        } else {
+          credito.carInfo = ['Carro no encontrado o vendido'];
+        }
+      } else {
+        let car = await this.UsedCarRepository.findOne({ vin: credit.carId });
+        if (car) {
+          credito.carInfo = car;
+        } else {
+          credito.carInfo = ['Carro no encontrado o vendido'];
+        }
+      }
+
+      list.push(credito);
+    }
+
+    return list;
   }
 
-  async disablebanners( body: any){
-    let item:any = await this.bannersrepository.findAll({type:body.type , banner: body.banner}) 
+  async disablebanners(body: any) {
+    let item: any = await this.bannersrepository.findAll({
+      type: body.type,
+      banner: body.banner,
+    });
 
-
-    return this.bannersrepository.delete(item.items[0]._id)
+    return this.bannersrepository.delete(item.items[0]._id);
   }
 
-  async updateBannersForHome( body: any, file: Express.Multer.File){
-
-
-    try
-    {
+  async updateBannersForHome(body: any, file: Express.Multer.File) {
+    try {
       let s3Url;
 
-      let item:any = await this.bannersrepository.findAll({type:body.type , banner: body.banner}) 
+      let item: any = await this.bannersrepository.findAll({
+        type: body.type,
+        banner: body.banner,
+      });
 
-      if(body.type === 'desktop')
-      { 
-  
-        if(body.banner === 'home')
-        {
-  
-            s3Url = await this.s3Service.uploadBeners(`img-detalies/home-desktop-banner.jpg`, file.buffer, true)
+      if (body.type === 'desktop') {
+        if (body.banner === 'home') {
+          s3Url = await this.s3Service.uploadBeners(
+            `img-detalies/home-desktop-banner.jpg`,
+            file.buffer,
+            true,
+          );
 
-            let bannersmodels : banners = {
-            
-              imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-desktop-banner.jpg',
-              isactive: body.isactive,
-              vinculo: 'https://bit.ly/3R4ddJg',
-              type: 'desktop',
-              banner: 'home'
-            }
-
-            if(body.vinculo)
-            {
-              bannersmodels.vinculo = body.vinculo
-            }
-
-            if(item.count > 0)
-            {
-              return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
-            }
-            else
-            {
-              return this.bannersrepository.create(bannersmodels)
-            }
-            
-
-           
-          
-        }
-        if(body.banner === 'carlist')
-        {
-           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-desktop-banner.jpg`, file.buffer, true)
-
-           let bannersmodels : banners = {
-            
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-desktop-banner.jpg',
+          let bannersmodels: banners = {
+            imgurl:
+              'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-desktop-banner.jpg',
             isactive: body.isactive,
             vinculo: 'https://bit.ly/3R4ddJg',
             type: 'desktop',
-            banner: 'carlist'
+            banner: 'home',
+          };
+
+          if (body.vinculo) {
+            bannersmodels.vinculo = body.vinculo;
           }
 
-          if(body.vinculo)
-          {
-            bannersmodels.vinculo = body.vinculo
+          if (item.count > 0) {
+            return this.bannersrepository.update(
+              item.items[0]._id,
+              bannersmodels,
+            );
+          } else {
+            return this.bannersrepository.create(bannersmodels);
           }
-
-
-          if(item.count > 0)
-          {
-            return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
-          }
-          else
-          {
-            return this.bannersrepository.create(bannersmodels)
-          }
-          
         }
-       
-      }
-  
-      if(body.type === 'movil')
-      { 
-  
-        if(body.banner === 'home')
-        {
-           s3Url = await this.s3Service.uploadBeners(`img-detalies/home-movil-banner.jpg`, file.buffer, true)
+        if (body.banner === 'carlist') {
+          s3Url = await this.s3Service.uploadBeners(
+            `img-detalies/carlist-desktop-banner.jpg`,
+            file.buffer,
+            true,
+          );
 
-           let bannersmodels : banners = {
-            
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-movil-banner.jpg',
+          let bannersmodels: banners = {
+            imgurl:
+              'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-desktop-banner.jpg',
+            isactive: body.isactive,
+            vinculo: 'https://bit.ly/3R4ddJg',
+            type: 'desktop',
+            banner: 'carlist',
+          };
+
+          if (body.vinculo) {
+            bannersmodels.vinculo = body.vinculo;
+          }
+
+          if (item.count > 0) {
+            return this.bannersrepository.update(
+              item.items[0]._id,
+              bannersmodels,
+            );
+          } else {
+            return this.bannersrepository.create(bannersmodels);
+          }
+        }
+      }
+
+      if (body.type === 'movil') {
+        if (body.banner === 'home') {
+          s3Url = await this.s3Service.uploadBeners(
+            `img-detalies/home-movil-banner.jpg`,
+            file.buffer,
+            true,
+          );
+
+          let bannersmodels: banners = {
+            imgurl:
+              'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/home-movil-banner.jpg',
             isactive: body.isactive,
             vinculo: 'https://bit.ly/3R4ddJg',
             type: 'movil',
-            banner: 'home'
+            banner: 'home',
+          };
+
+          if (body.vinculo) {
+            bannersmodels.vinculo = body.vinculo;
           }
 
-          if(body.vinculo)
-          {
-            bannersmodels.vinculo = body.vinculo
+          if (item.count > 0) {
+            return this.bannersrepository.update(
+              item.items[0]._id,
+              bannersmodels,
+            );
+          } else {
+            return this.bannersrepository.create(bannersmodels);
           }
-
-
-          if(item.count > 0)
-          {
-            return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
-          }
-          else
-          {
-            return this.bannersrepository.create(bannersmodels)
-          }
-          
         }
-        if(body.banner === 'carlist')
-        {
-           s3Url = await this.s3Service.uploadBeners(`img-detalies/carlist-movil-banner.jpg`, file.buffer, true)
+        if (body.banner === 'carlist') {
+          s3Url = await this.s3Service.uploadBeners(
+            `img-detalies/carlist-movil-banner.jpg`,
+            file.buffer,
+            true,
+          );
 
-           let bannersmodels : banners = {
-            imgurl: 'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-movil-banner.jpg',
+          let bannersmodels: banners = {
+            imgurl:
+              'https://estrenatuauto-public-assets.s3.amazonaws.com/img-detalies/carlist-movil-banner.jpg',
             isactive: body.isactive,
             vinculo: 'https://bit.ly/3R4ddJg',
             type: 'movil',
-            banner: 'carlist'
+            banner: 'carlist',
+          };
+
+          if (body.vinculo) {
+            bannersmodels.vinculo = body.vinculo;
           }
 
-          if(body.vinculo)
-          {
-            bannersmodels.vinculo = body.vinculo
+          if (item.count > 0) {
+            return this.bannersrepository.update(
+              item.items[0]._id,
+              bannersmodels,
+            );
+          } else {
+            return this.bannersrepository.create(bannersmodels);
           }
-
-
-          if(item.count > 0)
-          {
-            return this.bannersrepository.update(item.items[0]._id ,bannersmodels)
-          }
-          else
-          {
-            return this.bannersrepository.create(bannersmodels)
-          }
-          
         }
-       
-        
       }
 
-      if(body.banner === 'home' && body.vinculo !== '')
-      {
-        let banners:any = await this.bannersrepository.findAll({banner: body.banner}) 
-       
+      if (body.banner === 'home' && body.vinculo !== '') {
+        let banners: any = await this.bannersrepository.findAll({
+          banner: body.banner,
+        });
 
-        for(let banner of banners.items)
-        {
-         await this.bannersrepository.update(banner._id ,{vinculo: body.vinculo})
+        for (let banner of banners.items) {
+          await this.bannersrepository.update(banner._id, {
+            vinculo: body.vinculo,
+          });
         }
 
-        return 'Vinculo actualizado'
-        
-      }
-  
-      else if(body.banner === 'carlist' && body.vinculo !== '')
-      {
-        let banners:any = await this.bannersrepository.findAll({banner: body.banner}) 
-       
+        return 'Vinculo actualizado';
+      } else if (body.banner === 'carlist' && body.vinculo !== '') {
+        let banners: any = await this.bannersrepository.findAll({
+          banner: body.banner,
+        });
 
-        for(let banner of banners.items)
-        {
-         await this.bannersrepository.update(banner._id ,{vinculo: body.vinculo})
+        for (let banner of banners.items) {
+          await this.bannersrepository.update(banner._id, {
+            vinculo: body.vinculo,
+          });
         }
 
-        return 'Vinculo actualizado'
+        return 'Vinculo actualizado';
       }
-
+    } catch (e) {
+      return e;
     }
-    catch(e)
-    {
-      return e
-    }
-
   }
 
+  async getmodelsforimagepro() {
+    let newcarslist = await this.NewCarRepository.findAll({ agencyId: '14' });
+    let UsedCarlist = await this.UsedCarRepository.findAll({ agencyId: '14' });
 
-  async getmodelsforimagepro()
-  {
-    let newcarslist = await this.NewCarRepository.findAll({agencyId : "14"});
-    let UsedCarlist = await this.UsedCarRepository.findAll({agencyId : "14"});
-    
     let document: any = [];
 
+    for (let newcar of UsedCarlist.items) {
+      let modelimagepro = {
+        dealerid: '',
+        inventorydi: '',
+        vin: '',
+        type: '',
+        year: '',
+        make: '',
+        model: '',
+        cartype: '',
+        body: '',
+        transmission: '',
+        trim: '',
+        doorcount: '',
+        enginecylinder: '',
+        enginedisplacement: '',
+        drivetrain: '',
+        extcolor: '',
+        intcolor: '',
+        price: '',
+        msrp: '',
+        features: '',
+        inventorysdate: '',
+        photos: [],
+      };
 
-
-
-    for(let newcar of UsedCarlist.items)
-      {
-
-        let modelimagepro = {
-          'dealerid': '',
-          'inventorydi': '', 
-          'vin': '',
-          'type': '',
-          'year': '',
-          'make': '',
-          'model': '',
-          'cartype': '',
-          'body': '',
-          'transmission': '',
-          'trim': '',
-          'doorcount': '',
-          'enginecylinder': '',
-          'enginedisplacement': '',
-          'drivetrain': '',
-          'extcolor': '',
-          'intcolor': '',
-          'price': '',
-          'msrp': '',
-          'features': '',
-          'inventorysdate': '',
-          'photos': []
-        }
-
-
-        let fotos: any = []
-        let specs = ''
-        for(let foto of newcar.images)
-          {
-            fotos.push({'dealerid': 'grupocdj', 'vin': newcar.vin,'photos': foto })
-          }
-
-          if(newcar.specs)
-            {
-              if(newcar.specs[8])
-                {
-                  specs = newcar.specs[8].descriptionSpec;
-                }
-            }
-
-        modelimagepro.cartype = 'used'
-        modelimagepro.dealerid = 'grupocdj'
-        modelimagepro.inventorydi = newcar._id
-        modelimagepro.vin = newcar.vin
-        modelimagepro.year = newcar.year
-        modelimagepro.make = newcar.brand
-        modelimagepro.model = newcar.model
-        modelimagepro.body = newcar.series
-        modelimagepro.type = newcar.chassisType
-        modelimagepro.transmission = newcar.transmission
-        modelimagepro.enginedisplacement = specs
-        modelimagepro.extcolor = newcar.colours
-        modelimagepro.intcolor = newcar.baseColour
-        modelimagepro.price = newcar.price
-        modelimagepro.photos = fotos
-        modelimagepro.inventorysdate = new Date(newcar.createdAt).toLocaleString() 
-        document.push(modelimagepro)
-
+      let fotos: any = [];
+      let specs = '';
+      for (let foto of newcar.images) {
+        fotos.push({ dealerid: 'grupocdj', vin: newcar.vin, photos: foto });
       }
 
-      for(let newcar of newcarslist.items)
-        {
-  
-          let modelimagepro = {
-            'dealerid': '',
-          'inventorydi': '', 
-            'vin': '',
-            'type': '',
-            'year': '',
-            'make': '',
-            'model': '',
-            'cartype': '',
-            'body': '',
-            'transmission': '',
-            'trim': '',
-            'doorcount': '',
-            'enginecylinder': '',
-            'enginedisplacement': '',
-            'drivetrain': '',
-            'extcolor': '',
-            'intcolor': '',
-            'price': '',
-            'msrp': '',
-            'features': '',
-            'inventorysdate': '',
-            'photos': []
-          }
-
-          let fotos: any = []
-          let specs = ''
-          for(let foto of newcar.images)
-            {
-              fotos.push({'dealerid': 'grupocdj', 'vin': newcar.vin,'photos': foto })
-            }
-  
-            if(newcar.specs)
-              {
-                if(newcar.specs[8])
-                  {
-                    specs = newcar.specs[8].descriptionSpec;
-                  }
-              }
-         
-          modelimagepro.cartype = 'new'
-          modelimagepro.dealerid = 'grupocdj'
-          modelimagepro.inventorydi = newcar._id, 
-  
-          modelimagepro.vin = newcar.vin
-          modelimagepro.year = newcar.year
-          modelimagepro.make = newcar.brand
-          modelimagepro.model = newcar.model
-          modelimagepro.body = newcar.series
-          modelimagepro.type = newcar.chassisType
-          modelimagepro.transmission = newcar.transmission
-          modelimagepro.enginedisplacement = specs
-          modelimagepro.extcolor = newcar.colours
-          modelimagepro.intcolor = newcar.baseColour
-          modelimagepro.price = newcar.price
-          modelimagepro.photos = fotos
-          modelimagepro.inventorysdate = new Date(newcar.createdAt).toLocaleString()  
-          document.push(modelimagepro)
-  
+      if (newcar.specs) {
+        if (newcar.specs[8]) {
+          specs = newcar.specs[8].descriptionSpec;
         }
-      
-        const  csvparse = new Parser();
+      }
 
-        let csv  = csvparse.parse(document);
-      return csv
+      modelimagepro.cartype = 'used';
+      modelimagepro.dealerid = 'grupocdj';
+      modelimagepro.inventorydi = newcar._id;
+      modelimagepro.vin = newcar.vin;
+      modelimagepro.year = newcar.year;
+      modelimagepro.make = newcar.brand;
+      modelimagepro.model = newcar.model;
+      modelimagepro.body = newcar.series;
+      modelimagepro.type = newcar.chassisType;
+      modelimagepro.transmission = newcar.transmission;
+      modelimagepro.enginedisplacement = specs;
+      modelimagepro.extcolor = newcar.colours;
+      modelimagepro.intcolor = newcar.baseColour;
+      modelimagepro.price = newcar.price;
+      modelimagepro.photos = fotos;
+      modelimagepro.inventorysdate = new Date(
+        newcar.createdAt,
+      ).toLocaleString();
+      document.push(modelimagepro);
+    }
+
+    for (let newcar of newcarslist.items) {
+      let modelimagepro = {
+        dealerid: '',
+        inventorydi: '',
+        vin: '',
+        type: '',
+        year: '',
+        make: '',
+        model: '',
+        cartype: '',
+        body: '',
+        transmission: '',
+        trim: '',
+        doorcount: '',
+        enginecylinder: '',
+        enginedisplacement: '',
+        drivetrain: '',
+        extcolor: '',
+        intcolor: '',
+        price: '',
+        msrp: '',
+        features: '',
+        inventorysdate: '',
+        photos: [],
+      };
+
+      let fotos: any = [];
+      let specs = '';
+      for (let foto of newcar.images) {
+        fotos.push({ dealerid: 'grupocdj', vin: newcar.vin, photos: foto });
+      }
+
+      if (newcar.specs) {
+        if (newcar.specs[8]) {
+          specs = newcar.specs[8].descriptionSpec;
+        }
+      }
+
+      modelimagepro.cartype = 'new';
+      modelimagepro.dealerid = 'grupocdj';
+      (modelimagepro.inventorydi = newcar._id),
+        (modelimagepro.vin = newcar.vin);
+      modelimagepro.year = newcar.year;
+      modelimagepro.make = newcar.brand;
+      modelimagepro.model = newcar.model;
+      modelimagepro.body = newcar.series;
+      modelimagepro.type = newcar.chassisType;
+      modelimagepro.transmission = newcar.transmission;
+      modelimagepro.enginedisplacement = specs;
+      modelimagepro.extcolor = newcar.colours;
+      modelimagepro.intcolor = newcar.baseColour;
+      modelimagepro.price = newcar.price;
+      modelimagepro.photos = fotos;
+      modelimagepro.inventorysdate = new Date(
+        newcar.createdAt,
+      ).toLocaleString();
+      document.push(modelimagepro);
+    }
+
+    const csvparse = new Parser();
+
+    let csv = csvparse.parse(document);
+    return csv;
   }
 }
