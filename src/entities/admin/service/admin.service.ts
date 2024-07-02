@@ -74,31 +74,21 @@ export class AdminService extends CrudService<Admin> {
   }
 
   async updateVinculoBanner(body: UpdateViculoBanner) {
-    let bannerMovil = await this.bannersrepository.findOne({
+
+    let banners = await this.bannersrepository.findAll({
       banner: body.banner,
-      type: 'movil',
-    });
-    let bannerDesktop = await this.bannersrepository.findOne({
-      banner: body.banner,
-      type: 'desktop',
     });
 
-    let bannerMovilUpdate = await this.bannersrepository.update(
-      '656e63829123360012e5c2f4',
-      {
-        vinculo: body.vinculo,
-      },
-    );
-    let bannerDesktopUpdate = await this.bannersrepository.update(
-      bannerDesktop._id,
-      {
-        vinculo: body.vinculo,
-      },
-    );
+    let updates = []
 
-    console.log(bannerMovilUpdate, bannerDesktopUpdate);
+  for (let banner of banners.items) {
+    let b: any = banner;
+    let update = await this.bannersrepository.update(b._id, {vinculo: body.vinculo})
 
-    return [bannerMovil, bannerDesktop];
+    updates.push(update)
+  }
+
+    return updates;
   }
 
   async bannelist() {

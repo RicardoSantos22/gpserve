@@ -12,9 +12,6 @@ export class banners {
   }
 
   @prop()
-  _id?: string;
-
-  @prop()
   imgurl: string;
 
   @prop()
