@@ -1,29 +1,29 @@
+import { Parser } from 'json2csv';
 import {
   DatabaseException,
   ERROR_CREATING_DOCUMENT,
   ERROR_FINDING_DOCUMENT,
 } from 'src/common/models/errors/database.errors';
 import { CrudService } from '../../../common/crud/crud.service';
+import { CreateAdminDTO } from '../dto/create-admin.dto';
 import { Admin } from '../model/admin.model';
 import { AdminRepository } from '../repository/admin.repository';
-import { CreateAdminDTO } from '../dto/create-admin.dto';
-import { Parser } from 'json2csv';
 
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  Inject
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
-import { banners } from '../model/banners.model';
-import { bannersrepository } from '../repository/banners.repository';
+import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
 import { NewCarRepository } from 'src/entities/newcar/repository/newcar.repository';
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
-import { CreditRequestRepository } from 'src/entities/creditrequest/repository/creditrequest.repository';
 import { UserRepository } from 'src/entities/user/repository/user.repository';
+import { AwsS3Service } from '../../../bucket/services/aws-s3/aws-s3.service';
+import { UpdateViculoBanner } from '../dto/banner.dto';
+import { banners } from '../model/banners.model';
+import { bannersrepository } from '../repository/banners.repository';
 import { CarRepository } from 'src/entities/finishedcars/repository/finishedcar.repository';
 import { recursosRepository } from 'src/entities/recursos/repository/recursos.repository';
 import { asesoresservice } from 'src/entities/asesores/service/asesores.service';
@@ -33,7 +33,6 @@ import {karbotCreateLead} from 'src/entities/asesores/model/Karbot.response';
 
 @Injectable()
 export class AdminService extends CrudService<Admin> {
-
   constructor(
     readonly repository: AdminRepository,
     readonly config: ConfigService,
@@ -86,48 +85,65 @@ export class AdminService extends CrudService<Admin> {
     return this.bannersrepository.findAll()
   }
 
+  async updateVinculoBanner(body: UpdateViculoBanner) {
+    let banners = await this.bannersrepository.findAll({
+      banner: body.banner,
+    });
+
+    let updates = [];
+    for (let banner of banners.items) {
+      let b: any = banner;
+      let update = await this.bannersrepository.update(b._id, {
+        vinculo: body.vinculo,
+      });
+      updates.push(update);
+    }
+    return updates;
+  }
+
   async bannelist() {
-    let banerslist = await this.bannersrepository.findAll()
+    let banerslist = await this.bannersrepository.findAll();
 
-
-    let bannershome = { banner: 'home', desktopUrl: '', movilUrl: '' }
-    let bannerscarlist = { banner: 'carlist', desktopUrl: '', movilUrl: '' }
+    let bannershome = {
+      banner: 'home',
+      desktopUrl: '',
+      movilUrl: '',
+      vinculo: '',
+    };
+    let bannerscarlist = {
+      banner: 'carlist',
+      desktopUrl: '',
+      movilUrl: '',
+      vinculo: '',
+    };
 
     for (let banner of banerslist.items) {
-
       if (banner.type === 'desktop') {
         if (banner.banner === 'home') {
-          let desktopUrl = banner.imgurl
-
-          bannershome.desktopUrl = desktopUrl
+          let desktopUrl = banner.imgurl;
+          bannershome.desktopUrl = desktopUrl;
+          bannershome.vinculo = banner.vinculo;
+        } else if (banner.banner === 'carlist') {
+          let desktopUrl = banner.imgurl;
+          bannerscarlist.desktopUrl = desktopUrl;
+          bannerscarlist.vinculo = banner.vinculo;
         }
-        else if (banner.banner === 'carlist') {
-          let desktopUrl = banner.imgurl
-          bannerscarlist.desktopUrl = desktopUrl
-        }
-
-
       }
 
       if (banner.type === 'movil') {
         if (banner.banner === 'home') {
-          let movilUrl = banner.imgurl
-          bannershome.movilUrl = movilUrl
-        }
-        else if (banner.banner === 'carlist') {
-          let movilUrl = banner.imgurl
-          bannerscarlist.movilUrl = movilUrl
+          let movilUrl = banner.imgurl;
+          bannershome.movilUrl = movilUrl;
+          bannershome.vinculo = banner.vinculo;
+        } else if (banner.banner === 'carlist') {
+          let movilUrl = banner.imgurl;
+          bannerscarlist.movilUrl = movilUrl;
+          bannerscarlist.vinculo = banner.vinculo;
         }
       }
-
-
     }
 
-    return [{ bannershome, bannerscarlist }]
-
-
-
-
+    return [{ bannershome, bannerscarlist }];
   }
 
   async karbotcreditsbackup() {
@@ -288,15 +304,14 @@ export class AdminService extends CrudService<Admin> {
       list.push(credito)
     }
 
-    return list
-
+    return list;
   }
 
   async disablebanners(body: any) {
     let item: any = await this.bannersrepository.findAll({ type: body.type, banner: body.banner })
 
 
-    return this.bannersrepository.delete(item.items[0]._id)
+    return this.bannersrepository.delete(item.items[0]._id);
   }
 
   async updateBannersForHome(body: any, file: Express.Multer.File) {
@@ -346,13 +361,12 @@ export class AdminService extends CrudService<Admin> {
             isactive: body.isactive,
             vinculo: 'https://bit.ly/3R4ddJg',
             type: 'desktop',
-            banner: 'carlist'
-          }
+            banner: 'carlist',
+          };
 
           if (body.vinculo) {
             bannersmodels.vinculo = body.vinculo
           }
-
 
           if (item.count > 0) {
             return this.bannersrepository.update(item.items[0]._id, bannersmodels)
@@ -376,13 +390,12 @@ export class AdminService extends CrudService<Admin> {
             isactive: body.isactive,
             vinculo: 'https://bit.ly/3R4ddJg',
             type: 'movil',
-            banner: 'home'
-          }
+            banner: 'home',
+          };
 
           if (body.vinculo) {
             bannersmodels.vinculo = body.vinculo
           }
-
 
           if (item.count > 0) {
             return this.bannersrepository.update(item.items[0]._id, bannersmodels)
@@ -400,13 +413,12 @@ export class AdminService extends CrudService<Admin> {
             isactive: body.isactive,
             vinculo: 'https://bit.ly/3R4ddJg',
             type: 'movil',
-            banner: 'carlist'
-          }
+            banner: 'carlist',
+          };
 
           if (body.vinculo) {
             bannersmodels.vinculo = body.vinculo
           }
-
 
           if (item.count > 0) {
             return this.bannersrepository.update(item.items[0]._id, bannersmodels)
@@ -440,16 +452,14 @@ export class AdminService extends CrudService<Admin> {
           await this.bannersrepository.update(banner._id, { vinculo: body.vinculo })
         }
 
-        return 'Vinculo actualizado'
+        return 'Vinculo actualizado';
       }
 
     }
     catch (e) {
       return e
     }
-
   }
-
 
   async getmodelsforimagepro() {
     console.log('se inicio el csv imagepro')
