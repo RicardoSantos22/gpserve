@@ -930,10 +930,9 @@ export class NewCarService extends CrudService<typeof x> {
                             km: 0,
                         }
 
-                        // this.finishedcar.create(updateCar)
+                        this.finishedcar.create(updateCar)
                         console.log('auto descartado: ', car.vin)
-
-                        // this.repository.delete(car._id)
+                        this.repository.delete(car._id)
                     }
                 });
             }
