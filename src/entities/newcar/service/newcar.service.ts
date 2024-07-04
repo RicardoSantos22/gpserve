@@ -375,8 +375,6 @@ export class NewCarService extends CrudService<typeof x> {
         if (car.colours === '' || car.colours === null) { return 'offline' }
         if (car.baseColour === '' || car.baseColour === null) { return 'offline' }
 
-
-
         return 'online'
 
     }
@@ -599,7 +597,6 @@ export class NewCarService extends CrudService<typeof x> {
                     if (response.status === 200) {
                         return 200
                     }
-
                 }
                 catch (e) { }
         }
@@ -711,6 +708,12 @@ export class NewCarService extends CrudService<typeof x> {
                       
                         let verificacion: string = await this.carverification(sc)
                         let imgverification: string = await this.imgVerfication(sc)
+
+                        if(sc.ID === 'LVVDC21B1RD026719')
+                            {
+
+                                console.log(verificacion, imgverification)
+                            }
 
                         let finalstatus = 'offline'
 
@@ -929,7 +932,6 @@ export class NewCarService extends CrudService<typeof x> {
                             cartype: 'new',
                             km: 0,
                         }
-
                         this.finishedcar.create(updateCar)
                         console.log('auto descartado: ', car.vin)
                         this.repository.delete(car._id)

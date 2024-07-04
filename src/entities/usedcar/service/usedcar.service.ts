@@ -568,9 +568,9 @@ export class UsedCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregón
             28, // JAC Cualiacán
-            //29,  Chirey Culiacan
+            29, // Chirey Culiacan
             1030, // Omoda Hermosillo 
-            //1031, // chirey mazatlan
+            1031, // chirey mazatlan
             1032, //Stallantis caballito
             1033, //geely culiacan
             1034, //jac mochis
@@ -578,7 +578,7 @@ export class UsedCarService extends CrudService<typeof x> {
             1037, //gwm culiacan
             2037, //gwm  mexicali
             2038, //gwm tijuana
-            //3037, // chirey mochis
+            3037, // chirey mochis
             3038, //gwm mazatlan 
         ]
         let promises = []
@@ -619,7 +619,7 @@ export class UsedCarService extends CrudService<typeof x> {
                     data = sadNewCars
                     for (let sc of sadNewCars) {
 
-
+                        
 
                         let BDID: string = '';
 
