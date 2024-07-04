@@ -56,22 +56,22 @@ export class NewCarService extends CrudService<typeof x> {
 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
- 
+
         query.status = 'online'
 
-            const cars = await this.repository.findAll(query)
-            const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-            const response = {
-                ...cars,
-                items: groupedCars,
-            }
-            const r = {
-                count: groupedCars.length,
-                items: response.items
-            }
+        const cars = await this.repository.findAll(query)
+        const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+        const response = {
+            ...cars,
+            items: groupedCars,
+        }
+        const r = {
+            count: groupedCars.length,
+            items: response.items
+        }
 
-            return r
-        
+        return r
+
 
         // if (query.model && query.brand) {
         //     let newquery = await this.getAllModelOfBrands(query)
@@ -160,7 +160,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     async getAllModelOfBrands(query: any) {
 
-    
+
         const cars = await this.repository.findByBrands(query.brand)
 
         console.log(query)
@@ -171,7 +171,7 @@ export class NewCarService extends CrudService<typeof x> {
             allmodeles.push(c.model)
         }
 
-    
+
 
         for (let model of query.model) {
             if (allmodeles.includes(model) === false) {
@@ -187,37 +187,34 @@ export class NewCarService extends CrudService<typeof x> {
 
     }
 
-    async sugerenciasdebusqueda()
-    {
-        let sugerencias: {brand:string, model: String[]}[] = []
+    async sugerenciasdebusqueda() {
+        let sugerencias: { brand: string, model: String[] }[] = []
 
         const cars: any = await this.repository.findAll();
 
         for (let car of cars.items) {
-           
+
             const resultado = sugerencias.find(brand => brand.brand === car.brand)
 
-            if(resultado)
-                {
-                    if (resultado.model.includes(car.model) === false) {
-                        resultado.model.push(car.model)
-                    }
+            if (resultado) {
+                if (resultado.model.includes(car.model) === false) {
+                    resultado.model.push(car.model)
                 }
-                else{
-                    sugerencias.push({brand: car.brand, model: [car.model]})
-                }
+            }
+            else {
+                sugerencias.push({ brand: car.brand, model: [car.model] })
+            }
         }
         return sugerencias
     }
 
-    async findfpromotions(chassisType: string){
+    async findfpromotions(chassisType: string) {
 
         let promociones = []
-        const cars: any = await this.repository.findAll({chassisType: chassisType});
+        const cars: any = await this.repository.findAll({ chassisType: chassisType });
 
         cars.items.forEach((car: any) => {
-            if(car.promocion !== '' && car.promocion !== ' ' && car.promocion !== null)
-            {
+            if (car.promocion !== '' && car.promocion !== ' ' && car.promocion !== null) {
                 promociones.push(car)
             }
         });
@@ -226,65 +223,57 @@ export class NewCarService extends CrudService<typeof x> {
     }
 
     async findForString(body: any) {
-    
+
 
         let tagsbusqueda = body.busqueda.split(' ');
-      
+
         const cars: any = await this.repository.findAll();
         let carfinallist: any = [];
 
-       if(body.type === 'develop')
-       {
-        if(tagsbusqueda.length > 1)
-        {
+        if (body.type === 'develop') {
+            if (tagsbusqueda.length > 1) {
 
-           cars.items.forEach((car: any)  => {
-            
-            for(let tag of tagsbusqueda)
-            {
-                if (car.model === tag.toUpperCase() && car.brand === tagsbusqueda[0].toUpperCase()) {
-                    console.log(body.busqueda)
-                    carfinallist.push(car)
-                }
+                cars.items.forEach((car: any) => {
+
+                    for (let tag of tagsbusqueda) {
+                        if (car.model === tag.toUpperCase() && car.brand === tagsbusqueda[0].toUpperCase()) {
+                            console.log(body.busqueda)
+                            carfinallist.push(car)
+                        }
+                    }
+                });
             }
-           });   
-        }
-        else
-        {
-            cars.items.forEach((car: any) => {
+            else {
+                cars.items.forEach((car: any) => {
 
-                console.log(car.brand, car.model)
+                    console.log(car.brand, car.model)
                     if (car.brand.includes(body.busqueda.toUpperCase()) || car.brand.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toLowerCase()) || car.model.includes(body.busqueda.toUpperCase())) {
 
                         carfinallist.push(car)
                     }
-                
-            })
+
+                })
+
+            }
 
         }
 
-       }
-
-        if(body.type === 'produccion')
-        {
+        if (body.type === 'produccion') {
             cars.items.forEach((car: any) => {
 
                 let modalsarray = car.model.split(' ')
 
-                    for(let model of modalsarray)
-                        {
-                          for(let tag of tagsbusqueda)
-                            {
-                               if(car.brand.toLowerCase() === tag.toLowerCase() || model.toLowerCase() === tag.toLowerCase())
-                                {
-                                    carfinallist.push(car)
-                                } 
-                            }
+                for (let model of modalsarray) {
+                    for (let tag of tagsbusqueda) {
+                        if (car.brand.toLowerCase() === tag.toLowerCase() || model.toLowerCase() === tag.toLowerCase()) {
+                            carfinallist.push(car)
                         }
-                
+                    }
+                }
+
             })
         }
-       
+
         const groupedCars = NewCarHelps.groupCarsByHash(carfinallist)
         const response = {
             ...cars,
@@ -295,7 +284,7 @@ export class NewCarService extends CrudService<typeof x> {
             items: response.items
         }
 
-      
+
         return r
     }
 
@@ -304,36 +293,47 @@ export class NewCarService extends CrudService<typeof x> {
         return this.repository.findAll();
     }
 
-    async carverification(car) {
+    async imgVerfication(car) {
+        let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
 
-        if(car.images.length === 0){ return 'offline'}
-        else{
-            let imageurl = ''
-                car.images.map((img: any) => {
+        if (car.images.length === 0) { return 'offline' }
+        else {
 
-                    if (img.imageUrl.includes('fi')) {
+            if (sheetsIDs.includes(car.agencyId)) {
+                try {
+                    const response = await this.httpService.get(car.images[0]).toPromise()
 
-                        imageurl = img.imageUrl
+                    if (response.status === 200) {
+                        return 'online'
                     }
-                })
+                }
+                catch (e) {
+                    return 'offline'
+                }
 
+
+            }
+            else {
+
+
+                let imageurl = car.images.filter(img => img.imageUrl.split('/')[img.imageUrl.split('/').length - 1].split('.')[0] === 'fi') || ''
 
                 if (imageurl !== '') {
                     try {
                         const response: any = await this.httpService.get(imageurl).toPromise()
 
+                        if (response.status === 200) {
+                            return 'online'
+                        }
+
                     }
                     catch (e) {
 
-
-
                         let imgfinal: any = await this.imgprincipal(car.images)
-
-                        if (imgfinal.length > 0) {
-                            car.images = imgfinal
+                        if (imgfinal !== 500) {
+                            return 'online'
                         }
                         else {
-
                             return 'offline'
                         }
                     }
@@ -341,23 +341,28 @@ export class NewCarService extends CrudService<typeof x> {
                 }
                 else {
                     let imgfinal: any = await this.imgprincipal(car.images)
-                    console.log(imgfinal)
-                    if (imgfinal.length > 0) {
-                        car.images = imgfinal
+                    if (imgfinal !== 500) {
+                        return 'online'
                     }
                     else {
                         return 'offline'
                     }
+
                 }
+            }
+
         }
+    }
+
+    async carverification(car) {
 
         let carID = '';
 
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
-        
-        
-        if (carID === '' || carID === null || carID.length !== 17 ) { return 'offline' }
+
+
+        if (carID === '' || carID === null || carID.length !== 17) { return 'offline' }
         if (car.agencyID === '' || car.agencyID === null) { return 'offline' }
         if (car.brand === '' || car.brand === null) { return 'offline' }
         if (car.model === '' || car.model === null) { return 'offline' }
@@ -382,9 +387,9 @@ export class NewCarService extends CrudService<typeof x> {
 
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
-        
-        
-        if (carID === '' || carID === null || carID.length !== 17 ) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
+
+
+        if (carID === '' || carID === null || carID.length !== 17) { return [{ error: 'error en identificador unico ( vin o ID), no cumple con las condiciones == no nulo, no vacio, vin 0 ID incompleto (17 caracteres) ==' }, { car }] }
         if (car.agencyID === '' || car.agencyID === null) { return [{ error: 'sin agencyID' }, { car }] }
         if (car.brand === '' || car.brand === null) { return [{ error: 'sin brand' }, { car }] }
         if (car.model === '' || car.model === null) { return [{ error: 'error en model, revise el modelo, no debe contener signo o caracteres especiales' }, { car }] }
@@ -417,12 +422,12 @@ export class NewCarService extends CrudService<typeof x> {
         let hh = new Date().toLocaleString()
         console.log('se obtuvieron filtros del catalogo usedcar a las: ' + hh)
         let estadosCiudades = {
-            "bajacalifornia": ["ensenada","mexicali","playas de rosarito","tecate","tijuana"],
-            "bajacaliforniasur": ["comondu","la paz","loreto","los cabos","mulege"],
-            "sinaloa": ["ahome","angostura","badiraguato","choix","concordia","cosala","culiacan","el fuerte","elota","escuinapa","guasave","mazatlan","mocorito","navolato","rosario","salvador alvarado","san ignacio","sinaloa"],
-            "sonora": ["aconchi","agua prieta","alamos","altar","arivechi","arizpe","atil","bacadehuachi","bacanora","bacerac","bacoachi","bacum","banamichi","baviacora","bavispe","benito juarez","benjamin hill","caborca","cajeme","cananea","carbo","cucurpe","cumpas","divisaderos","empalme","etchojoa","fronteras","general plutarco elias calles","granados","guaymas","hermosillo","huachinera","huasabas","huatabampo","huepac","imuris","la colorada","magdalena","mazatan","moctezuma","naco","nacori chico","nacozari de garcia","navojoa","nogales","onavas","opodepe","oquitoa","pitiquito","puerto penasco","quiriego","rayon","rosario","sahuaripa","san felipe de jesus","san ignacio rio muerto","san javier","san luis rio colorado","san miguel de horcasitas","san pedro de la cueva","santa ana","santa cruz","saric","soyopa","suaqui grande","tepache","trincheras","tubutama","ures","villa hidalgo","villa pesqueira","yecora"],
-            "nuevoleon": ["abasolo","agualeguas","allende","anahuac","apodaca","aramberri","bustamante","cadereyta jimenez","cerralvo","china","cienega de flores","doctor arroyo","doctor coss","doctor gonzalez","el carmen","galeana","garcia","general bravo","general escobedo","general teran","general trevino","general zaragoza","general zuazua","guadalupe","hidalgo","higueras","hualahuises","iturbide","juarez","lampazos de naranjo","linares","los aldama","los herreras","los ramones","marin","melchor ocampo","mier y noriega","mina","montemorelos","monterrey","paras","pesqueria","rayones","sabinas hidalgo","salinas victoria","san nicolas de los garza","san pedro garza garcia","santa catarina","santiago","vallecillo","villaldama"],
-            "ciudadmexico": ["alvaro obregon","azcapotzalco","benito juarez","coyoacan","cuajimalpa de morelos","cuauhtemoc","gustavo a. madero","iztacalco","iztapalapa","la magdalena contreras","miguel hidalgo","milpa alta","tlalpan","tlahuac","venustiano carranza","xochimilco"]
+            "bajacalifornia": ["ensenada", "mexicali", "playas de rosarito", "tecate", "tijuana"],
+            "bajacaliforniasur": ["comondu", "la paz", "loreto", "los cabos", "mulege"],
+            "sinaloa": ["ahome", "angostura", "badiraguato", "choix", "concordia", "cosala", "culiacan", "el fuerte", "elota", "escuinapa", "guasave", "mazatlan", "mocorito", "navolato", "rosario", "salvador alvarado", "san ignacio", "sinaloa"],
+            "sonora": ["aconchi", "agua prieta", "alamos", "altar", "arivechi", "arizpe", "atil", "bacadehuachi", "bacanora", "bacerac", "bacoachi", "bacum", "banamichi", "baviacora", "bavispe", "benito juarez", "benjamin hill", "caborca", "cajeme", "cananea", "carbo", "cucurpe", "cumpas", "divisaderos", "empalme", "etchojoa", "fronteras", "general plutarco elias calles", "granados", "guaymas", "hermosillo", "huachinera", "huasabas", "huatabampo", "huepac", "imuris", "la colorada", "magdalena", "mazatan", "moctezuma", "naco", "nacori chico", "nacozari de garcia", "navojoa", "nogales", "onavas", "opodepe", "oquitoa", "pitiquito", "puerto penasco", "quiriego", "rayon", "rosario", "sahuaripa", "san felipe de jesus", "san ignacio rio muerto", "san javier", "san luis rio colorado", "san miguel de horcasitas", "san pedro de la cueva", "santa ana", "santa cruz", "saric", "soyopa", "suaqui grande", "tepache", "trincheras", "tubutama", "ures", "villa hidalgo", "villa pesqueira", "yecora"],
+            "nuevoleon": ["abasolo", "agualeguas", "allende", "anahuac", "apodaca", "aramberri", "bustamante", "cadereyta jimenez", "cerralvo", "china", "cienega de flores", "doctor arroyo", "doctor coss", "doctor gonzalez", "el carmen", "galeana", "garcia", "general bravo", "general escobedo", "general teran", "general trevino", "general zaragoza", "general zuazua", "guadalupe", "hidalgo", "higueras", "hualahuises", "iturbide", "juarez", "lampazos de naranjo", "linares", "los aldama", "los herreras", "los ramones", "marin", "melchor ocampo", "mier y noriega", "mina", "montemorelos", "monterrey", "paras", "pesqueria", "rayones", "sabinas hidalgo", "salinas victoria", "san nicolas de los garza", "san pedro garza garcia", "santa catarina", "santiago", "vallecillo", "villaldama"],
+            "ciudadmexico": ["alvaro obregon", "azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
         }
 
         // let estados = {
@@ -434,76 +439,70 @@ export class NewCarService extends CrudService<typeof x> {
         //     'Ciudad de  Mexico': [],
         // }
 
-        let estados: {estado: string, ciudades: string[]}[] = [
-            {estado: 'Sinaloa', ciudades: [] },
-            {estado: 'Baja california sur', ciudades: [] },
-            {estado: 'Baja california norte', ciudades: [] },
-            {estado: 'Sonora', ciudades: [] },
-            {estado: 'Nuevo Leon', ciudades: [] },
-            {estado: 'Ciudad de  Mexico', ciudades: [] }
+        let estados: { estado: string, ciudades: string[] }[] = [
+            { estado: 'Sinaloa', ciudades: [] },
+            { estado: 'Baja california sur', ciudades: [] },
+            { estado: 'Baja california norte', ciudades: [] },
+            { estado: 'Sonora', ciudades: [] },
+            { estado: 'Nuevo Leon', ciudades: [] },
+            { estado: 'Ciudad de  Mexico', ciudades: [] }
         ]
 
-        const allCars = await this.repository.findAll({status: 'online'})
+        const allCars = await this.repository.findAll({ status: 'online' })
 
-       
+
         for (let car of allCars.items) {
             if (estadosCiudades.bajacaliforniasur.includes(car.agencyCity.toLowerCase())) {
 
-                const resultado =  estados.find(estado => estado.estado === 'Baja california sur')
-             
-                if(resultado.ciudades.includes(car.agencyCity) === false)
-                    {
-                        resultado.ciudades.push(car.agencyCity)
-                    }
-                
+                const resultado = estados.find(estado => estado.estado === 'Baja california sur')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
+
             }
 
-            if (estadosCiudades.bajacalifornia.includes(car.agencyCity.toLowerCase()) ) {
+            if (estadosCiudades.bajacalifornia.includes(car.agencyCity.toLowerCase())) {
 
-                const resultado =  estados.find(estado => estado.estado === 'Baja california norte')
+                const resultado = estados.find(estado => estado.estado === 'Baja california norte')
 
-                 if(resultado.ciudades.includes(car.agencyCity) === false)
-                    {
-                        resultado.ciudades.push(car.agencyCity)
-                    }
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
             if (estadosCiudades.sinaloa.includes(car.agencyCity.toLowerCase())) {
-               
-               const resultado =  estados.find(estado => estado.estado === 'Sinaloa')
 
-             if(resultado.ciudades.includes(car.agencyCity) === false)
-                    {
-                        resultado.ciudades.push(car.agencyCity)
-                    }
+                const resultado = estados.find(estado => estado.estado === 'Sinaloa')
+
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
 
-            if (estadosCiudades.sonora.includes(car.agencyCity.toLowerCase()) ) {
-                const resultado =  estados.find(estado => estado.estado === 'Sonora')
+            if (estadosCiudades.sonora.includes(car.agencyCity.toLowerCase())) {
+                const resultado = estados.find(estado => estado.estado === 'Sonora')
 
-                if(resultado.ciudades.includes(car.agencyCity) === false)
-                    {
-                        resultado.ciudades.push(car.agencyCity)
-                    }
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
 
-            if (estadosCiudades.nuevoleon.includes(car.agencyCity.toLowerCase()) ) {
-                const resultado =  estados.find(estado => estado.estado === 'Nuevo Leon')
+            if (estadosCiudades.nuevoleon.includes(car.agencyCity.toLowerCase())) {
+                const resultado = estados.find(estado => estado.estado === 'Nuevo Leon')
 
-               if(resultado.ciudades.includes(car.agencyCity) === false)
-                    {
-                        resultado.ciudades.push(car.agencyCity)
-                    }
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
 
-            if (estadosCiudades.ciudadmexico.includes(car.agencyCity.toLowerCase()) ) {
-                const resultado =  estados.find(estado => estado.estado === 'Ciudad de  Mexico')
+            if (estadosCiudades.ciudadmexico.includes(car.agencyCity.toLowerCase())) {
+                const resultado = estados.find(estado => estado.estado === 'Ciudad de  Mexico')
 
-                if(resultado.ciudades.includes(car.agencyCity) === false)
-                    {
-                        resultado.ciudades.push(car.agencyCity)
-                    }
+                if (resultado.ciudades.includes(car.agencyCity) === false) {
+                    resultado.ciudades.push(car.agencyCity)
+                }
             }
-          
+
         }
 
         const sets = {
@@ -535,7 +534,7 @@ export class NewCarService extends CrudService<typeof x> {
         //Logger.debug({minPrice, maxPrice})
         sets.prices.add(minPrice)
         sets.prices.add(maxPrice)
-      
+
 
         const result: NewCarsFilters = {
             brand: [...sets.brand],
@@ -547,7 +546,7 @@ export class NewCarService extends CrudService<typeof x> {
             agencyId: [...sets.agencyId],
             chassisType: [...sets.chassistype],
             promocioType: [...sets.promocioType],
-            ubication : estados
+            ubication: estados
         }
 
         const otrosIndex = result.colours.indexOf('Otros')
@@ -555,7 +554,7 @@ export class NewCarService extends CrudService<typeof x> {
             result.colours.splice(otrosIndex, 1)
             result.colours.push('Otros')
         }
-     
+
         return result
 
     }
@@ -588,23 +587,23 @@ export class NewCarService extends CrudService<typeof x> {
 
     }
 
-    async imgprincipal(images: any)
-    {
-        let imagesvalidate = images;
-        let i = 0;
-        for(let image of images)
-            {
-                i - i + 1;
-                try{
-                    const response = await this.httpService.get(image.imageUrl).toPromise()
+    async imgprincipal(images: any) {
+        let orderdata = ['f', 'fd', 'li', 'ld', 'ti', 'td', 't']
+
+        for (let image of images) {
+
+            if (orderdata.includes(image.imageUrl.split('/')[image.imageUrl.split('/').length - 1].split('.')[0]))
+
+                try {
+                    const response: any = await this.httpService.get(image.imageUrl).toPromise()
+                    if (response.status === 200) {
+                        return 200
+                    }
 
                 }
-                catch(e)
-                {
-                    imagesvalidate = imagesvalidate.filter((img: any) => img.imageUrl !== image.imageUrl)
-                }
-            }
-          return imagesvalidate
+                catch (e) { }
+        }
+        return 500
     }
 
     async updateCarCatalogue() {
@@ -626,7 +625,8 @@ export class NewCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = []
         let agencyIds = [
-            29,
+            1031,
+            3037,
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -652,8 +652,9 @@ export class NewCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregó
             28, // JAC Cualiacán
-            // 29,  Chirey Culiacan
+            29,  //Chirey Culiacan
             1030, // Omoda Hermosillo
+          //1031, // chirey mazatlan
             1032, //Stallantis caballito
             1033, //geely culiacan
             1034, //jac mochis
@@ -661,6 +662,7 @@ export class NewCarService extends CrudService<typeof x> {
             1037, //gwm culiacan
             2037, //gwm  mexicali
             2038, //gwm tijuana
+          //3037, // chirey mochis
             3038, //gwm mazatlan 
         ]
         let promises = []
@@ -676,8 +678,9 @@ export class NewCarService extends CrudService<typeof x> {
                 ).toPromise()
                 )
 
-               
+
             }
+            
             const responses = await Promise.all(promises)
 
             let carlist = await this.repository.findAll();
@@ -705,11 +708,23 @@ export class NewCarService extends CrudService<typeof x> {
 
                         })
 
-                        let verificacion:any = await this.carverification(sc)
+                      
+                        let verificacion: string = await this.carverification(sc)
+                        let imgverification: string = await this.imgVerfication(sc)
 
-         
+                        let finalstatus = 'offline'
 
-                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S' ) {
+                        if (verificacion === 'online' && imgverification === 'online') {
+                            finalstatus = 'online'
+                        }
+                        else if (imgverification === 'online') {
+                            finalstatus = 'online'
+                        }
+
+
+
+
+                        if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
 
 
                             vins.push(sc.ID)
@@ -738,10 +753,10 @@ export class NewCarService extends CrudService<typeof x> {
                                 estate = 'Nuevo Leon'
                             }
 
-                            if(estadosCiudades.ciudadmexico.includes(sc.agencyCity.toLowerCase())) {
+                            if (estadosCiudades.ciudadmexico.includes(sc.agencyCity.toLowerCase())) {
                                 estate = 'Ciudad de  Mexico'
                             }
-              
+
                             let lat = agencia.geoposition.lat || 0;
                             let lng = agencia.geoposition.lng || 0;
 
@@ -811,26 +826,25 @@ export class NewCarService extends CrudService<typeof x> {
                             }
                             else {
 
-                                if(sc.promotionDescription === " ")
-                                {
+                                if (sc.promotionDescription === " ") {
                                     promociontext = ""
                                 }
-                                else{
+                                else {
                                     promociontext = sc.promotionDescription;
                                 }
 
-                                
+
                             }
 
 
                             parsedModel = newmodel.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
-                        
-                           
+
+
                             let serie = sc.version.trim().toLowerCase();
-               
-                   
+
+
                             //if(true) {
                             let newCar: NewCar = {
                                 vin: sc.ID,
@@ -846,7 +860,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 metaTitulo: '' + sc.brand + ' ' + sc.model.split(' ')[0] + ' ' + sc.year + ' Nuevo En Linea | Estrena tu Auto',
                                 metaDescription: MetaDescription,
                                 h1Title: h1,
-                                status: verificacion,
+                                status: finalstatus,
                                 brandUrl: NewCarHelps.stringToUrl(sc.brand),
                                 modelUrl: NewCarHelps.stringToUrl(sc.model),
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
@@ -865,7 +879,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                
+
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, newCar)
@@ -876,7 +890,7 @@ export class NewCarService extends CrudService<typeof x> {
 
 
                         }
-                      
+
                     }
                 }
             }
@@ -915,9 +929,11 @@ export class NewCarService extends CrudService<typeof x> {
                             cartype: 'new',
                             km: 0,
                         }
-                        this.finishedcar.create(updateCar)
+
+                        // this.finishedcar.create(updateCar)
                         console.log('auto descartado: ', car.vin)
-                        this.repository.delete(car._id)
+
+                        // this.repository.delete(car._id)
                     }
                 });
             }
@@ -934,7 +950,7 @@ export class NewCarService extends CrudService<typeof x> {
                     counts[vins[i]] = 1;
                 }
             }
-            
+
             for (let vin in counts) {
                 if (counts[vin] > 1) {
                     duplicates.push(vin);
@@ -947,7 +963,7 @@ export class NewCarService extends CrudService<typeof x> {
                 results: responses,
 
             }
-            
+
         } catch (err) {
             console.log('error en update newcar: ' + err)
             Logger.error(err)
@@ -957,7 +973,7 @@ export class NewCarService extends CrudService<typeof x> {
             console.log('se termino una actualizacion de catalogo usedcar a las: ' + hh)
             Logger.debug(`Inserted ${newCarsArray.length} records`)
             Logger.debug(`Update ${updateitem} records`)
-            
+
         }
     }
 

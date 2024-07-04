@@ -241,20 +241,19 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
 
-    
-    async carverification(car) {
+    async imgVerfication(car) {
+        let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
 
-    
-
-        let sheetsIDs = ['800', '802','901', '902', '903', '904', '905', '906', '907']
-
-        let carID = '';
         if (car.images.length === 0) { return 'offline' }
         else {
 
             if (sheetsIDs.includes(car.agencyId)) {
                 try {
                     const response = await this.httpService.get(car.images[0]).toPromise()
+
+                    if (response.status === 200) {
+                        return 'online'
+                    }
                 }
                 catch (e) {
                     return 'offline'
@@ -264,32 +263,25 @@ export class UsedCarService extends CrudService<typeof x> {
             }
             else {
 
-                let imageurl = ''
-                car.images.map((img: any) => {
 
-                    if (img.imageUrl.includes('fi')) {
-
-                        imageurl = img.imageUrl
-                    }
-                })
-
+                let imageurl = car.images.filter(img => img.imageUrl.split('/')[img.imageUrl.split('/').length - 1].split('.')[0] === 'fi') || ''
 
                 if (imageurl !== '') {
                     try {
                         const response: any = await this.httpService.get(imageurl).toPromise()
 
+                        if (response.status === 200) {
+                            return 'online'
+                        }
+
                     }
                     catch (e) {
 
-
-
                         let imgfinal: any = await this.imgprincipal(car.images)
-
-                        if (imgfinal.length > 0) {
-                            car.images = imgfinal
+                        if (imgfinal !== 500) {
+                            return 'online'
                         }
                         else {
-
                             return 'offline'
                         }
                     }
@@ -297,17 +289,26 @@ export class UsedCarService extends CrudService<typeof x> {
                 }
                 else {
                     let imgfinal: any = await this.imgprincipal(car.images)
-                    console.log(imgfinal)
-                    if (imgfinal.length > 0) {
-                        car.images = imgfinal
+                    if (imgfinal !== 500) {
+                        return 'online'
                     }
                     else {
                         return 'offline'
                     }
+
                 }
             }
 
         }
+    }
+
+    async carverification(car) {
+
+
+
+
+        let carID = '';
+
         if (car.vin) { carID = car.vin }
         if (car.ID) { carID = car.ID }
 
@@ -352,7 +353,7 @@ export class UsedCarService extends CrudService<typeof x> {
             { estado: 'Ciudad de Mexico', ciudades: [] }
         ]
 
-        const allCars = await this.repository.findAll({status: 'online'})
+        const allCars = await this.repository.findAll({ status: 'online' })
 
 
         for (let car of allCars.items) {
@@ -501,21 +502,22 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async imgprincipal(images: any) {
+        let orderdata = ['f', 'fd', 'li', 'ld', 'ti', 'td', 't']
 
-        let imagesvalidate = images;
-        let i = 0;
         for (let image of images) {
-            i - i + 1;
-            try {
-                const response: any = await this.httpService.get(image.imageUrl).toPromise()
 
-            }
-            catch (e) {
+            if (orderdata.includes(image.imageUrl.split('/')[image.imageUrl.split('/').length - 1].split('.')[0]))
 
-                imagesvalidate = imagesvalidate.filter((img: any) => img.imageUrl !== image.imageUrl)
-            }
+                try {
+                    const response: any = await this.httpService.get(image.imageUrl).toPromise()
+                    if (response.status === 200) {
+                        return 200
+                    }
+
+                }
+                catch (e) { }
         }
-        return imagesvalidate
+        return 500
     }
 
     async updateCarCatalogue() {
@@ -540,7 +542,7 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
         let agencyIds = [
-            29,
+
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -568,6 +570,7 @@ export class UsedCarService extends CrudService<typeof x> {
             28, // JAC Cualiacán
             //29,  Chirey Culiacan
             1030, // Omoda Hermosillo 
+            //1031, // chirey mazatlan
             1032, //Stallantis caballito
             1033, //geely culiacan
             1034, //jac mochis
@@ -575,6 +578,7 @@ export class UsedCarService extends CrudService<typeof x> {
             1037, //gwm culiacan
             2037, //gwm  mexicali
             2038, //gwm tijuana
+            //3037, // chirey mochis
             3038, //gwm mazatlan 
         ]
         let promises = []
@@ -633,12 +637,23 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
                         let verificacion: string = await this.carverification(sc)
+                        let imgverification: string = await this.imgVerfication(sc)
+
+                        let finalstatus = 'offline'
+
+                        if (verificacion === 'online' && imgverification === 'online') {
+                            finalstatus = 'online'
+                        }
+                        else if (imgverification === 'online') {
+                            finalstatus = 'online'
+                        }
+
 
 
 
                         vins.push(sc.ID)
 
-                      
+
 
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
@@ -747,14 +762,12 @@ export class UsedCarService extends CrudService<typeof x> {
                             }
 
 
-                            // let images = await this.imgprincipal(sc.images)
-
                             parsedModel = sc.model.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')
 
                             let serie = sc.version.trim().toLowerCase();
-                    
+
 
 
                             //if(true) {
@@ -771,7 +784,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 agencyId: sc.agencyID.toString(),
                                 brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
-                                status: verificacion,
+                                status: finalstatus,
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
                                 year: sc.year,
@@ -789,11 +802,12 @@ export class UsedCarService extends CrudService<typeof x> {
                                     lng: lng.toString()
                                 }
                             }
+                            console.log('autos: ', usedCar.vin + ' ' + usedCar.status)
 
 
                             if (BDID !== '') {
 
-                                await this.repository.update(BDID, usedCar)
+                                // await this.repository.update(BDID, usedCar)
                                 updateitem++
                             } else {
                                 usedCarsArray.push(usedCar)
@@ -865,8 +879,8 @@ export class UsedCarService extends CrudService<typeof x> {
                     }
                 });
             }
-            
-            const createdCars = await this.repository.createMany(usedCarsArray)
+
+            // const createdCars = await this.repository.createMany(usedCarsArray)
 
             let cars = await this.repository.findAll();
 
