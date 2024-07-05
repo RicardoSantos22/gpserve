@@ -19,6 +19,7 @@ import { Car as finishecar } from '../model/finishedcars.model';
 import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedcars.service'
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
 import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
+import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 
 
 let x;
@@ -40,8 +41,8 @@ export class NewCarService extends CrudService<typeof x> {
         readonly config: ConfigService,
         private httpService: HttpService,
         private finishedcar: FinishedcarsService,
-        private UsedCarRepository: UsedCarRepository,
         private agencyRepository: AgencyRepository,
+        private bugRepository: BugRepository,
 
     ) {
         super(repository, 'NewCar', config);
@@ -296,7 +297,19 @@ export class NewCarService extends CrudService<typeof x> {
     async imgVerfication(car) {
         let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
 
-        if (car.images.length === 0) { return 'offline' }
+        if (car.images.length === 0) { 
+
+           this.bugRepository.create({
+            error: 'este auto no tiene imagenes dentro de su array',
+            type: 'imgError',
+            notas: car,
+            detalles: car.ID  ,
+            status: 'Sin Procesar',
+            userId: ''
+           })   
+
+            return 'offline'
+         }
         else {
 
             if (sheetsIDs.includes(car.agencyId)) {
@@ -308,6 +321,16 @@ export class NewCarService extends CrudService<typeof x> {
                     }
                 }
                 catch (e) {
+
+                    this.bugRepository.create({
+                        error: 'este auto no tiene imagenes validas en S3',
+                        type: 'imgError',
+                        notas: car,
+                        detalles: car.ID ,
+                        status: 'Sin Procesar',
+                        userId: ''
+                       })
+                       
                     return 'offline'
                 }
 
@@ -325,26 +348,67 @@ export class NewCarService extends CrudService<typeof x> {
                         if (response.status === 200) {
                             return 'online'
                         }
+                        else {
+                            this.bugRepository.create({
+                                error: 'este auto no tiene imagen fi en s3',
+                                type: 'imgError',
+                                notas: car,
+                                detalles: car.ID ,
+                                status: 'Sin Procesar',
+                                userId: ''
+                               })
+                        }
 
                     }
                     catch (e) {
+
 
                         let imgfinal: any = await this.imgprincipal(car.images)
                         if (imgfinal !== 500) {
                             return 'online'
                         }
                         else {
+
+                            this.bugRepository.create({
+                                error: 'este auto no tiene imagenes validas en S3',
+                                type: 'imgError',
+                                notas: car,
+                                detalles: car.ID  ,
+                                status: 'Sin Procesar',
+                                userId: ''
+                               })
+
                             return 'offline'
                         }
                     }
 
                 }
                 else {
+
+                    this.bugRepository.create({
+                        error: 'este auto no tiene alguna imagen fi dentro de su array',
+                        type: 'imgError',
+                        notas: car,
+                        detalles: car.ID,
+                        status: 'Sin Procesar',
+                        userId: ''
+                       })
+                       
                     let imgfinal: any = await this.imgprincipal(car.images)
                     if (imgfinal !== 500) {
                         return 'online'
                     }
                     else {
+
+                        this.bugRepository.create({
+                            error: 'este auto no tiene imagenes validas en S3',
+                            type: 'imgError',
+                            notas: car,
+                            detalles: car.ID,
+                            status: 'Sin Procesar',
+                            userId: ''
+                           })
+
                         return 'offline'
                     }
 
@@ -353,7 +417,6 @@ export class NewCarService extends CrudService<typeof x> {
 
         }
     }
-
     async carverification(car) {
 
         let carID = '';
@@ -708,12 +771,6 @@ export class NewCarService extends CrudService<typeof x> {
                       
                         let verificacion: string = await this.carverification(sc)
                         let imgverification: string = await this.imgVerfication(sc)
-
-                        if(sc.ID === 'LVVDC21B1RD026719')
-                            {
-
-                                console.log(verificacion, imgverification)
-                            }
 
                         let finalstatus = 'offline'
 

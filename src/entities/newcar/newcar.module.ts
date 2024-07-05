@@ -9,12 +9,14 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { UsedCarModule } from '../usedcar/usedcar.module';
 import { AgencyModule } from '../agency/agency.module';
 import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
+import { BugsModule } from '../bugs/bugs.module';
 
 @Module({
   imports: [
   AgencyModule,
     UsedCarModule,
     FinishedcarsModule,
+    BugsModule,
     ScheduleModule.forRoot(),
     TypegooseModule.forFeature([NewCar]),
     HttpModule.register({timeout: 60000, maxRedirects: 5}),

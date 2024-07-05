@@ -17,6 +17,7 @@ import { BugsModule } from '../bugs/bugs.module';
     FinishedcarsModule,
     ScheduleModule.forRoot(),
     TypegooseModule.forFeature([UsedCar]),
+    BugsModule,
     HttpModule.register({timeout: 20000, maxRedirects: 5}),
     BugsModule,
   ],

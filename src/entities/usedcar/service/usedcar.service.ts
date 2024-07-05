@@ -15,6 +15,7 @@ import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedc
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
+import { error } from 'console';
 
 
 let x;
@@ -244,7 +245,19 @@ export class UsedCarService extends CrudService<typeof x> {
     async imgVerfication(car) {
         let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
 
-        if (car.images.length === 0) { return 'offline' }
+        if (car.images.length === 0) { 
+
+           this.bugRepository.create({
+            error: 'este auto no tiene imagenes dentro de su array',
+            type: 'imgError',
+            notas: car,
+            detalles: car.ID  ,
+            status: 'Sin Procesar',
+            userId: ''
+           })   
+
+            return 'offline'
+         }
         else {
 
             if (sheetsIDs.includes(car.agencyId)) {
@@ -256,6 +269,16 @@ export class UsedCarService extends CrudService<typeof x> {
                     }
                 }
                 catch (e) {
+
+                    this.bugRepository.create({
+                        error: 'este auto no tiene imagenes validas en S3',
+                        type: 'imgError',
+                        notas: car,
+                        detalles: car.ID ,
+                        status: 'Sin Procesar',
+                        userId: ''
+                       })
+                       
                     return 'offline'
                 }
 
@@ -273,26 +296,67 @@ export class UsedCarService extends CrudService<typeof x> {
                         if (response.status === 200) {
                             return 'online'
                         }
+                        else {
+                            this.bugRepository.create({
+                                error: 'este auto no tiene imagen fi en s3',
+                                type: 'imgError',
+                                notas: car,
+                                detalles: car.ID ,
+                                status: 'Sin Procesar',
+                                userId: ''
+                               })
+                        }
 
                     }
                     catch (e) {
+
 
                         let imgfinal: any = await this.imgprincipal(car.images)
                         if (imgfinal !== 500) {
                             return 'online'
                         }
                         else {
+
+                            this.bugRepository.create({
+                                error: 'este auto no tiene imagenes validas en S3',
+                                type: 'imgError',
+                                notas: car,
+                                detalles: car.ID  ,
+                                status: 'Sin Procesar',
+                                userId: ''
+                               })
+
                             return 'offline'
                         }
                     }
 
                 }
                 else {
+
+                    this.bugRepository.create({
+                        error: 'este auto no tiene alguna imagen fi dentro de su array',
+                        type: 'imgError',
+                        notas: car,
+                        detalles: car.ID,
+                        status: 'Sin Procesar',
+                        userId: ''
+                       })
+                       
                     let imgfinal: any = await this.imgprincipal(car.images)
                     if (imgfinal !== 500) {
                         return 'online'
                     }
                     else {
+
+                        this.bugRepository.create({
+                            error: 'este auto no tiene imagenes validas en S3',
+                            type: 'imgError',
+                            notas: car,
+                            detalles: car.ID,
+                            status: 'Sin Procesar',
+                            userId: ''
+                           })
+
                         return 'offline'
                     }
 
