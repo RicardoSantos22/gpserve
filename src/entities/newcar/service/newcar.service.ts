@@ -769,18 +769,33 @@ export class NewCarService extends CrudService<typeof x> {
                         })
 
                       
+              
                         let verificacion: string = await this.carverification(sc)
-                        let imgverification: string = await this.imgVerfication(sc)
+                        let imgverification: string = 'onfline'
 
                         let finalstatus = 'offline'
+                        let ImageproStatus = 'false'
 
-                        if (verificacion === 'online' && imgverification === 'online') {
+                        
+
+
+                        let imgProVerification = await this.verificationImagePro(sc.ID)
+
+            
+                        if(imgProVerification === false){
+                            imgverification =  await this.imgVerfication(sc)
+                        }
+
+
+                    
+                        if (imgProVerification === true && verificacion === 'online') 
+                        {
+                            ImageproStatus = 'true'
                             finalstatus = 'online'
                         }
-                        else if (imgverification === 'online') {
+                        else if (imgverification === 'online' && verificacion === 'online') {
                             finalstatus = 'online'
                         }
-
 
 
 
@@ -924,6 +939,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 brandUrl: NewCarHelps.stringToUrl(sc.brand),
                                 modelUrl: NewCarHelps.stringToUrl(sc.model),
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
+                                imgProStatus: ImageproStatus,
                                 price: +sc.price,
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
@@ -1046,6 +1062,45 @@ export class NewCarService extends CrudService<typeof x> {
         }
     }
 
+    async verificationImagePro(vin: string) {
+
+        try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': 'f3068c2c-1f7a-4f5a-b5e4-0612a2fe284c',
+    
+            };
+            const response = await this.httpService.post('https://api.dealerimagepro.com/resources', {
+                vin: vin,
+                autoport_id: 3874
+            }, { headers: headers }
+    
+            ).toPromise()
+    
+    
+    
+            if (response.data.data.length > 0) {
+                return true
+            }
+            else {
+                return false
+            }
+    
+        }
+        catch (e) {
+            Logger.error('error en verificacion de imagen de pro: ' + e)
+            this.bugRepository.create({
+                detalles: 'error en verificacion de imagen de pro: ' + e,
+                type: 'bug',
+                notas: [e.message],
+                error: 'error en verificacion de imagen de pro',
+            })
+            return false
+        }
+      
+    }
+
+
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
     async updatecatalogue() {
         await this.updateCarCatalogue();
@@ -1057,7 +1112,6 @@ export class NewCarService extends CrudService<typeof x> {
             password: this.sadApiConfig.password
         }).toPromise()
 
-        console.log(response.data)
         return { token: response.data }
     }
 };

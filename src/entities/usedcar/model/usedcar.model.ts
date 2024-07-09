@@ -121,6 +121,9 @@ export class UsedCar {
   agencyCity: string
 
   @prop()
+  imgProStatus: string;
+
+  @prop()
   baseColour: string
 
   @prop()

@@ -589,6 +589,11 @@ export class AdminController {
         return this.service.karbotcreditsbackup()
     }
 
+    @Get('bugimgErrors')
+    async bugimgdocument() {
+        return await this.service.bugimgdocument()
+    }
+
 
 
     @Get('modelimagepro')

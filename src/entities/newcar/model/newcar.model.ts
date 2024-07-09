@@ -93,6 +93,9 @@ export class NewCar {
   })
 
   @prop()
+  imgProStatus: string;
+
+  @prop()
   status: string;
   @ApiProperty({
     description: "The car's manufacturing year",

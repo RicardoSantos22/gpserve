@@ -27,7 +27,8 @@ import { bannersrepository } from '../repository/banners.repository';
 import { CarRepository } from 'src/entities/finishedcars/repository/finishedcar.repository';
 import { recursosRepository } from 'src/entities/recursos/repository/recursos.repository';
 import { asesoresservice } from 'src/entities/asesores/service/asesores.service';
-import {karbotCreateLead} from 'src/entities/asesores/model/Karbot.response';
+import { karbotCreateLead } from 'src/entities/asesores/model/Karbot.response';
+import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 
 
 
@@ -44,7 +45,8 @@ export class AdminService extends CrudService<Admin> {
     private readonly userRepository: UserRepository,
     private readonly CarRepository: CarRepository,
     private readonly recursosRepository: recursosRepository,
-    private asesoreservices: asesoresservice
+    private asesoreservices: asesoresservice,
+    private bugRepository: BugRepository
   ) {
     super(repository, 'Admin', config);
   }
@@ -146,19 +148,79 @@ export class AdminService extends CrudService<Admin> {
     return [{ bannershome, bannerscarlist }];
   }
 
+
+  async bugimgdocument() {
+    let bugs = await this.bugRepository.findAll({ type: 'imgError' })
+
+    let documents = []
+    for (let bug of bugs.items) {
+      let document = {
+        type: bug.type,
+        error: bug.error,
+        cartype: '',
+        vin: bug.detalles,
+        brand: '',
+        model: '',
+        series: '',
+        agencyCity: '',
+        auto_Status_Actual: ''
+      }
+
+      let car = await this.NewCarRepository.findAll({ vin: bug.detalles })
+      if (car.count > 0) {
+        document.cartype = 'new'
+        document.brand = car.items[0].brand
+        document.model = car.items[0].model
+        document.series = car.items[0].series
+        document.agencyCity = car.items[0].agencyCity
+        document.auto_Status_Actual = car.items[0].status
+      }
+      else {
+        let usedcar = await this.UsedCarRepository.findAll({ vin: bug.detalles })
+        if (usedcar.count > 0) {
+          document.cartype = 'used'
+          document.brand = usedcar.items[0].brand
+          document.model = usedcar.items[0].model
+          document.series = usedcar.items[0].series
+          document.agencyCity = usedcar.items[0].agencyCity
+          document.auto_Status_Actual = usedcar.items[0].status
+        }
+        else {
+          let car = await this.CarRepository.findAll({ vin: bug.detalles })
+          if (car.count > 0) {
+            document.cartype = car.items[0].cartype
+            document.brand = car.items[0].brand
+            document.model = car.items[0].model
+            document.series = car.items[0].series
+            document.agencyCity = car.items[0].agencyCity
+            document.auto_Status_Actual = 'este auto en algun punto se dejo de recibir informacion'
+          }
+        }
+
+      }
+      console.log(document)
+
+      if (document.cartype !== '') {
+        documents.push(document)
+      }
+    }
+
+    return await documents
+  }
+
   async karbotcreditsbackup() {
-    let credist = await this.CreditRequestRepository.findAll({ _id: ['665ffa3f34a5a10012d843d8', '6660851034a5a10012d86a58', '6660851034a5a10012d86a58', '66620c9ea429820012ab4bf2', '66621bada429820012ab6380', '66625a22a429820012abb3f4', '66628334a429820012abed2a', '6662b9aea429820012ac1e19', '666326b8a429820012ac3e92', '6663f3a33416ab001288afa1', '6664a1a63416ab001288e5bd', '6664a73a3416ab001288e88f', '6664d9cb3416ab001289054f', '666517c13416ab0012893a40', '6665883e3416ab001289691c', '666607623416ab0012899ed3', '666636d33416ab001289c655', '66664ccd3416ab001289e428', '6667104b3416ab00128a307a', '666759013416ab00128a6a9a', '666857e63416ab00128b163c', '666872893416ab00128b2250', '6668a42b3416ab00128b5627', '6668da493416ab00128b7a60', '66691b603416ab00128bb198', '666b1808d069f50012849eec', '666b3056d069f5001284af8d', '666b46d1d069f5001284c8e6', '666b4b1fd069f5001284d5f9', '666baf18ea7f8c0012b611a6', '666e56b3ea7f8c0012b74560', '666f3b35ea7f8c0012b770c5', '666fb0dbea7f8c0012b7d14e', '6670a095ea7f8c0012b83880', '6670a656ea7f8c0012b83d05', '6670f1d0ea7f8c0012b87d1b', '6671c68eea7f8c0012b8ba93', '66728fa5ea7f8c0012b93f15', '6673b07ba1623b0012fc5560', '6673fbcba1623b0012fc6b01', '66746c41a1623b0012fc994d', '667495d2a1623b0012fcaf6c', '6674b0a51e3721001374b7b3', '6674cad61e37210013751a8b', '6674d3a21e37210013751ebd', '667507cd1e372100137534e2', '6675c78da9fcd4001228897f', '6675e2e6a9fcd40012289824' ], })
+    let credist = await this.CreditRequestRepository.findAll({ _id: ['665ffa3f34a5a10012d843d8', '6660851034a5a10012d86a58', '6660851034a5a10012d86a58', '66620c9ea429820012ab4bf2', '66621bada429820012ab6380', '66625a22a429820012abb3f4', '66628334a429820012abed2a', '6662b9aea429820012ac1e19', '666326b8a429820012ac3e92', '6663f3a33416ab001288afa1', '6664a1a63416ab001288e5bd', '6664a73a3416ab001288e88f', '6664d9cb3416ab001289054f', '666517c13416ab0012893a40', '6665883e3416ab001289691c', '666607623416ab0012899ed3', '666636d33416ab001289c655', '66664ccd3416ab001289e428', '6667104b3416ab00128a307a', '666759013416ab00128a6a9a', '666857e63416ab00128b163c', '666872893416ab00128b2250', '6668a42b3416ab00128b5627', '6668da493416ab00128b7a60', '66691b603416ab00128bb198', '666b1808d069f50012849eec', '666b3056d069f5001284af8d', '666b46d1d069f5001284c8e6', '666b4b1fd069f5001284d5f9', '666baf18ea7f8c0012b611a6', '666e56b3ea7f8c0012b74560', '666f3b35ea7f8c0012b770c5', '666fb0dbea7f8c0012b7d14e', '6670a095ea7f8c0012b83880', '6670a656ea7f8c0012b83d05', '6670f1d0ea7f8c0012b87d1b', '6671c68eea7f8c0012b8ba93', '66728fa5ea7f8c0012b93f15', '6673b07ba1623b0012fc5560', '6673fbcba1623b0012fc6b01', '66746c41a1623b0012fc994d', '667495d2a1623b0012fcaf6c', '6674b0a51e3721001374b7b3', '6674cad61e37210013751a8b', '6674d3a21e37210013751ebd', '667507cd1e372100137534e2', '6675c78da9fcd4001228897f', '6675e2e6a9fcd40012289824'], })
 
 
     let karbot = await this.recursosRepository.findAll({ name: 'karbotToken' })
     let token = karbot.items[0].value
 
     for (let credit of credist.items) {
-  
+
       let payload: karbotCreateLead = {
         lineName: "Estrenatuauto",
         referenceId: '',
-        user_email: '', 
+        user_email: '',
         campaign: "promocion",
         categoryLead: '',
         token: token,
@@ -222,7 +284,7 @@ export class AdminService extends CrudService<Admin> {
         else {
           let careliminate = await this.CarRepository.findAll({ vin: credit.carId })
 
-        
+
 
           if (careliminate.count > 0) {
             payload.vin = careliminate.items[0].vin

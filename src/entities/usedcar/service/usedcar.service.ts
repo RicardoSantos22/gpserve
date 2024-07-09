@@ -245,19 +245,19 @@ export class UsedCarService extends CrudService<typeof x> {
     async imgVerfication(car) {
         let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
 
-        if (car.images.length === 0) { 
+        if (car.images.length === 0) {
 
-           this.bugRepository.create({
-            error: 'este auto no tiene imagenes dentro de su array',
-            type: 'imgError',
-            notas: car,
-            detalles: car.ID  ,
-            status: 'Sin Procesar',
-            userId: ''
-           })   
+            this.bugRepository.create({
+                error: 'este auto no tiene imagenes dentro de su array',
+                type: 'imgError',
+                notas: car,
+                detalles: car.ID,
+                status: 'Sin Procesar',
+                userId: ''
+            })
 
             return 'offline'
-         }
+        }
         else {
 
             if (sheetsIDs.includes(car.agencyId)) {
@@ -274,11 +274,11 @@ export class UsedCarService extends CrudService<typeof x> {
                         error: 'este auto no tiene imagenes validas en S3',
                         type: 'imgError',
                         notas: car,
-                        detalles: car.ID ,
+                        detalles: car.ID,
                         status: 'Sin Procesar',
                         userId: ''
-                       })
-                       
+                    })
+
                     return 'offline'
                 }
 
@@ -301,10 +301,10 @@ export class UsedCarService extends CrudService<typeof x> {
                                 error: 'este auto no tiene imagen fi en s3',
                                 type: 'imgError',
                                 notas: car,
-                                detalles: car.ID ,
+                                detalles: car.ID,
                                 status: 'Sin Procesar',
                                 userId: ''
-                               })
+                            })
                         }
 
                     }
@@ -321,10 +321,10 @@ export class UsedCarService extends CrudService<typeof x> {
                                 error: 'este auto no tiene imagenes validas en S3',
                                 type: 'imgError',
                                 notas: car,
-                                detalles: car.ID  ,
+                                detalles: car.ID,
                                 status: 'Sin Procesar',
                                 userId: ''
-                               })
+                            })
 
                             return 'offline'
                         }
@@ -340,8 +340,8 @@ export class UsedCarService extends CrudService<typeof x> {
                         detalles: car.ID,
                         status: 'Sin Procesar',
                         userId: ''
-                       })
-                       
+                    })
+
                     let imgfinal: any = await this.imgprincipal(car.images)
                     if (imgfinal !== 500) {
                         return 'online'
@@ -355,7 +355,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             detalles: car.ID,
                             status: 'Sin Procesar',
                             userId: ''
-                           })
+                        })
 
                         return 'offline'
                     }
@@ -683,7 +683,7 @@ export class UsedCarService extends CrudService<typeof x> {
                     data = sadNewCars
                     for (let sc of sadNewCars) {
 
-                        
+
 
                         let BDID: string = '';
 
@@ -701,23 +701,33 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
                         let verificacion: string = await this.carverification(sc)
-                        let imgverification: string = await this.imgVerfication(sc)
+                        let imgverification: string = 'onfline'
 
                         let finalstatus = 'offline'
+                        let ImageproStatus = 'false'
 
-                        if (verificacion === 'online' && imgverification === 'online') {
+                        
+
+
+                        let imgProVerification = await this.verificationImagePro(sc.ID)
+
+            
+                        if(imgProVerification === false){
+                            imgverification =  await this.imgVerfication(sc)
+                        }
+
+
+                    
+                        if (imgProVerification === true && verificacion === 'online') 
+                        {
+                            ImageproStatus = 'true'
                             finalstatus = 'online'
                         }
-                        else if (imgverification === 'online') {
+                        else if (imgverification === 'online' && verificacion === 'online') {
                             finalstatus = 'online'
                         }
-
-
-
 
                         vins.push(sc.ID)
-
-
 
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
@@ -851,6 +861,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 status: finalstatus,
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
+                                imgProStatus: ImageproStatus,
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
                                 transmision: sc.transmision.trim(),
@@ -866,8 +877,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                     lng: lng.toString()
                                 }
                             }
-                            console.log('autos: ', usedCar.vin + ' ' + usedCar.status)
-
+                     
 
                             if (BDID !== '') {
 
@@ -937,7 +947,6 @@ export class UsedCarService extends CrudService<typeof x> {
                             duplicates: [],
                         }
                         this.finishedcar.create(updateCar)
-
                         console.log('auto descartado: ', car.vin)
                         this.repository.delete(car._id)
                     }
@@ -1027,11 +1036,49 @@ export class UsedCarService extends CrudService<typeof x> {
 
     }
 
-    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-    async updatecatalogue() {
-        await this.updateCarCatalogue();
 
+
+    async verificationImagePro(vin: string) {
+
+        try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': 'f3068c2c-1f7a-4f5a-b5e4-0612a2fe284c',
+    
+            };
+            const response = await this.httpService.post('https://api.dealerimagepro.com/resources', {
+                vin: vin,
+                autoport_id: 3874
+            }, { headers: headers }
+    
+            ).toPromise()
+    
+    
+    
+            if (response.data.data.length > 0) {
+                return true
+            }
+            else {
+                return false
+            }
+    
+        }
+        catch (e) {
+            Logger.error('error en verificacion de imagen de pro: ' + e)
+            this.bugRepository.create({
+                detalles: 'error en verificacion de imagen de pro: ' + e,
+                type: 'bug',
+                notas: [e.message],
+                error: 'error en verificacion de imagen de pro',
+            })
+            return false
+        }
+      
     }
+
+
+
+
 
     private async loginToSAD(): Promise<{ token: string }> {
         const response = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
@@ -1040,4 +1087,16 @@ export class UsedCarService extends CrudService<typeof x> {
         }).toPromise()
         return { token: response.data }
     }
+
+
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    async updatecatalogue() {
+        await this.updateCarCatalogue();
+
+    }
+
+
+
+
+
 };

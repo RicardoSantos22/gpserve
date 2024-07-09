@@ -16,12 +16,13 @@ import { CreditRequestModule } from '../creditrequest/creditrequest.module';
 import { AsesoresModule } from '../asesores/asesores.module';
 import { RecursosModule } from '../recursos/recursos.module';
 import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
+import { BugsModule } from '../bugs/bugs.module';
 
 @Module({
   imports: [
     NewCarModule,
     UsedCarModule,
-    
+    BugsModule,
     UserModule,
     FinishedcarsModule,
     PassportModule,
