@@ -93,6 +93,13 @@ export class NewCarController {
     return this.service.sugerenciasdebusqueda()
   }
 
+  @Get('deleteDuplicateCars')
+  async deleteDuplicateCars() 
+  {
+    return this.service.deleteduplicateCars()
+  }
+
+
   
   @Get('filters')
   async getFiltersValues() {

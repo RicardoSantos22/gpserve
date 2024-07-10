@@ -877,9 +877,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                     lng: lng.toString()
                                 }
                             }
-                            console.log(usedCar.ImgProImg)
                      
-
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, usedCar)
@@ -984,7 +982,8 @@ export class UsedCarService extends CrudService<typeof x> {
             // }
             // let a = await this.finishedcar.create(bitacora)
 
-
+            this.deleteduplicateCars()
+            console.log('se termino una actualizacion de catalogo')
             return {
                 banCarlist: carlistban,
                 count: carlistlist.length,
@@ -1018,6 +1017,40 @@ export class UsedCarService extends CrudService<typeof x> {
         }
 
 
+    }
+
+
+    async deleteduplicateCars(){
+        let cars = (await this.repository.findAll()).items
+
+        try{
+            for(let car of cars)
+                {
+                    let duplicate = cars.filter(carfilter => carfilter.vin === car.vin)
+            
+                    if(duplicate.length > 2)
+                     {
+                         let indice = duplicate.length
+                         for(let duplicatecar of duplicate)
+                             {
+                                 if(indice > 1)
+                                     {
+                                         await this.repository.delete(duplicatecar._id)
+                                     }
+                              
+                                 indice--
+                             }
+                     }
+                   
+                }
+                return 'los autos duplicados han sido eliminados'
+        }
+        catch(e){
+            return e.message
+        }
+     
+
+         
     }
 
     async getcarbyvin(vin: string) {

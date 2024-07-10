@@ -94,6 +94,12 @@ export class UsedCarController {
     return this.service.verificationImagePro('8AWDV22H3LA024835')
   }
 
+  @Get('deleteDuplicateCars')
+  async deleteDuplicateCars() 
+  {
+    return this.service.deleteduplicateCars()
+  }
+
   @Get('getpromotion/:chasis')
   async sliderpromotion(@Param('chasis') chasis: string) {
     return this.service.findfpromotions(chasis);
@@ -156,6 +162,8 @@ export class UsedCarController {
   async findByvin(@Param('vin') vin: string) {
     return this.service.getcarbyvin(vin)
   }
+
+
 
 
   /**
