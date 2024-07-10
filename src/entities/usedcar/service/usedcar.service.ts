@@ -15,7 +15,7 @@ import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedc
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
-import { error } from 'console';
+import * as os from 'os';
 
 
 let x;
@@ -1122,6 +1122,18 @@ export class UsedCarService extends CrudService<typeof x> {
             password: this.sadApiConfig.password
         }).toPromise()
         return { token: response.data }
+    }
+
+
+   async getip()
+    {
+        try {
+            const response = await this.httpService.get('https://api.ipify.org?format=json').toPromise();
+            return response.data.ip;
+          } catch (error) {
+            console.error('Error fetching public IP:', error);
+            return 'Error fetching IP';
+          }
     }
 
 

@@ -94,6 +94,14 @@ export class UsedCarController {
     return this.service.verificationImagePro('8AWDV22H3LA024835')
   }
 
+  @Get('miip')
+  async miip()
+  {
+    
+    return this.service.getip()
+  }
+  
+
   @Get('deleteDuplicateCars')
   async deleteDuplicateCars() 
   {
@@ -213,8 +221,6 @@ export class UsedCarController {
       body.ImgProImg = imageprocode.img
       body.status = 'online'
     }
-
-    console.log(body)
 
     return this.service.create({ ...body });
    
