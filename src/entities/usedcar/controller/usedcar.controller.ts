@@ -88,11 +88,11 @@ export class UsedCarController {
     return this.service.sugerenciasdebusqueda()
   }
 
-  // @Get('verificacionimagepro')
-  // async verificacionimagepro()
-  // {
-  //   return this.service.verificationImagePro()
-  // }
+  @Get('verificacionimagepro')
+  async verificacionimagepro()
+  {
+    return this.service.verificationImagePro('8AWDV22H3LA024835')
+  }
 
   @Get('getpromotion/:chasis')
   async sliderpromotion(@Param('chasis') chasis: string) {

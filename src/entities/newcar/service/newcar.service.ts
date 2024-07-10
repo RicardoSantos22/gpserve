@@ -775,23 +775,22 @@ export class NewCarService extends CrudService<typeof x> {
 
                         let finalstatus = 'offline'
                         let ImageproStatus = 'false'
+                        let imgforimgpro: string = ''
 
-                        
-
-
-                        let imgProVerification = await this.verificationImagePro(sc.ID)
+                        let imgProVerification:any = await this.verificationImagePro(sc.ID)
 
             
-                        if(imgProVerification === false){
+                        if(imgProVerification.status === false){
                             imgverification =  await this.imgVerfication(sc)
                         }
 
 
                     
-                        if (imgProVerification === true && verificacion === 'online') 
+                        if (imgProVerification.status === true && verificacion === 'online') 
                         {
                             ImageproStatus = 'true'
                             finalstatus = 'online'
+                            imgforimgpro = imgProVerification.img
                         }
                         else if (imgverification === 'online' && verificacion === 'online') {
                             finalstatus = 'online'
@@ -940,6 +939,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 modelUrl: NewCarHelps.stringToUrl(sc.model),
                                 seriesUrl: NewCarHelps.stringToUrl(sc.version),
                                 imgProStatus: ImageproStatus,
+                                ImgProImg: imgforimgpro || '',
                                 price: +sc.price,
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
@@ -1077,18 +1077,20 @@ export class NewCarService extends CrudService<typeof x> {
     
             ).toPromise()
     
-    
-    
+  
             if (response.data.data.length > 0) {
-                return true
+
+          
+                let img = response.data.data[0].photos[0].split('?')[0]
+                return {img: img, status: true}
             }
             else {
-                return false
+                return {img: '', status: false}
             }
     
         }
         catch (e) {
-            Logger.error('error en verificacion de imagen de pro: ' + e)
+            Logger.error('error en verificacion de imagen de imagePro: ' + e)
             this.bugRepository.create({
                 detalles: 'error en verificacion de imagen de pro: ' + e,
                 type: 'bug',
@@ -1099,6 +1101,7 @@ export class NewCarService extends CrudService<typeof x> {
         }
       
     }
+
 
 
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
