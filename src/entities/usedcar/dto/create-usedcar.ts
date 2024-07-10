@@ -35,4 +35,13 @@ export class CreateUsedCarDTO {
   @IsString()
   status: string;
 
+  @IsString()
+  imgProStatus: string;
+
+  @IsString()
+  ImgProImg: string;
+
+  @IsString()
+  vin: string;
+
 };

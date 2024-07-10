@@ -1031,6 +1031,8 @@ export class NewCarService extends CrudService<typeof x> {
                 }
             }
 
+            console.log('se termino una actualizacion de catalogo')
+
             return {
                 banCarlist: carlistban,
                 count: newCarsArray.length,

@@ -191,14 +191,25 @@ export class UsedCarController {
 
   @Post('bmw')
   async BMW(@Body() body: CreateUsedCarDTO) {
-
-    let code:any = await this.service.imgVerfication(body)
-
-    body.status = code
-
-
     
+    let imageprocode: any = await this.service.verificationImagePro(body.vin)
+
+    if(imageprocode.status === false)
+    {
+      let code:any = await this.service.imgVerfication(body)
+      body.status = code
+    }
+    else
+    {
+      body.imgProStatus  = imageprocode.status
+      body.ImgProImg = imageprocode.img
+      body.status = 'online'
+    }
+
+    console.log(body)
+
     return this.service.create({ ...body });
+   
   }
 
   @Post('busqueda')
@@ -247,11 +258,22 @@ export class UsedCarController {
   @Patch(':id')
   async update(@Param() params: FindByIdParams, @Body() body: UpdateUsedCarDTO) {
 
-    let code = await this.service.imgVerfication(body)
+    let imageprocode: any = await this.service.verificationImagePro(body.vin)
 
-    body.status = code
-   
+    if(imageprocode.status === false)
+    {
+      let code:any = await this.service.imgVerfication(body)
+      body.status = code
+    }
+    else
+    {
+      body.imgProStatus  = imageprocode.status
+      body.ImgProImg = imageprocode.img
+      body.status = 'online'
+    }
+
     return this.service.update(params.id, body);
+
   }
 
   /**
