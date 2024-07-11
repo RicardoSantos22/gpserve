@@ -91,7 +91,7 @@ export class UsedCarController {
   @Get('verificacionimagepro')
   async verificacionimagepro()
   {
-    return this.service.verificationImagePro('8AWDV22H3LA024835')
+    return this.service.verificationImagePro('3MX4M4HB5LW011994', true)
   }
 
   @Get('miip')
@@ -207,8 +207,16 @@ export class UsedCarController {
 
   @Post('bmw')
   async BMW(@Body() body: CreateUsedCarDTO) {
+
+    let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
+    let sheets = false
+
+    if(sheetsIDs.includes(body.agencyId))
+      {
+        sheets = true
+      }
     
-    let imageprocode: any = await this.service.verificationImagePro(body.vin)
+    let imageprocode: any = await this.service.verificationImagePro(body.vin, sheets)
 
     if(imageprocode.status === false)
     {
@@ -271,8 +279,16 @@ export class UsedCarController {
 
   @Patch(':id')
   async update(@Param() params: FindByIdParams, @Body() body: UpdateUsedCarDTO) {
+    
+    let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
+    let sheets = false
 
-    let imageprocode: any = await this.service.verificationImagePro(body.vin)
+    if(sheetsIDs.includes(body.agencyId))
+      {
+        sheets = true
+      }
+
+    let imageprocode: any = await this.service.verificationImagePro(body.vin, sheets)
 
     if(imageprocode.status === false)
     {
@@ -285,6 +301,9 @@ export class UsedCarController {
       body.ImgProImg = imageprocode.img
       body.status = 'online'
     }
+
+    console.log(body)
+    console.log("________________________________________")
 
     return this.service.update(params.id, body);
 

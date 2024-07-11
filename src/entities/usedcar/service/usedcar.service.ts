@@ -181,7 +181,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
         let tagsbusqueda = body.busqueda.split(' ');
-        const cars: any = await this.repository.findAll();
+        const cars: any = await this.repository.findAll({ status: 'online' });
         let carfinallist: any = [];
 
         if (body.type === 'develop') {
@@ -707,7 +707,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         let ImageproStatus = 'false'
                         let imgforimgpro: string = ''
 
-                        let imgProVerification:any = await this.verificationImagePro(sc.ID)
+                        let imgProVerification:any = await this.verificationImagePro(sc.ID, false)
 
             
                         if(imgProVerification.status === false){
@@ -1072,7 +1072,15 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
 
-    async verificationImagePro(vin: string) {
+    async verificationImagePro(vin: string, sheets: boolean) {
+
+        let autoport_id = 3874
+
+        if(sheets === true)
+            {
+                autoport_id = 3873
+            }
+
 
         try {
             const headers = {
@@ -1082,11 +1090,12 @@ export class UsedCarService extends CrudService<typeof x> {
             };
             const response = await this.httpService.post('https://api.dealerimagepro.com/resources', {
                 vin: vin,
-                autoport_id: 3874
+                autoport_id: autoport_id
             }, { headers: headers }
     
             ).toPromise()
     
+            console.log(response.data.data)
   
             if (response.data.data.length > 0) {
 
@@ -1100,13 +1109,15 @@ export class UsedCarService extends CrudService<typeof x> {
     
         }
         catch (e) {
+
+            console.log(e)
             Logger.error('error en verificacion de imagen de imagePro: ' + e)
-            this.bugRepository.create({
-                detalles: 'error en verificacion de imagen de pro: ' + e,
-                type: 'bug',
-                notas: [e.message],
-                error: 'error en verificacion de imagen de pro',
-            })
+            // this.bugRepository.create({
+            //     detalles: 'error en verificacion de imagen de pro: ' + e,
+            //     type: 'bug',
+            //     notas: [e.message],
+            //     error: 'error en verificacion de imagen de pro',
+            // })
             return false
         }
       
