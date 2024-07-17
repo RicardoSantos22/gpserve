@@ -123,7 +123,7 @@ export class NewCarService extends CrudService<typeof x> {
 
         let filters = this.getFiltersValues()
 
-        counts.nuevos = (await this.repository.findAll()).items.length;
+        counts.nuevos = (await this.repository.findAll({ status: 'online' })).items.length;
 
         for (let brand of (await filters).brand) {
             let count = await (await this.repository.findAll({ brand: brand })).items.length
@@ -228,7 +228,7 @@ export class NewCarService extends CrudService<typeof x> {
 
         let tagsbusqueda = body.busqueda.split(' ');
 
-        const cars: any = await this.repository.findAll();
+        const cars: any = await this.repository.findAll({ status: 'online' });
         let carfinallist: any = [];
 
         if (body.type === 'develop') {
@@ -299,14 +299,7 @@ export class NewCarService extends CrudService<typeof x> {
 
         if (car.images.length === 0) { 
 
-           this.bugRepository.create({
-            error: 'este auto no tiene imagenes dentro de su array',
-            type: 'imgError',
-            notas: car,
-            detalles: car.ID  ,
-            status: 'Sin Procesar',
-            userId: ''
-           })   
+    
 
             return 'offline'
          }
@@ -322,14 +315,6 @@ export class NewCarService extends CrudService<typeof x> {
                 }
                 catch (e) {
 
-                    this.bugRepository.create({
-                        error: 'este auto no tiene imagenes validas en S3',
-                        type: 'imgError',
-                        notas: car,
-                        detalles: car.ID ,
-                        status: 'Sin Procesar',
-                        userId: ''
-                       })
                        
                     return 'offline'
                 }
@@ -349,14 +334,7 @@ export class NewCarService extends CrudService<typeof x> {
                             return 'online'
                         }
                         else {
-                            this.bugRepository.create({
-                                error: 'este auto no tiene imagen fi en s3',
-                                type: 'imgError',
-                                notas: car,
-                                detalles: car.ID ,
-                                status: 'Sin Procesar',
-                                userId: ''
-                               })
+                 
                         }
 
                     }
@@ -369,14 +347,7 @@ export class NewCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                            this.bugRepository.create({
-                                error: 'este auto no tiene imagenes validas en S3',
-                                type: 'imgError',
-                                notas: car,
-                                detalles: car.ID  ,
-                                status: 'Sin Procesar',
-                                userId: ''
-                               })
+                
 
                             return 'offline'
                         }
@@ -385,14 +356,7 @@ export class NewCarService extends CrudService<typeof x> {
                 }
                 else {
 
-                    this.bugRepository.create({
-                        error: 'este auto no tiene alguna imagen fi dentro de su array',
-                        type: 'imgError',
-                        notas: car,
-                        detalles: car.ID,
-                        status: 'Sin Procesar',
-                        userId: ''
-                       })
+      
                        
                     let imgfinal: any = await this.imgprincipal(car.images)
                     if (imgfinal !== 500) {
@@ -400,14 +364,7 @@ export class NewCarService extends CrudService<typeof x> {
                     }
                     else {
 
-                        this.bugRepository.create({
-                            error: 'este auto no tiene imagenes validas en S3',
-                            type: 'imgError',
-                            notas: car,
-                            detalles: car.ID,
-                            status: 'Sin Procesar',
-                            userId: ''
-                           })
+              
 
                         return 'offline'
                     }

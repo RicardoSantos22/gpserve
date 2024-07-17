@@ -247,14 +247,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
         if (car.images.length === 0) {
 
-            this.bugRepository.create({
-                error: 'este auto no tiene imagenes dentro de su array',
-                type: 'imgError',
-                notas: car,
-                detalles: car.ID,
-                status: 'Sin Procesar',
-                userId: ''
-            })
 
             return 'offline'
         }
@@ -270,14 +262,14 @@ export class UsedCarService extends CrudService<typeof x> {
                 }
                 catch (e) {
 
-                    this.bugRepository.create({
-                        error: 'este auto no tiene imagenes validas en S3',
-                        type: 'imgError',
-                        notas: car,
-                        detalles: car.ID,
-                        status: 'Sin Procesar',
-                        userId: ''
-                    })
+                    // this.bugRepository.create({
+                    //     error: 'este auto no tiene imagenes validas en S3',
+                    //     type: 'imgError',
+                    //     notas: car,
+                    //     detalles: car.ID,
+                    //     status: 'Sin Procesar',
+                    //     userId: ''
+                    // })
 
                     return 'offline'
                 }
@@ -297,14 +289,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             return 'online'
                         }
                         else {
-                            this.bugRepository.create({
-                                error: 'este auto no tiene imagen fi en s3',
-                                type: 'imgError',
-                                notas: car,
-                                detalles: car.ID,
-                                status: 'Sin Procesar',
-                                userId: ''
-                            })
+                        
                         }
 
                     }
@@ -317,14 +302,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                            this.bugRepository.create({
-                                error: 'este auto no tiene imagenes validas en S3',
-                                type: 'imgError',
-                                notas: car,
-                                detalles: car.ID,
-                                status: 'Sin Procesar',
-                                userId: ''
-                            })
+                
 
                             return 'offline'
                         }
@@ -333,29 +311,13 @@ export class UsedCarService extends CrudService<typeof x> {
                 }
                 else {
 
-                    this.bugRepository.create({
-                        error: 'este auto no tiene alguna imagen fi dentro de su array',
-                        type: 'imgError',
-                        notas: car,
-                        detalles: car.ID,
-                        status: 'Sin Procesar',
-                        userId: ''
-                    })
+          
 
                     let imgfinal: any = await this.imgprincipal(car.images)
                     if (imgfinal !== 500) {
                         return 'online'
                     }
                     else {
-
-                        this.bugRepository.create({
-                            error: 'este auto no tiene imagenes validas en S3',
-                            type: 'imgError',
-                            notas: car,
-                            detalles: car.ID,
-                            status: 'Sin Procesar',
-                            userId: ''
-                        })
 
                         return 'offline'
                     }
@@ -1094,8 +1056,6 @@ export class UsedCarService extends CrudService<typeof x> {
             }, { headers: headers }
     
             ).toPromise()
-    
-            console.log(response.data.data)
   
             if (response.data.data.length > 0) {
 
