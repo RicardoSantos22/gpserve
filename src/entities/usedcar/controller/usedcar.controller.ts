@@ -88,12 +88,6 @@ export class UsedCarController {
     return this.service.sugerenciasdebusqueda()
   }
 
-  @Get('verificacionimagepro')
-  async verificacionimagepro()
-  {
-    return this.service.verificationImagePro('3MX4M4HB5LW011994', true)
-  }
-
   @Get('miip')
   async miip()
   {
@@ -232,6 +226,12 @@ export class UsedCarController {
 
     return this.service.create({ ...body });
    
+  }
+
+  @Post('verificacionimagepro')
+  async verificacionimagepro( @Body() body: any)
+  {
+  return this.service.verificationImagePro(body.vin, body.sheets)
   }
 
   @Post('busqueda')
