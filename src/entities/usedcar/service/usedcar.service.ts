@@ -568,7 +568,7 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
         let agencyIds = [
-
+            21,
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -586,7 +586,7 @@ export class UsedCarService extends CrudService<typeof x> {
             18, // Chrysler Culiacán
             19, // Land Rover Culiacán
             20, // Kia Culiacán
-            21, // Chevrolet Hermosillo 1
+            //21,  Chevrolet Hermosillo 1
             22, // Chrysler Mochis
             23, // KIA Cabos
             24, // KIA Hermosillo
@@ -644,7 +644,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     data = sadNewCars
                     for (let sc of sadNewCars) {
-
+                        
 
 
                         let BDID: string = '';
@@ -670,6 +670,8 @@ export class UsedCarService extends CrudService<typeof x> {
                         let imgforimgpro: string = ''
 
                         let imgProVerification:any = await this.verificationImagePro(sc.ID, false)
+
+                        console.log(imgProVerification)
 
             
                         if(imgProVerification.status === false){
@@ -839,6 +841,10 @@ export class UsedCarService extends CrudService<typeof x> {
                                     lng: lng.toString()
                                 }
                             }
+
+                            console.log(verificacion, ImageproStatus)
+                        console.log(usedCar)
+                        console.log("__________________________")
                      
                             if (BDID !== '') {
 

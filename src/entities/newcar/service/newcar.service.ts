@@ -644,6 +644,7 @@ export class NewCarService extends CrudService<typeof x> {
         let agencyIds = [
             1031,
             3037,
+            21,
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -661,7 +662,7 @@ export class NewCarService extends CrudService<typeof x> {
             18, // Chrysler Culiacán 0 Stellantis Culiacán
             19, // Land Rover Culiacán
             20, // Kia Culiacán
-            21, // Chevrolet Hermosillo
+            //21,  Chevrolet Hermosillo
             22, // Chrysler Mochis 0 Stellantis Mochis
             23, // KIA Cabos
             24, // KIA Hermosillo
@@ -713,6 +714,9 @@ export class NewCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
+                        console.log(sc.ID)
+                        console.log(sc.agencyID)
+                        console.log("__________________________")
 
                         let BDID: string = '';
 

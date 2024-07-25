@@ -229,7 +229,7 @@ export class UsedCarController {
   }
 
   @Post('verificacionimagepro')
-  async verificacionimagepro( @Body() body: any)
+  async verificacionimagepro(@Body() body: any)
   {
   return this.service.verificationImagePro(body.vin, body.sheets)
   }

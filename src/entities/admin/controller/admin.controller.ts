@@ -43,6 +43,7 @@ import { UpdateViculoBanner } from '../dto/banner.dto';
 import { CreateAdminDTO, SearchVinDTO } from '../dto/create-admin.dto';
 import { FindAllAdminsQuery } from '../dto/find-all-admins-query';
 import { UpdateAdminDTO } from '../dto/update-admin';
+import { memoryStorage } from 'multer';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -624,6 +625,14 @@ export class AdminController {
     return this.service.updateVinculoBanner(body);
   }
 
+  @Post('imageProVerification')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: memoryStorage(), 
+  }))
+  async imageProVerification(@UploadedFile() file: Express.Multer.File) {
+    return await this.service.imageProVerification(file.buffer)
+  }
+
   @Get(':id')
   async findById(@Param() params: FindByIdParams) {
     return this.service.findById(params.id);
@@ -719,11 +728,16 @@ export class AdminController {
     return this.service.updateBannersForHome(body, file);
   }
 
+
   @Post('dissablebanners')
   @UseInterceptors(FileInterceptor('file'))
   async dissablebanners(@Body() body: any) {
     return this.service.disablebanners(body);
   }
+
+  
+  
+
 
   // #endregion delete
 
@@ -731,6 +745,7 @@ export class AdminController {
   async delete(@Param() params: DeleteParams) {
     return { id: await this.service.delete(params.id) };
   }
+  
 
   @Post('/search-vin')
   async searchVin(@Body() body: SearchVinDTO) {

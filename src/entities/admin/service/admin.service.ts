@@ -30,6 +30,11 @@ import { asesoresservice } from 'src/entities/asesores/service/asesores.service'
 import { karbotCreateLead } from 'src/entities/asesores/model/Karbot.response';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 
+import * as multer from 'multer';
+import * as csv from 'csv-parser';
+import { Readable } from 'stream';
+import { resolve } from 'path';
+
 
 
 @Injectable()
@@ -198,7 +203,6 @@ export class AdminService extends CrudService<Admin> {
         }
 
       }
-      console.log(document)
 
       if (document.cartype !== '') {
         documents.push(document)
@@ -206,6 +210,47 @@ export class AdminService extends CrudService<Admin> {
     }
 
     return await documents
+  }
+
+
+  async imageProVerification(file: Buffer)
+  {
+    let count = 0
+    return new Promise((resolve, reject) => {
+      const results:any = []
+      const stream = Readable.from(file.toString());
+  
+      stream.pipe(csv())
+      .on('data', async (data) => {results.push(data)
+        let car = await this.NewCarRepository.findAll({vin: data.vin})
+
+        if(car.count === 0)
+          {
+            let usedcar = await this.UsedCarRepository.findAll({vin: data.vin})
+            if(usedcar.count === 0)
+              {
+             
+                let carDelete = await this.CarRepository.findAll({vin: data.vin})
+                if(carDelete.count === 0)
+                  {
+                    console.log('no esta en el inventario: ', data.vin)
+                  }
+                  else
+                  {
+                    console.log('esta en el inventario, pero a sido eliminado: ', data.vin)
+                    count++
+                    console.log(count)
+                  }
+
+              }
+          }
+
+      })
+      .on('end', () => resolve(results))
+      .on('error', (err) => reject(err))
+
+     
+    })
   }
 
   async karbotcreditsbackup() {
@@ -672,4 +717,7 @@ export class AdminService extends CrudService<Admin> {
     // let csv  = csvparse.parse(document);
     return await document
   }
+
+
+
 }
