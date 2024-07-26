@@ -127,6 +127,9 @@ export class UsedCar {
   imgProStatus: string;
 
   @prop()
+  dealerId: number;
+
+  @prop()
   baseColour: string
 
   @prop()

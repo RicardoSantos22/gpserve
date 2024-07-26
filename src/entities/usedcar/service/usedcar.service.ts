@@ -668,6 +668,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         let finalstatus = 'offline'
                         let ImageproStatus = 'false'
                         let imgforimgpro: string = ''
+                        let dealerId: number = 0
 
                         let imgProVerification:any = await this.verificationImagePro(sc.ID, false)
 
@@ -685,6 +686,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             ImageproStatus = 'true'
                             finalstatus = 'online'
                             imgforimgpro = imgProVerification.img
+                            dealerId = imgProVerification.dealerId
                         }
                         else if (imgverification === 'online' && verificacion === 'online') {
                             finalstatus = 'online'
@@ -825,6 +827,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 price: parseInt(sc.price),
                                 imgProStatus: ImageproStatus,
+                                dealerId: dealerId,
                                 ImgProImg: imgforimgpro || '',
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
@@ -1067,10 +1070,10 @@ export class UsedCarService extends CrudService<typeof x> {
 
           
                 let img = response.data.data[0].photos[0].split('?')[0]
-                return {img: img, status: true}
+                return {img: img, status: true, dealerId: autoport_id}
             }
             else {
-                return {img: '', status: false}
+                return {img: '', status: false, dealerId: autoport_id}
             }
     
         }

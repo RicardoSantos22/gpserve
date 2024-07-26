@@ -737,6 +737,7 @@ export class NewCarService extends CrudService<typeof x> {
                         let finalstatus = 'offline'
                         let ImageproStatus = 'false'
                         let imgforimgpro: string = ''
+                        let dealerId: number = 0
 
                         let imgProVerification:any = await this.verificationImagePro(sc.ID)
 
@@ -752,6 +753,7 @@ export class NewCarService extends CrudService<typeof x> {
                             ImageproStatus = 'true'
                             finalstatus = 'online'
                             imgforimgpro = imgProVerification.img
+                            dealerId = imgProVerification.dealerId
                         }
                         else if (imgverification === 'online' && verificacion === 'online') {
                             finalstatus = 'online'
@@ -804,6 +806,7 @@ export class NewCarService extends CrudService<typeof x> {
                             let parsedModel: string;
                             let parsedSeries: string;
                             let promociontext: string;
+                          
 
                             let banModelList = ['DENALI', 'MX', 'PE', '4X4', '2PTAS.', 'MAX', ' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
@@ -902,6 +905,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 imgProStatus: ImageproStatus,
                                 ImgProImg: imgforimgpro || '',
                                 price: +sc.price,
+                                dealerId: dealerId,
                                 year: sc.year,
                                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
                                 transmision: sc.transmision,
@@ -1061,6 +1065,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     async verificationImagePro(vin: string) {
 
+
         try {
             const headers = {
                 'Content-Type': 'application/json',
@@ -1076,13 +1081,11 @@ export class NewCarService extends CrudService<typeof x> {
     
   
             if (response.data.data.length > 0) {
-
-          
                 let img = response.data.data[0].photos[0].split('?')[0]
-                return {img: img, status: true}
+                return {img: img, status: true, dealerId: 3874}
             }
             else {
-                return {img: '', status: false}
+                return {img: '', status: false, dealerId: 0}
             }
     
         }

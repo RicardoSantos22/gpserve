@@ -44,4 +44,7 @@ export class CreateUsedCarDTO {
   @IsString()
   vin: string;
 
+  @IsString()
+  dealerId: number;
+
 };

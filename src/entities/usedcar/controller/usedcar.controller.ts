@@ -222,6 +222,7 @@ export class UsedCarController {
       body.imgProStatus  = imageprocode.status
       body.ImgProImg = imageprocode.img
       body.status = 'online'
+      body.dealerId = imageprocode.dealerId
     }
 
     return this.service.create({ ...body });
@@ -300,6 +301,7 @@ export class UsedCarController {
       body.imgProStatus  = imageprocode.status
       body.ImgProImg = imageprocode.img
       body.status = 'online'
+      body.dealerId = imageprocode.dealerId
     }
 
     console.log(body)

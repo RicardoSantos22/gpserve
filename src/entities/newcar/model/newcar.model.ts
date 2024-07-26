@@ -60,6 +60,9 @@ export class NewCar {
 
   @prop()
   metaDescription: string;
+
+  @prop()
+  dealerId: number;
   
   @prop()
   h1Title: string;
