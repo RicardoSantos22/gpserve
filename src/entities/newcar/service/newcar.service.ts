@@ -291,7 +291,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     async getNewCars() {
 
-        return this.repository.findAll();
+        return this.repository.findAll({status: 'online'});
     }
 
     async imgVerfication(car) {
@@ -642,6 +642,8 @@ export class NewCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = []
         let agencyIds = [
+            29,
+            9,
             1031,
             3037,
             21,
@@ -650,7 +652,7 @@ export class NewCarService extends CrudService<typeof x> {
             6, // Chevrolet Mazatlán
             7, // Hyundai Mazatlán
             8, // Hyundai Mexicali
-            9, // Hyundai Tijuana
+             // Hyundai Tijuana
             10, // Hyundai Los Cabos
             11, // Hino Culiacán
             12, // Chevrolet Culiacán
@@ -670,7 +672,7 @@ export class NewCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregó
             28, // JAC Cualiacán
-            29,  //Chirey Culiacan
+          
             1030, // Omoda Hermosillo
           //1031, // chirey mazatlan
             1032, //Stallantis caballito
@@ -919,7 +921,8 @@ export class NewCarService extends CrudService<typeof x> {
                                     lng: lng.toString()
                                 }
                             }
-
+                            console.log(newCar.status)
+                            console.log(newCar.colours)
 
                             if (BDID !== '') {
 
@@ -972,7 +975,6 @@ export class NewCarService extends CrudService<typeof x> {
                         }
                         this.finishedcar.create(updateCar)
                         console.log('auto descartado: ', car.vin)
-                        this.repository.delete(car._id)
                     }
                 });
             }

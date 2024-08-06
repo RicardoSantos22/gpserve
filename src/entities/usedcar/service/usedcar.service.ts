@@ -49,7 +49,7 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async getallcars() {
-        return await this.repository.findAll();
+        return await this.repository.findAll({status: 'online'});
     }
 
 
@@ -106,6 +106,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 sugerencias.push({ brand: car.brand, model: [car.model] })
             }
         }
+        console.log(sugerencias)
         return sugerencias
     }
 
@@ -568,13 +569,13 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
         let agencyIds = [
-            21,
+            
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
             7, // Hyundai Mazatlán
             8, // Hyundai Mexicali
-            9, // Hyundai Tijuana
+            9,// Hyundai Tijuana
             10, // Hyundai Los Cabos
             11, // Hino Culiacán
             12, // Chevrolet Culiacán
@@ -586,7 +587,7 @@ export class UsedCarService extends CrudService<typeof x> {
             18, // Chrysler Culiacán
             19, // Land Rover Culiacán
             20, // Kia Culiacán
-            //21,  Chevrolet Hermosillo 1
+            21, // Chevrolet Hermosillo
             22, // Chrysler Mochis
             23, // KIA Cabos
             24, // KIA Hermosillo
@@ -615,6 +616,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
             for (let id of agencyIds) {
+                console.log(id)
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
                     `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${id}`,
                     {
@@ -845,9 +847,10 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                            console.log(verificacion, ImageproStatus)
-                        console.log(usedCar)
-                        console.log("__________________________")
+                         
+                        console.log(usedCar.agencyId)
+                        console.log(usedCar.vin)
+                    
                      
                             if (BDID !== '') {
 
@@ -1101,6 +1104,7 @@ export class UsedCarService extends CrudService<typeof x> {
             userName: this.sadApiConfig.username,
             password: this.sadApiConfig.password
         }).toPromise()
+        console.log(response.data)
         return { token: response.data }
     }
 

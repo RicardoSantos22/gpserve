@@ -304,8 +304,6 @@ export class UsedCarController {
       body.dealerId = imageprocode.dealerId
     }
 
-    console.log(body)
-    console.log("________________________________________")
 
     return this.service.update(params.id, body);
 

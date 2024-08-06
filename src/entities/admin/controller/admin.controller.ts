@@ -237,7 +237,6 @@ export class AdminController {
       url: 'https://estrenatuauto.com/',
       changefreq: 'monthly',
       priority: 0.3,
-      img: 'https://estrenatuauto.com/assets/images/home-desktop-lite.jpg',
       rel: 'canonical',
     });
 
@@ -267,6 +266,13 @@ export class AdminController {
     });
     SmStream.write({
       url: 'https://estrenatuauto.com/autos-nuevos',
+      rel: 'canonical',
+      changefreq: 'monthly',
+      priority: 0.3,
+    });
+
+    SmStream.write({
+      url: 'https://estrenatuauto.com/autos-seminuevos',
       rel: 'canonical',
       changefreq: 'monthly',
       priority: 0.3,
@@ -513,7 +519,6 @@ export class AdminController {
           '',
         changefreq: 'monthly',
         priority: 0.3,
-        img: car.images[1],
         rel: 'canonical',
       });
 
@@ -538,7 +543,6 @@ export class AdminController {
           '',
         changefreq: 'monthly',
         priority: 0.3,
-        img: car.images[1],
         rel: 'canonical',
       });
 
