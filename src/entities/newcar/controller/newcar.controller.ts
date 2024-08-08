@@ -358,6 +358,7 @@ export class NewCarController {
 
   @Delete(':id')
   async delete(@Param() params: DeleteParams) {
+    console.log(params.id)
     return { id: await this.service.delete(params.id) };
   };
 }
