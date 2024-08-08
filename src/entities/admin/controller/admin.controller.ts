@@ -614,8 +614,7 @@ export class AdminController {
         // }
 
         let json =  await this.service.getmodelsforimagepro()
-
-        console.log(json)
+        
         return json
     }
 
