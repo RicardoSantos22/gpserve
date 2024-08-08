@@ -1103,6 +1103,58 @@ export class NewCarService extends CrudService<typeof x> {
         }
       
     }
+    
+
+    async verificationImageProSheets(vin: string, sheets: boolean) {
+
+        let autoport_id = 3874
+
+        if(sheets === true)
+            {
+                autoport_id = 3873
+            }
+
+
+        try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': 'f3068c2c-1f7a-4f5a-b5e4-0612a2fe284c',
+    
+            };
+            const response = await this.httpService.post('https://api.dealerimagepro.com/resources', {
+                vin: vin,
+                autoport_id: autoport_id
+            }, { headers: headers }
+    
+            ).toPromise()
+  
+            if (response.data.data.length > 0) {
+
+          
+                let img = response.data.data[0].photos[0].split('?')[0]
+                return {img: img, status: true, dealerId: autoport_id}
+            }
+            else {
+                return {img: '', status: false, dealerId: autoport_id}
+            }
+    
+        }
+        catch (e) {
+
+            console.log(e)
+            Logger.error('error en verificacion de imagen de imagePro: ' + e)
+            // this.bugRepository.create({
+            //     detalles: 'error en verificacion de imagen de pro: ' + e,
+            //     type: 'bug',
+            //     notas: [e.message],
+            //     error: 'error en verificacion de imagen de pro',
+            // })
+            return false
+        }
+      
+    }
+
+
 
 
 

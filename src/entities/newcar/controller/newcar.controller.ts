@@ -223,6 +223,38 @@ export class NewCarController {
     return this.service.findForString(body)
   }
 
+  @Post('sheets')
+  async sheets(@Body() body: any)
+  {
+    console.log(body)
+
+    let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
+    let sheets = false
+
+    if(sheetsIDs.includes(body.agencyId))
+      {
+        sheets = true
+      }
+    
+    let imageprocode: any = await this.service.verificationImageProSheets(body.vin, sheets)
+
+    if(imageprocode.status === false)
+    {
+      let code:any = await this.service.imgVerfication(body)
+      body.status = code
+    }
+    else
+    {
+      body.imgProStatus  = imageprocode.status
+      body.ImgProImg = imageprocode.img
+      body.status = 'online'
+      body.dealerId = imageprocode.dealerId
+    }
+
+    return this.service.create({ ...body });
+   
+  }
+
 
 
   @Post('setup')
@@ -265,7 +297,33 @@ export class NewCarController {
 
   @Patch(':id')
   async update(@Param() params: FindByIdParams, @Body() body: UpdateNewCarDTO) {
+  
+    let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
+    let sheets = false
+
+    if(sheetsIDs.includes(body.agencyId))
+      {
+        sheets = true
+      }
+
+    let imageprocode: any = await this.service.verificationImageProSheets(body.vin, sheets)
+
+    if(imageprocode.status === false)
+    {
+      let code:any = await this.service.imgVerfication(body)
+      body.status = code
+    }
+    else
+    {
+      body.imgProStatus  = imageprocode.status
+      body.ImgProImg = imageprocode.img
+      body.status = 'online'
+      body.dealerId = imageprocode.dealerId
+    }
+
+
     return this.service.update(params.id, body);
+
   }
 
   /**

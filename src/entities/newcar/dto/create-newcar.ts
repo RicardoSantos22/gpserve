@@ -30,4 +30,21 @@ export class CreateNewCarDTO {
   @IsString()
 
   readonly model: string;
+
+  
+  @IsString()
+  status: string;
+
+  @IsString()
+  imgProStatus: string;
+
+  @IsString()
+  ImgProImg: string;
+
+  @IsString()
+  vin: string;
+
+  @IsString()
+  dealerId: number;
+
 };
