@@ -30,15 +30,20 @@ import { asesoresservice } from 'src/entities/asesores/service/asesores.service'
 import { karbotCreateLead } from 'src/entities/asesores/model/Karbot.response';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 
-import * as multer from 'multer';
 import * as csv from 'csv-parser';
 import { Readable } from 'stream';
-import { resolve } from 'path';
+
+import * as ftp from 'basic-ftp';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 
 
 @Injectable()
 export class AdminService extends CrudService<Admin> {
+
+  private client: ftp.Client;
   constructor(
     readonly repository: AdminRepository,
     readonly config: ConfigService,
@@ -51,9 +56,13 @@ export class AdminService extends CrudService<Admin> {
     private readonly CarRepository: CarRepository,
     private readonly recursosRepository: recursosRepository,
     private asesoreservices: asesoresservice,
-    private bugRepository: BugRepository
+    private bugRepository: BugRepository,
+   
+    
   ) {
     super(repository, 'Admin', config);
+    this.client = new ftp.Client();
+    this.client.ftp.verbose = true
   }
 
   async findAdminByEmail(email: string): Promise<any> {
@@ -569,7 +578,6 @@ export class AdminService extends CrudService<Admin> {
   }
 
   async getmodelsforimagepro() {
-    console.log('se inicio el csv imagepro')
     let newcarslist = await this.NewCarRepository.findAll();
     let UsedCarlist = await this.UsedCarRepository.findAll();
 
@@ -624,8 +632,6 @@ export class AdminService extends CrudService<Admin> {
         }
       }
 
-      console.log(newcar.vin)
-
       modelimagepro.cartype = 'used'
       modelimagepro.dealerid = dealerid
       modelimagepro.inventorydi = newcar._id
@@ -672,7 +678,7 @@ export class AdminService extends CrudService<Admin> {
         'inventorysdate': '',
         'photos': []
       }
-      console.log(newcar.vin)
+
       let dealerid = 'grupocdj'
 
       if (bmwidlist.includes(newcar.agencyId)) {
@@ -712,12 +718,39 @@ export class AdminService extends CrudService<Admin> {
 
     }
 
-    // const  csvparse = new Parser();
+  
 
-    // let csv  = csvparse.parse(document);
-    return await document
+    try{
+      const  csvparse = new Parser();
+      let csv  = csvparse.parse(document);
+
+      const csvFilePath = path.join(__dirname, 'testcars.csv');
+      fs.writeFileSync(csvFilePath, csv);
+      await this.client.access({
+        host: 'inventory.dealerimagepro.com',
+        user: 'groupo',
+        password: 'dy6AYSaDgs@MfBEC',
+      })
+  
+      await this.client.uploadFrom(csvFilePath, '/testcars.csv')
+      await this.client.close()
+
+      return await document
+    }
+    catch(e){
+      return e
+    }
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async activemidnight() {
+      await this.getmodelsforimagepro()
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  async activemidday() {
+      await this.getmodelsforimagepro()
+  }
 
 
 }
