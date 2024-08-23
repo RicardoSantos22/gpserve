@@ -359,8 +359,8 @@ export class AdminService extends CrudService<Admin> {
 
     let list: any = []
 
-
-    let credist: any = await this.CreditRequestRepository.findAll({ limit: '200', sort: '-createdAt' })
+    let credist: any = await this.CreditRequestRepository.findAll({ limit: '100', sort: '-createdAt' })
+    console.log(credist)
 
     for (let credit of credist.items) {
       let credito: any = {
@@ -420,7 +420,11 @@ export class AdminService extends CrudService<Admin> {
       list.push(credito)
     }
 
-    return list;
+    const  csvparse = new Parser();
+    let csv  = csvparse.parse(list);
+
+
+    return csv;
   }
 
   async disablebanners(body: any) {

@@ -45,6 +45,8 @@ import { FindAllAdminsQuery } from '../dto/find-all-admins-query';
 import { UpdateAdminDTO } from '../dto/update-admin';
 import { memoryStorage } from 'multer';
 
+import { Response } from 'express';
+
 @ApiTags('admin')
 @Controller('admin')
 export class AdminController {
@@ -216,8 +218,19 @@ export class AdminController {
   }
 
   @Get('allcredist')
-  async allcredits() {
-    return await this.service.modulecredits();
+  async allcredits(@Res() res: Response) {
+
+    try{
+      const csv =  await this.service.modulecredits();
+      res.header('Content-Type', 'text/csv');
+      res.attachment('creditos.csv');
+      res.send(csv);
+    }
+    catch(e){
+
+      return 'hubo un error en la consulta de creditos'
+    }
+    
   }
 
   @Get('sitemap')
