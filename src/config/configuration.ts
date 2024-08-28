@@ -22,5 +22,8 @@ export default () => ({
         accessKey: process.env.MEDIA_S3_ACCESS_KEY,
         secretKey: process.env.MEDIA_S3_SECRET_KEY,
         bucket: process.env.MEDIA_S3_BUCKET
-    }
+    },
+    sendGrid: {
+        apiKey: process.env.SENDGRID_API_KEY,
+      },
 })
