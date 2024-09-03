@@ -17,4 +17,9 @@ export class UsedCarRepository extends CrudRepository<typeof x> {
     return this.model.find({brand: { $in: brands }}).select('model').exec()
   }
 
+  async findBymodelGroup(brands: string[]): Promise<UsedCar[]> {
+    return this.model.find({brand: {$in: brands}}).select('modelGroup').exec()
+}
+
+
 };

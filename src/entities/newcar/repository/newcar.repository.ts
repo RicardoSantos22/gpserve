@@ -23,8 +23,14 @@ export class NewCarRepository extends CrudRepository<typeof x> {
         return this.model.find({brand: {$in: brands}}).select('model').exec()
     }
 
+    async findBymodelGroup(brands: string[]): Promise<NewCar[]> {
+        return this.model.find({brand: {$in: brands}}).select('modelGroup').exec()
+    }
+
     async getNewCars() {
         return this.model.find().select('brand model').exec();
     }
+
+
 
 };

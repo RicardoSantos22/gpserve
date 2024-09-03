@@ -160,33 +160,39 @@ export class NewCarService extends CrudService<typeof x> {
 
 
     async getAllModelOfBrands(query: any) {
-
-
         const cars = await this.repository.findByBrands(query.brand)
-
-        console.log(query)
-
         let allmodeles: any = [];
-
         for (let c of cars) {
             allmodeles.push(c.model)
         }
-
-
-
         for (let model of query.model) {
             if (allmodeles.includes(model) === false) {
                 query.model = query.model.filter((i) => i !== model)
             }
         }
-
         if (query.model.length === 0) {
             delete query.model;
         }
-
         return query
-
     }
+
+    async getnewmodels(query: any) {
+        const cars = await this.repository.findBymodelGroup(query.brand)
+        let allmodeles: any = [];
+        for (let c of cars) {
+            allmodeles.push(c.model)
+        }
+        for (let model of query.model) {
+            if (allmodeles.includes(model) === false) {
+                query.model = query.model.filter((i) => i !== model)
+            }
+        }
+        if (query.model.length === 0) {
+            delete query.model;
+        }
+        return query
+    }
+
 
     async sugerenciasdebusqueda() {
         let sugerencias: { brand: string, model: String[] }[] = []
