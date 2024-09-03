@@ -16,6 +16,7 @@ import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
 import * as os from 'os';
+import { count } from 'console';
 
 
 let x;
@@ -49,7 +50,7 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
     async getallcars() {
-        return await this.repository.findAll({status: 'online'});
+        return await this.repository.findAll({ status: 'online' });
     }
 
 
@@ -83,7 +84,6 @@ export class UsedCarService extends CrudService<typeof x> {
         if (query.model.length === 0) {
             delete query.model;
         }
-        console.log(query)
         return query
 
     }
@@ -106,8 +106,35 @@ export class UsedCarService extends CrudService<typeof x> {
                 sugerencias.push({ brand: car.brand, model: [car.model] })
             }
         }
-        console.log(sugerencias)
         return sugerencias
+    }
+
+    async findForSugerencias(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
+        query.status = 'online';
+
+        query.modelGroup = query.model;
+        delete query.model;
+
+        let lista = {
+            items: [],
+            count: 0
+        }
+
+        let busqueda = await this.repository.findAll({brand: query.brand})
+
+        for(let car of busqueda.items)
+            {
+              
+                if(car.modelGroup.includes(query.modelGroup[0].toLowerCase()))
+                    {
+                        lista.items.push(car)
+                    }
+            }
+
+            lista.count = lista.items.length
+
+
+        return lista
     }
 
 
@@ -290,7 +317,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             return 'online'
                         }
                         else {
-                        
+
                         }
 
                     }
@@ -303,7 +330,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                
+
 
                             return 'offline'
                         }
@@ -312,7 +339,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 }
                 else {
 
-          
+
 
                     let imgfinal: any = await this.imgprincipal(car.images)
                     if (imgfinal !== 500) {
@@ -368,7 +395,7 @@ export class UsedCarService extends CrudService<typeof x> {
             "sinaloa": ["ahome", "angostura", "badiraguato", "choix", "concordia", "cosala", "culiacan", "el fuerte", "elota", "escuinapa", "guasave", "mazatlan", "mocorito", "navolato", "rosario", "salvador alvarado", "san ignacio", "sinaloa"],
             "sonora": ["aconchi", "agua prieta", "alamos", "altar", "arivechi", "arizpe", "atil", "bacadehuachi", "bacanora", "bacerac", "bacoachi", "bacum", "banamichi", "baviacora", "bavispe", "benito juarez", "benjamin hill", "caborca", "cajeme", "cananea", "carbo", "cucurpe", "cumpas", "divisaderos", "empalme", "etchojoa", "fronteras", "general plutarco elias calles", "granados", "guaymas", "hermosillo", "huachinera", "huasabas", "huatabampo", "huepac", "imuris", "la colorada", "magdalena", "mazatan", "moctezuma", "naco", "nacori chico", "nacozari de garcia", "navojoa", "nogales", "onavas", "opodepe", "oquitoa", "pitiquito", "puerto penasco", "quiriego", "rayon", "rosario", "sahuaripa", "san felipe de jesus", "san ignacio rio muerto", "san javier", "san luis rio colorado", "san miguel de horcasitas", "san pedro de la cueva", "santa ana", "santa cruz", "saric", "soyopa", "suaqui grande", "tepache", "trincheras", "tubutama", "ures", "villa hidalgo", "villa pesqueira", "yecora"],
             "nuevoleon": ["abasolo", "agualeguas", "allende", "anahuac", "apodaca", "aramberri", "bustamante", "cadereyta jimenez", "cerralvo", "china", "cienega de flores", "doctor arroyo", "doctor coss", "doctor gonzalez", "el carmen", "galeana", "garcia", "general bravo", "general escobedo", "general teran", "general trevino", "general zaragoza", "general zuazua", "guadalupe", "hidalgo", "higueras", "hualahuises", "iturbide", "juarez", "lampazos de naranjo", "linares", "los aldama", "los herreras", "los ramones", "marin", "melchor ocampo", "mier y noriega", "mina", "montemorelos", "monterrey", "paras", "pesqueria", "rayones", "sabinas hidalgo", "salinas victoria", "san nicolas de los garza", "san pedro garza garcia", "santa catarina", "santiago", "vallecillo", "villaldama"],
-            "ciudadmexico": ["alvaro obregon", "CIUDAD DE MEXICO","azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
+            "ciudadmexico": ["alvaro obregon", "CIUDAD DE MEXICO", "azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
         }
 
         let estados: { estado: string, ciudades: string[] }[] = [
@@ -438,14 +465,13 @@ export class UsedCarService extends CrudService<typeof x> {
         }
 
         let index = 0
-        for(let option of estados){
-            if(option.ciudades.length === 0){
+        for (let option of estados) {
+            if (option.ciudades.length === 0) {
                 estados.splice(index, 1)
-                console.log(index)
             }
             index++
         }
-        
+
 
         const sets = {
             brand: new Set<string>(),
@@ -579,7 +605,7 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
         let agencyIds = [
-            
+
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -626,7 +652,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
             for (let id of agencyIds) {
-                console.log(id)
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADUsedCar[] }>(
                     `http://201.116.249.45:1089/api/Vehicles/Used?dealerId=${id}`,
                     {
@@ -656,7 +681,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     data = sadNewCars
                     for (let sc of sadNewCars) {
-                        
+
 
 
                         let BDID: string = '';
@@ -682,19 +707,15 @@ export class UsedCarService extends CrudService<typeof x> {
                         let imgforimgpro: string = ''
                         let dealerId: number = 0
 
-                        let imgProVerification:any = await this.verificationImagePro(sc.ID, false)
+                        let imgProVerification: any = await this.verificationImagePro(sc.ID, false)
 
-                        console.log(imgProVerification)
-
-            
-                        if(imgProVerification.status === false){
-                            imgverification =  await this.imgVerfication(sc)
+                        if (imgProVerification.status === false) {
+                            imgverification = await this.imgVerfication(sc)
                         }
 
 
-                    
-                        if (imgProVerification.status === true && verificacion === 'online') 
-                        {
+
+                        if (imgProVerification.status === true && verificacion === 'online') {
                             ImageproStatus = 'true'
                             finalstatus = 'online'
                             imgforimgpro = imgProVerification.img
@@ -761,10 +782,8 @@ export class UsedCarService extends CrudService<typeof x> {
                                 else {
                                     newmodel = sc.model
                                 }
-
-
-
                             })
+
 
                             if (sc.chassisType === 'S U V' || sc.chassisType === 'SUV') {
                                 MetaDescription = 'Compra tu Camioneta ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminueva en línea, y te la llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
@@ -819,11 +838,29 @@ export class UsedCarService extends CrudService<typeof x> {
 
                             let serie = sc.version.trim().toLowerCase();
 
+                            let modelgroup = sc.model.split(' ')
 
+                            let ModelExceptions = ['corolla cross', 'grand i10', 'haval h6', 'haval Jolion', 'ora o3']
+
+
+                            if (modelgroup[0].toLowerCase() === sc.brand.toLowerCase()) {
+                                modelgroup[0] = modelgroup[1]
+                            }
+                            
+                            if(modelgroup.length > 1)
+                                {
+                                   
+                                    if (ModelExceptions.includes(modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase())) {
+                                      
+                                        modelgroup[0] = modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase()
+                                        
+                                    }
+                                }
 
                             //if(true) {
                             let usedCar: UsedCar = {
                                 promocioType: sc.promotionDescription.trim(),
+                                modelGroup: modelgroup[0],
                                 chassisType: chasystype,
                                 promocion: sc.promotionDescription.trim(),
                                 promotionAmount: sc.promotionAmount,
@@ -857,11 +894,11 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                         
-                        console.log(usedCar.agencyId)
-                        console.log(usedCar.vin)
-                    
-                     
+
+                            console.log(usedCar.agencyId)
+                            console.log(usedCar.vin)
+
+
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, usedCar)
@@ -1004,37 +1041,33 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
 
-    async deleteduplicateCars(){
+    async deleteduplicateCars() {
         let cars = (await this.repository.findAll()).items
 
-        try{
-            for(let car of cars)
-                {
-                    let duplicate = cars.filter(carfilter => carfilter.vin === car.vin)
-            
-                    if(duplicate.length > 2)
-                     {
-                         let indice = duplicate.length
-                         for(let duplicatecar of duplicate)
-                             {
-                                 if(indice > 1)
-                                     {
-                                         await this.repository.delete(duplicatecar._id)
-                                     }
-                              
-                                 indice--
-                             }
-                     }
-                   
+        try {
+            for (let car of cars) {
+                let duplicate = cars.filter(carfilter => carfilter.vin === car.vin)
+
+                if (duplicate.length > 2) {
+                    let indice = duplicate.length
+                    for (let duplicatecar of duplicate) {
+                        if (indice > 1) {
+                            await this.repository.delete(duplicatecar._id)
+                        }
+
+                        indice--
+                    }
                 }
-                return 'los autos duplicados han sido eliminados'
+
+            }
+            return 'los autos duplicados han sido eliminados'
         }
-        catch(e){
+        catch (e) {
             return e.message
         }
-     
 
-         
+
+
     }
 
     async getcarbyvin(vin: string) {
@@ -1060,35 +1093,34 @@ export class UsedCarService extends CrudService<typeof x> {
 
         let autoport_id = 3874
 
-        if(sheets === true)
-            {
-                autoport_id = 3873
-            }
+        if (sheets === true) {
+            autoport_id = 3873
+        }
 
 
         try {
             const headers = {
                 'Content-Type': 'application/json',
                 'x-api-key': 'f3068c2c-1f7a-4f5a-b5e4-0612a2fe284c',
-    
+
             };
             const response = await this.httpService.post('https://api.dealerimagepro.com/resources', {
                 vin: vin,
                 autoport_id: autoport_id
             }, { headers: headers }
-    
+
             ).toPromise()
-  
+
             if (response.data.data.length > 0) {
 
-          
+
                 let img = response.data.data[0].photos[0].split('?')[0]
-                return {img: img, status: true, dealerId: autoport_id}
+                return { img: img, status: true, dealerId: autoport_id }
             }
             else {
-                return {img: '', status: false, dealerId: autoport_id}
+                return { img: '', status: false, dealerId: autoport_id }
             }
-    
+
         }
         catch (e) {
 
@@ -1102,7 +1134,7 @@ export class UsedCarService extends CrudService<typeof x> {
             // })
             return false
         }
-      
+
     }
 
 
@@ -1119,15 +1151,14 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
 
-   async getip()
-    {
+    async getip() {
         try {
             const response = await this.httpService.get('https://api.ipify.org?format=json').toPromise();
             return response.data.ip;
-          } catch (error) {
+        } catch (error) {
             console.error('Error fetching public IP:', error);
             return 'Error fetching IP';
-          }
+        }
     }
 
 

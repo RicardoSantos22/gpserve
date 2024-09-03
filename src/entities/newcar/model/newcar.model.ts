@@ -51,6 +51,9 @@ export class NewCar {
 
   @prop()
   model: string;
+  
+  @prop()
+  modelGroup: string;
 
   @prop()
   chassisType: string;

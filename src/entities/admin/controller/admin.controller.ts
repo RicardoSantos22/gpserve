@@ -238,7 +238,7 @@ export class AdminController {
     let newcarslist = await this.NewCarService.getNewCars();
     let UsedCarlist = await this.UsedCarService.getallcars();
 
-    'https://estrenatuauto.com/seminuevo/bmw-x1-sdrive20ia-2020-64270e38f11fd1001287e167';
+    'https://estrenatuauto.com/seminuevo/detalles/bmw-x1-sdrive20ia-2020-64270e38f11fd1001287e167';
     let carslist;
 
     res.set('Content-Type', 'text/xml');
@@ -521,7 +521,7 @@ export class AdminController {
     newcarslist.items.forEach((car: any) => {
       SmStream.write({
         url:
-          'https://estrenatuauto.com/nuevo/' +
+          'https://estrenatuauto.com/nuevo/detalles/' +
           car.brandUrl +
           '-' +
           car.modelUrl +
@@ -542,10 +542,9 @@ export class AdminController {
     });
 
     UsedCarlist.items.forEach((car: any) => {
-      console.log(car._id);
       SmStream.write({
         url:
-          'https://estrenatuauto.com/seminuevo/' +
+          'https://estrenatuauto.com/seminuevo/detalles/' +
           car.brand.toLowerCase() +
           '-' +
           car.model.toLowerCase().replace(/\s+/g, '-') +

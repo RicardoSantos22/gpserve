@@ -88,6 +88,16 @@ export class UsedCarController {
     return this.service.sugerenciasdebusqueda()
   }
 
+  @Get('findforsugerencias')
+  async findforsugerencias(@Query() query: FindAllUsedCarsQuery,  @Req() req: Request) {
+
+    let hh = new Date().toLocaleString()
+    const userAgent = req.headers['user-agent'];
+    console.log('se requirio de catalogo por sugerencias newcar a las: ' + hh + ' Por: ' + userAgent)
+    return this.service.findForSugerencias(query);
+  };
+
+
   @Get('miip')
   async miip()
   {

@@ -296,6 +296,38 @@ export class NewCarService extends CrudService<typeof x> {
         return this.repository.findAll({status: 'online'});
     }
 
+
+    async findForSugerencias(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
+        query.status = 'online';
+
+        query.modelGroup = query.model;
+        delete query.model;
+
+        let lista = {
+            items: [],
+            count: 0
+        }
+
+        let busqueda = await this.repository.findAll({brand: query.brand})
+
+        for(let car of busqueda.items)
+            {
+              
+                if(car.modelGroup.includes(query.modelGroup[0].toLowerCase()))
+                    {
+                        lista.items.push(car)
+                    }
+            }
+
+            lista.count = lista.items.length
+
+
+        return lista
+    }
+
+
+
+
     async imgVerfication(car) {
         let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
 
@@ -734,10 +766,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
-                        console.log(sc.ID)
-                        console.log(sc.agencyID)
-                        console.log("__________________________")
-
+           
                         let BDID: string = '';
 
                         carlist.items.forEach((car: any) => {
@@ -902,6 +931,26 @@ export class NewCarService extends CrudService<typeof x> {
 
                             let serie = sc.version.trim().toLowerCase();
 
+                            
+                            let modelgroup = sc.model.split(' ')
+
+                            let ModelExceptions = ['corolla cross', 'grand i10', 'haval h6', 'haval Jolion', 'ora o3']
+
+
+                            if (modelgroup[0].toLowerCase() === sc.brand.toLowerCase()) {
+                                modelgroup[0] = modelgroup[1]
+                            }
+                            
+                            if(modelgroup.length > 1)
+                                {
+                                   
+                                    if (ModelExceptions.includes(modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase())) {
+                                      
+                                        modelgroup[0] = modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase()
+                                        
+                                    }
+                                }
+
 
                             //if(true) {
                             let newCar: NewCar = {
@@ -912,6 +961,7 @@ export class NewCarService extends CrudService<typeof x> {
                                 promotionAmount: sc.promotionAmount,
                                 brand: parsedBrand.toUpperCase(),
                                 model: parsedModel,
+                                modelGroup: modelgroup[0],
                                 series: serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase(),
                                 agencyCity: sc.agencyCity,
                                 chassisType: chasystype,
@@ -939,9 +989,7 @@ export class NewCarService extends CrudService<typeof x> {
                                     lng: lng.toString()
                                 }
                             }
-                            console.log(newCar.status)
-                            console.log(newCar.colours)
-
+                 
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, newCar)

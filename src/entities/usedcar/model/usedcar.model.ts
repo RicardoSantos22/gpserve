@@ -44,6 +44,9 @@ export class UsedCar {
   @prop()
   model: string;
 
+  @prop()
+  modelGroup: string;
+  
   @ApiProperty({
     description: "The car's series",
     readOnly: true,
