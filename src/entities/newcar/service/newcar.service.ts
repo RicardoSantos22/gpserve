@@ -307,10 +307,10 @@ export class NewCarService extends CrudService<typeof x> {
             items: [],
             count: 0
         }
-
         let busqueda = await this.repository.findAll({brand: query.brand})
-
-        for(let car of busqueda.items)
+          const groupedCars = NewCarHelps.groupCarsByHash(busqueda.items)
+          
+        for(let car of groupedCars)
             {
               
                 if(car.modelGroup.includes(query.modelGroup[0].toLowerCase()))
@@ -320,7 +320,6 @@ export class NewCarService extends CrudService<typeof x> {
             }
 
             lista.count = lista.items.length
-
 
         return lista
     }
