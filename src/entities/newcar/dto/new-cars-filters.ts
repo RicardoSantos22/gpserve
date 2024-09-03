@@ -9,4 +9,5 @@ export interface NewCarsFilters {
     agencyId: Array<string>
     promocioType: Array<string>
     ubication: Array<any>
+    modelGroup: Array<string>
 }
