@@ -145,7 +145,6 @@ export class UsedCarService extends CrudService<typeof x> {
 
         if (onlybrand === true) {
             for (let car of busqueda.items) {
-                console.log(query.modelGroup[0], query.modelGroup[0].toLowerCase(), car.modelGroup)
                 if (car.modelGroup.includes(query.modelGroup[0].toUpperCase())) {
                     lista.items.push(car)
                 }
@@ -156,7 +155,7 @@ export class UsedCarService extends CrudService<typeof x> {
         }
 
         lista.count = lista.items.length
-        
+
         return lista
     }
 
