@@ -160,6 +160,8 @@ export class NewCarService extends CrudService<typeof x> {
 
 
     async getAllModelOfBrands(query: any) {
+
+     
         const cars = await this.repository.findByBrands(query.brand)
         let allmodeles: any = [];
         for (let c of cars) {
@@ -176,21 +178,17 @@ export class NewCarService extends CrudService<typeof x> {
         return query
     }
 
-    async getnewmodels(query: any) {
-        const cars = await this.repository.findBymodelGroup(query.brand)
-        let allmodeles: any = [];
+    async getnewmodels(brands: string[]): Promise<{ models: string[] }> {
+
+        let carros = [];
+        const cars = await this.repository.findBymodelGroup(brands)
+        const modelsSet = new Set<string>()
         for (let c of cars) {
-            allmodeles.push(c.model)
+            modelsSet.add(c.modelGroup)
         }
-        for (let model of query.model) {
-            if (allmodeles.includes(model) === false) {
-                query.model = query.model.filter((i) => i !== model)
-            }
+        return {
+            models: Array.from(modelsSet)
         }
-        if (query.model.length === 0) {
-            delete query.model;
-        }
-        return query
     }
 
 

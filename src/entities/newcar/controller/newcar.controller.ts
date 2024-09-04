@@ -106,6 +106,8 @@ export class NewCarController {
     return this.service.getFiltersValues()
   }
 
+  
+
   @Get('getfiltercountnewcar')
   async getfiltercount(){
     return this.service.getfiltercount()
@@ -118,6 +120,13 @@ export class NewCarController {
   async getModelsByBrands(@Query() { brand }: ModelsByBrandsQuery) {
     return this.service.getModelsByBrands(brand)
   }
+
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
+  @Get('filters/newmodels')
+  async getNewModelsByBrands(@Query() { brand }: ModelsByBrandsQuery) {
+    return this.service.getnewmodels(brand)
+  }
+
 
   @Get(':brandUrl/:modelUrl/:seriesUrl/:year/:transmision/:price')
   async getByCarGroup(@Param('brandUrl') brandUrl: string, @Param('modelUrl') modelUrl: string, @Param('seriesUrl') seriesUrl: string, @Param('year') year: string, @Param('transmision') transmision: string, @Param('price') price: number) {

@@ -135,6 +135,7 @@ export class UsedCarController {
     return this.service.getModelsByBrands(brand)
   }
 
+
   /**
    * #region findById
    * 
@@ -177,6 +178,11 @@ export class UsedCarController {
 
 
 
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }))
+  @Get('filters/newmodels')
+  async getNewModelsByBrands(@Query() { brand }: ModelsByBrandsQuery) {
+    return this.service.getnewmodels(brand)
+  }
 
   /**
    * #region create

@@ -66,6 +66,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async getAllModelOfBrands(query: any) {
 
+        
         const cars = await this.repository.findByBrands(query.brand)
 
         let allmodeles: any = [];
@@ -88,27 +89,19 @@ export class UsedCarService extends CrudService<typeof x> {
 
     }
 
-    async getnewmodels(query: any) {
+    async getnewmodels(brands: string[]): Promise<{ models: string[] }> {
 
-        const cars = await this.repository.findBymodelGroup(query.brand)
-
-        let allmodeles: any = [];
-
+        let carros = [];
+        const cars = await this.repository.findBymodelGroup(brands)
+        const modelsSet = new Set<string>()
         for (let c of cars) {
-            allmodeles.push(c.model)
+            modelsSet.add(c.modelGroup)
         }
-
-        for (let model of query.model) {
-            if (allmodeles.includes(model) === false) {
-                query.model = query.model.filter((i) => i !== model)
-            }
+        return {
+            models: Array.from(modelsSet)
         }
-
-        if (query.model.length === 0) {
-            delete query.model;
-        }
-        return query
     }
+
 
 
 
