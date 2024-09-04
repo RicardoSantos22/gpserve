@@ -202,14 +202,15 @@ export class NewCarService extends CrudService<typeof x> {
             const resultado = sugerencias.find(brand => brand.brand === car.brand)
 
             if (resultado) {
-                if (resultado.model.includes(car.model) === false) {
-                    resultado.model.push(car.model)
+                if (resultado.model.includes(car.modelGroup) === false) {
+                    resultado.model.push(car.modelGroup)
                 }
             }
             else {
-                sugerencias.push({ brand: car.brand, model: [car.model] })
+                sugerencias.push({ brand: car.brand, model: [car.modelGroup] })
             }
         }
+        
         return sugerencias
     }
 
