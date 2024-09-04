@@ -312,13 +312,12 @@ export class NewCarService extends CrudService<typeof x> {
             items: [],
             count: 0
         }
-        let busqueda = await this.repository.findAll({brand: query.brand})
+        let busqueda = await this.repository.findAll({brand: query.brand, status: 'online'})
           const groupedCars = NewCarHelps.groupCarsByHash(busqueda.items)
           
         for(let car of groupedCars)
             {
-              
-                if(car.modelGroup.includes(query.modelGroup[0].toLowerCase()))
+                if(car.modelGroup.includes(query.modelGroup[0].toUpperCase()))
                     {
                         lista.items.push(car)
                     }

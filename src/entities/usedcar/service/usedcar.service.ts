@@ -138,12 +138,12 @@ export class UsedCarService extends CrudService<typeof x> {
             count: 0
         }
 
-        let busqueda = await this.repository.findAll({brand: query.brand})
+        let busqueda = await this.repository.findAll({brand: query.brand, status: 'online'})
 
         for(let car of busqueda.items)
             {
-              
-                if(car.modelGroup.includes(query.modelGroup[0].toLowerCase()))
+                console.log(query.modelGroup[0],query.modelGroup[0].toLowerCase(), car.modelGroup)
+                if(car.modelGroup.includes(query.modelGroup[0].toUpperCase()))
                     {
                         lista.items.push(car)
                     }
@@ -151,6 +151,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
             lista.count = lista.items.length
 
+            console.log(lista.items)
 
         return lista
     }
