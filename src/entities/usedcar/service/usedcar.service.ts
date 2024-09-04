@@ -66,7 +66,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async getAllModelOfBrands(query: any) {
 
-        
+
         const cars = await this.repository.findByBrands(query.brand)
 
         let allmodeles: any = [];
@@ -123,7 +123,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 sugerencias.push({ brand: car.brand, model: [car.modelGroup] })
             }
         }
-       
+
         return sugerencias
     }
 
@@ -131,6 +131,9 @@ export class UsedCarService extends CrudService<typeof x> {
         query.status = 'online';
 
         query.modelGroup = query.model;
+        console.log(query)
+        let onlybrand = query.model ? true : false
+
         delete query.model;
 
         let lista = {
@@ -138,21 +141,22 @@ export class UsedCarService extends CrudService<typeof x> {
             count: 0
         }
 
-        let busqueda = await this.repository.findAll({brand: query.brand, status: 'online'})
+        let busqueda = await this.repository.findAll({ brand: query.brand, status: 'online' })
 
-        for(let car of busqueda.items)
-            {
-                console.log(query.modelGroup[0],query.modelGroup[0].toLowerCase(), car.modelGroup)
-                if(car.modelGroup.includes(query.modelGroup[0].toUpperCase()))
-                    {
-                        lista.items.push(car)
-                    }
+        if (onlybrand === true) {
+            for (let car of busqueda.items) {
+                console.log(query.modelGroup[0], query.modelGroup[0].toLowerCase(), car.modelGroup)
+                if (car.modelGroup.includes(query.modelGroup[0].toUpperCase())) {
+                    lista.items.push(car)
+                }
             }
+        }
+        else {
+            lista.items = busqueda.items
+        }
 
-            lista.count = lista.items.length
-
-            console.log(lista.items)
-
+        lista.count = lista.items.length
+        
         return lista
     }
 
@@ -868,16 +872,15 @@ export class UsedCarService extends CrudService<typeof x> {
                             if (modelgroup[0].toLowerCase() === sc.brand.toLowerCase()) {
                                 modelgroup[0] = modelgroup[1]
                             }
-                            
-                            if(modelgroup.length > 1)
-                                {
-                                   
-                                    if (ModelExceptions.includes(modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase())) {
-                                      
-                                        modelgroup[0] = modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase()
-                                        
-                                    }
+
+                            if (modelgroup.length > 1) {
+
+                                if (ModelExceptions.includes(modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase())) {
+
+                                    modelgroup[0] = modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase()
+
                                 }
+                            }
 
                             //if(true) {
                             let usedCar: UsedCar = {

@@ -161,7 +161,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     async getAllModelOfBrands(query: any) {
 
-     
+
         const cars = await this.repository.findByBrands(query.brand)
         let allmodeles: any = [];
         for (let c of cars) {
@@ -210,14 +210,14 @@ export class NewCarService extends CrudService<typeof x> {
                 sugerencias.push({ brand: car.brand, model: [car.modelGroup] })
             }
         }
-        
+
         return sugerencias
     }
 
     async findfpromotions(chassisType: string) {
 
         let promociones = []
-        const cars: any = await this.repository.findAll({ chassisType: chassisType, status: 'online' ,limit: '20' });
+        const cars: any = await this.repository.findAll({ chassisType: chassisType, status: 'online', limit: '20' });
 
         const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
 
@@ -298,7 +298,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     async getNewCars() {
 
-        return this.repository.findAll({status: 'online'});
+        return this.repository.findAll({ status: 'online' });
     }
 
 
@@ -306,24 +306,30 @@ export class NewCarService extends CrudService<typeof x> {
         query.status = 'online';
 
         query.modelGroup = query.model;
+
+        let onlybrand = query.model > 0 ? true : false
+
         delete query.model;
 
         let lista = {
             items: [],
             count: 0
         }
-        let busqueda = await this.repository.findAll({brand: query.brand, status: 'online'})
-          const groupedCars = NewCarHelps.groupCarsByHash(busqueda.items)
-          
-        for(let car of groupedCars)
-            {
-                if(car.modelGroup.includes(query.modelGroup[0].toUpperCase()))
-                    {
-                        lista.items.push(car)
-                    }
-            }
+        let busqueda = await this.repository.findAll({ brand: query.brand, status: 'online' })
+        const groupedCars = NewCarHelps.groupCarsByHash(busqueda.items)
 
-            lista.count = lista.items.length
+        if (onlybrand === true) {
+            for (let car of groupedCars) {
+                if (car.modelGroup.includes(query.modelGroup[0].toUpperCase())) {
+                    lista.items.push(car)
+                }
+            }
+        }
+        else {
+            lista.items = groupedCars
+        }
+
+        lista.count = lista.items.length
 
         return lista
     }
@@ -334,12 +340,12 @@ export class NewCarService extends CrudService<typeof x> {
     async imgVerfication(car) {
         let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
 
-        if (car.images.length === 0) { 
+        if (car.images.length === 0) {
 
-    
+
 
             return 'offline'
-         }
+        }
         else {
 
             if (sheetsIDs.includes(car.agencyId)) {
@@ -352,7 +358,7 @@ export class NewCarService extends CrudService<typeof x> {
                 }
                 catch (e) {
 
-                       
+
                     return 'offline'
                 }
 
@@ -371,7 +377,7 @@ export class NewCarService extends CrudService<typeof x> {
                             return 'online'
                         }
                         else {
-                 
+
                         }
 
                     }
@@ -384,7 +390,7 @@ export class NewCarService extends CrudService<typeof x> {
                         }
                         else {
 
-                
+
 
                             return 'offline'
                         }
@@ -393,15 +399,15 @@ export class NewCarService extends CrudService<typeof x> {
                 }
                 else {
 
-      
-                       
+
+
                     let imgfinal: any = await this.imgprincipal(car.images)
                     if (imgfinal !== 500) {
                         return 'online'
                     }
                     else {
 
-              
+
 
                         return 'offline'
                     }
@@ -552,12 +558,12 @@ export class NewCarService extends CrudService<typeof x> {
             }
 
 
-     
+
 
             if (estadosCiudades.ciudadmexico.includes(car.agencyCity.toLowerCase())) {
                 const resultado = estados.find(estado => estado.estado === 'Ciudad de  Mexico')
 
-            
+
                 if (resultado.ciudades.includes(car.agencyCity) === false) {
                     resultado.ciudades.push(car.agencyCity)
                 }
@@ -566,8 +572,8 @@ export class NewCarService extends CrudService<typeof x> {
         }
 
         let index = 0
-        for(let option of estados){
-            if(option.ciudades.length === 0){
+        for (let option of estados) {
+            if (option.ciudades.length === 0) {
                 estados.splice(index, 1)
                 console.log(index)
             }
@@ -644,7 +650,7 @@ export class NewCarService extends CrudService<typeof x> {
 
     async getcarbyvin(vin: string) {
 
-        let CarList = await this.repository.findAll({'vin': vin});
+        let CarList = await this.repository.findAll({ 'vin': vin });
 
         return CarList;
 
@@ -669,9 +675,8 @@ export class NewCarService extends CrudService<typeof x> {
     }
 
 
-    async correctionfix()
-    {
-        let cars = await this.repository.findAll({status: 'online', estado: ''})
+    async correctionfix() {
+        let cars = await this.repository.findAll({ status: 'online', estado: '' })
 
         return cars
     }
@@ -684,7 +689,7 @@ export class NewCarService extends CrudService<typeof x> {
         let estadosCiudades = {
             "bajacalifornia": ["ensenada", "mexicali", "playas de rosarito", "tecate", "tijuana"],
             "bajacaliforniasur": ["comondu", "la paz", "loreto", "los cabos", "mulege"],
-            "sinaloa": ["ahome", "angostura", "badiraguato", "choix", "concordia", "cosala", "culiacan", 'los mochis',"el fuerte", "elota", "escuinapa", "guasave", "mazatlan", "mocorito", "navolato", "rosario", "salvador alvarado", "san ignacio", "sinaloa"],
+            "sinaloa": ["ahome", "angostura", "badiraguato", "choix", "concordia", "cosala", "culiacan", 'los mochis', "el fuerte", "elota", "escuinapa", "guasave", "mazatlan", "mocorito", "navolato", "rosario", "salvador alvarado", "san ignacio", "sinaloa"],
             "sonora": ["aconchi", "agua prieta", "alamos", "altar", "arivechi", "arizpe", "atil", "bacadehuachi", "bacanora", "bacerac", "bacoachi", "bacum", "banamichi", "baviacora", "bavispe", "benito juarez", "benjamin hill", "caborca", "cajeme", "cananea", "carbo", "cucurpe", "cumpas", "divisaderos", "empalme", "etchojoa", "fronteras", "general plutarco elias calles", "granados", "guaymas", "hermosillo", "huachinera", "huasabas", "huatabampo", "huepac", "imuris", "la colorada", "magdalena", "mazatan", "moctezuma", "naco", "nacori chico", "nacozari de garcia", "navojoa", "nogales", "onavas", "opodepe", "oquitoa", "pitiquito", "puerto penasco", "quiriego", "rayon", "rosario", "sahuaripa", "san felipe de jesus", "san ignacio rio muerto", "san javier", "san luis rio colorado", "san miguel de horcasitas", "san pedro de la cueva", "santa ana", "santa cruz", "saric", "soyopa", "suaqui grande", "tepache", "trincheras", "tubutama", "ures", "villa hidalgo", "villa pesqueira", "yecora"],
             "nuevoleon": ["abasolo", "agualeguas", "allende", "anahuac", "apodaca", "aramberri", "bustamante", "cadereyta jimenez", "cerralvo", "china", "cienega de flores", "doctor arroyo", "doctor coss", "doctor gonzalez", "el carmen", "galeana", "garcia", "general bravo", "general escobedo", "general teran", "general trevino", "general zaragoza", "general zuazua", "guadalupe", "hidalgo", "higueras", "hualahuises", "iturbide", "juarez", "lampazos de naranjo", "linares", "los aldama", "los herreras", "los ramones", "marin", "melchor ocampo", "mier y noriega", "mina", "montemorelos", "monterrey", "paras", "pesqueria", "rayones", "sabinas hidalgo", "salinas victoria", "san nicolas de los garza", "san pedro garza garcia", "santa catarina", "santiago", "vallecillo", "villaldama"],
             "ciudadmexico": ["alvaro obregon", "ciudad de mexico", "azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
@@ -708,7 +713,7 @@ export class NewCarService extends CrudService<typeof x> {
             6, // Chevrolet Mazatlán
             7, // Hyundai Mazatlán
             8, // Hyundai Mexicali
-             // Hyundai Tijuana
+            // Hyundai Tijuana
             10, // Hyundai Los Cabos
             11, // Hino Culiacán
             12, // Chevrolet Culiacán
@@ -728,9 +733,9 @@ export class NewCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregó
             28, // JAC Cualiacán
-          
+
             1030, // Omoda Hermosillo
-          //1031, // chirey mazatlan
+            //1031, // chirey mazatlan
             1032, //Stallantis caballito
             1033, //geely culiacan
             1034, //jac mochis
@@ -738,7 +743,7 @@ export class NewCarService extends CrudService<typeof x> {
             1037, //gwm culiacan
             2037, //gwm  mexicali
             2038, //gwm tijuana
-          //3037, // chirey mochis
+            //3037, // chirey mochis
             3038, //gwm mazatlan 
         ]
         let promises = []
@@ -756,7 +761,7 @@ export class NewCarService extends CrudService<typeof x> {
 
 
             }
-            
+
             const responses = await Promise.all(promises)
 
             let carlist = await this.repository.findAll();
@@ -772,7 +777,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
-           
+
                         let BDID: string = '';
 
                         carlist.items.forEach((car: any) => {
@@ -784,8 +789,8 @@ export class NewCarService extends CrudService<typeof x> {
 
                         })
 
-                      
-              
+
+
                         let verificacion: string = await this.carverification(sc)
                         let imgverification: string = 'onfline'
 
@@ -794,17 +799,16 @@ export class NewCarService extends CrudService<typeof x> {
                         let imgforimgpro: string = ''
                         let dealerId: number = 0
 
-                        let imgProVerification:any = await this.verificationImagePro(sc.ID)
+                        let imgProVerification: any = await this.verificationImagePro(sc.ID)
 
-            
-                        if(imgProVerification.status === false){
-                            imgverification =  await this.imgVerfication(sc)
+
+                        if (imgProVerification.status === false) {
+                            imgverification = await this.imgVerfication(sc)
                         }
 
 
-                    
-                        if (imgProVerification.status === true && verificacion === 'online') 
-                        {
+
+                        if (imgProVerification.status === true && verificacion === 'online') {
                             ImageproStatus = 'true'
                             finalstatus = 'online'
                             imgforimgpro = imgProVerification.img
@@ -861,7 +865,7 @@ export class NewCarService extends CrudService<typeof x> {
                             let parsedModel: string;
                             let parsedSeries: string;
                             let promociontext: string;
-                          
+
 
                             let banModelList = ['DENALI', 'MX', 'PE', '4X4', '2PTAS.', 'MAX', ' S U V', 'SUV', 'PICK-UP', 'DOBLE CABINA', 'CHASIS CABINA', 'CHASIS', 'HATCH BACK', 'HATCHBACK', 'SEDAN']
 
@@ -937,7 +941,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                             let serie = sc.version.trim().toLowerCase();
 
-                            
+
                             let modelgroup = sc.model.split(' ')
 
                             let ModelExceptions = ['corolla cross', 'grand i10', 'haval h6', 'haval Jolion', 'ora o3']
@@ -946,16 +950,15 @@ export class NewCarService extends CrudService<typeof x> {
                             if (modelgroup[0].toLowerCase() === sc.brand.toLowerCase()) {
                                 modelgroup[0] = modelgroup[1]
                             }
-                            
-                            if(modelgroup.length > 1)
-                                {
-                                   
-                                    if (ModelExceptions.includes(modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase())) {
-                                      
-                                        modelgroup[0] = modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase()
-                                        
-                                    }
+
+                            if (modelgroup.length > 1) {
+
+                                if (ModelExceptions.includes(modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase())) {
+
+                                    modelgroup[0] = modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase()
+
                                 }
+                            }
 
 
                             //if(true) {
@@ -995,7 +998,7 @@ export class NewCarService extends CrudService<typeof x> {
                                     lng: lng.toString()
                                 }
                             }
-                 
+
                             if (BDID !== '') {
 
                                 await this.repository.update(BDID, newCar)
@@ -1104,37 +1107,33 @@ export class NewCarService extends CrudService<typeof x> {
         }
     }
 
-    async deleteduplicateCars(){
+    async deleteduplicateCars() {
         let cars = (await this.repository.findAll()).items
 
-        try{
-            for(let car of cars)
-                {
-                    let duplicate = cars.filter(carfilter => carfilter.vin === car.vin)
-            
-                    if(duplicate.length > 2)
-                     {
-                         let indice = duplicate.length
-                         for(let duplicatecar of duplicate)
-                             {
-                                 if(indice > 1)
-                                     {
-                                         await this.repository.delete(duplicatecar._id)
-                                     }
-                              
-                                 indice--
-                             }
-                     }
-                   
+        try {
+            for (let car of cars) {
+                let duplicate = cars.filter(carfilter => carfilter.vin === car.vin)
+
+                if (duplicate.length > 2) {
+                    let indice = duplicate.length
+                    for (let duplicatecar of duplicate) {
+                        if (indice > 1) {
+                            await this.repository.delete(duplicatecar._id)
+                        }
+
+                        indice--
+                    }
                 }
-                return 'los autos duplicados han sido eliminados'
+
+            }
+            return 'los autos duplicados han sido eliminados'
         }
-        catch(e){
+        catch (e) {
             return e.message
         }
-     
 
-         
+
+
     }
 
     async verificationImagePro(vin: string) {
@@ -1144,24 +1143,24 @@ export class NewCarService extends CrudService<typeof x> {
             const headers = {
                 'Content-Type': 'application/json',
                 'x-api-key': 'f3068c2c-1f7a-4f5a-b5e4-0612a2fe284c',
-    
+
             };
             const response = await this.httpService.post('https://api.dealerimagepro.com/resources', {
                 vin: vin,
                 autoport_id: 3874
             }, { headers: headers }
-    
+
             ).toPromise()
-    
-  
+
+
             if (response.data.data.length > 0) {
                 let img = response.data.data[0].photos[0].split('?')[0]
-                return {img: img, status: true, dealerId: 3874}
+                return { img: img, status: true, dealerId: 3874 }
             }
             else {
-                return {img: '', status: false, dealerId: 0}
+                return { img: '', status: false, dealerId: 0 }
             }
-    
+
         }
         catch (e) {
             Logger.error('error en verificacion de imagen de imagePro: ' + e)
@@ -1173,43 +1172,42 @@ export class NewCarService extends CrudService<typeof x> {
             })
             return false
         }
-      
+
     }
-    
+
 
     async verificationImageProSheets(vin: string, sheets: boolean) {
 
         let autoport_id = 3874
 
-        if(sheets === true)
-            {
-                autoport_id = 3873
-            }
+        if (sheets === true) {
+            autoport_id = 3873
+        }
 
 
         try {
             const headers = {
                 'Content-Type': 'application/json',
                 'x-api-key': 'f3068c2c-1f7a-4f5a-b5e4-0612a2fe284c',
-    
+
             };
             const response = await this.httpService.post('https://api.dealerimagepro.com/resources', {
                 vin: vin,
                 autoport_id: autoport_id
             }, { headers: headers }
-    
+
             ).toPromise()
-  
+
             if (response.data.data.length > 0) {
 
-          
+
                 let img = response.data.data[0].photos[0].split('?')[0]
-                return {img: img, status: true, dealerId: autoport_id}
+                return { img: img, status: true, dealerId: autoport_id }
             }
             else {
-                return {img: '', status: false, dealerId: autoport_id}
+                return { img: '', status: false, dealerId: autoport_id }
             }
-    
+
         }
         catch (e) {
 
@@ -1223,7 +1221,7 @@ export class NewCarService extends CrudService<typeof x> {
             // })
             return false
         }
-      
+
     }
 
 
