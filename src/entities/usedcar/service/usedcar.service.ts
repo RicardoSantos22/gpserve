@@ -132,7 +132,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
         query.modelGroup = query.model;
         console.log(query)
-        let onlybrand = query.model ? true : false
+        let onlybrand = query.model ? false : true
 
         delete query.model;
 
@@ -141,20 +141,20 @@ export class UsedCarService extends CrudService<typeof x> {
             count: 0
         }
 
-        let busqueda = await this.repository.findAll({ brand: query.brand, status: 'online' })
+        console.log(onlybrand)
 
-        if (onlybrand === true) {
-            for (let car of busqueda.items) {
-                if (car.modelGroup.includes(query.modelGroup[0].toUpperCase())) {
-                    lista.items.push(car)
-                }
-            }
+
+        if(onlybrand === true) {
+        
+            lista.items = ( await this.repository.findAll({ brand: query.brand, status: 'online'})).items
         }
         else {
-            lista.items = busqueda.items
+            lista.items = (await this.repository.findAll({ brand: query.brand, status: 'online', modelGroup: query.modelGroup })).items
         }
 
         lista.count = lista.items.length
+
+        console.log(lista)
 
         return lista
     }
