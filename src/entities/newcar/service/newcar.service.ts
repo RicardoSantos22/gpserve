@@ -328,11 +328,7 @@ export class NewCarService extends CrudService<typeof x> {
 
         console.log(query)
         query.status = 'online';
-
-        query.modelGroup = query.model;
-
-        let onlybrand = query.model ? false : true
-
+        let onlybrand = query.modelGroup ? false : true
         delete query.model;
 
         let lista = {

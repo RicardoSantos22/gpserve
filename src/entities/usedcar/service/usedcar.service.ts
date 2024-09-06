@@ -147,19 +147,16 @@ export class UsedCarService extends CrudService<typeof x> {
 
     async findForSugerencias(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
         query.status = 'online';
-
-        query.modelGroup = query.model;
-        console.log(query)
-        let onlybrand = query.model ? false : true
-
         delete query.model;
+        let onlybrand = query.modelGroup ? false : true
+
 
         let lista = {
             items: [],
             count: 0
         }
 
-        console.log(onlybrand)
+        console.log(query)
 
 
         if (onlybrand === true) {
@@ -171,8 +168,6 @@ export class UsedCarService extends CrudService<typeof x> {
         }
 
         lista.count = lista.items.length
-
-        console.log(lista)
 
         return lista
     }
