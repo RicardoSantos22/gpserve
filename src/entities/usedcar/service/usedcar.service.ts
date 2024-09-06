@@ -15,8 +15,7 @@ import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedc
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
-import * as os from 'os';
-import { count } from 'console';
+
 
 
 let x;
@@ -89,17 +88,36 @@ export class UsedCarService extends CrudService<typeof x> {
 
     }
 
-    async getnewmodels(brands: string[]): Promise<{ models: string[] }> {
+    async getnewmodels(brands: string[]) {
 
-        let carros = [];
-        const cars = await this.repository.findBymodelGroup(brands)
+        let models = [];
+        const newcars = await this.repository.findBymodelGroup(brands)
         const modelsSet = new Set<string>()
-        for (let c of cars) {
+
+  
+
+        for (let c of newcars) {
             modelsSet.add(c.modelGroup)
         }
-        return {
-            models: Array.from(modelsSet)
+
+        for(let model of modelsSet){
+            let newModel = {
+                label: '',
+                value: '',
+                count: 0,
+                isSelected: false,
+            };
+
+        
+            newModel.label = model;
+            newModel.value = model;
+            newModel.count = (await this.repository.findAll({modelGroup: model, status: 'online'})).count;
+
+            models.push(newModel)
+
         }
+        
+        return models
     }
 
 
@@ -144,9 +162,9 @@ export class UsedCarService extends CrudService<typeof x> {
         console.log(onlybrand)
 
 
-        if(onlybrand === true) {
-        
-            lista.items = ( await this.repository.findAll({ brand: query.brand, status: 'online'})).items
+        if (onlybrand === true) {
+
+            lista.items = (await this.repository.findAll({ brand: query.brand, status: 'online' })).items
         }
         else {
             lista.items = (await this.repository.findAll({ brand: query.brand, status: 'online', modelGroup: query.modelGroup })).items
@@ -617,7 +635,7 @@ export class UsedCarService extends CrudService<typeof x> {
             "sinaloa": ["ahome", "angostura", "badiraguato", "choix", "concordia", "cosala", 'los mochis', "culiacan", "el fuerte", "elota", "escuinapa", "guasave", "mazatlan", "mocorito", "navolato", "rosario", "salvador alvarado", "san ignacio", "sinaloa"],
             "sonora": ["aconchi", "agua prieta", "alamos", "altar", "arivechi", "arizpe", "atil", "bacadehuachi", "bacanora", "bacerac", "bacoachi", "bacum", "banamichi", "baviacora", "bavispe", "benito juarez", "benjamin hill", "caborca", "cajeme", "cananea", "carbo", "cucurpe", "cumpas", "divisaderos", "empalme", "etchojoa", "fronteras", "general plutarco elias calles", "granados", "guaymas", "hermosillo", "huachinera", "huasabas", "huatabampo", "huepac", "imuris", "la colorada", "magdalena", "mazatan", "moctezuma", "naco", "nacori chico", "nacozari de garcia", "navojoa", "nogales", "onavas", "opodepe", "oquitoa", "pitiquito", "puerto penasco", "quiriego", "rayon", "rosario", "sahuaripa", "san felipe de jesus", "san ignacio rio muerto", "san javier", "san luis rio colorado", "san miguel de horcasitas", "san pedro de la cueva", "santa ana", "santa cruz", "saric", "soyopa", "suaqui grande", "tepache", "trincheras", "tubutama", "ures", "villa hidalgo", "villa pesqueira", "yecora"],
             "nuevoleon": ["abasolo", "agualeguas", "allende", "anahuac", "apodaca", "aramberri", "bustamante", "cadereyta jimenez", "cerralvo", "china", "cienega de flores", "doctor arroyo", "doctor coss", "doctor gonzalez", "el carmen", "galeana", "garcia", "general bravo", "general escobedo", "general teran", "general trevino", "general zaragoza", "general zuazua", "guadalupe", "hidalgo", "higueras", "hualahuises", "iturbide", "juarez", "lampazos de naranjo", "linares", "los aldama", "los herreras", "los ramones", "marin", "melchor ocampo", "mier y noriega", "mina", "montemorelos", "monterrey", "paras", "pesqueria", "rayones", "sabinas hidalgo", "salinas victoria", "san nicolas de los garza", "san pedro garza garcia", "santa catarina", "santiago", "vallecillo", "villaldama"],
-            "ciudadmexico": ["alvaro obregon", "ciudad de mexico", "azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
+            "ciudadmexico": ["ciudad obregon", "ciudad de mexico", "azcapotzalco", "benito juarez", "coyoacan", "cuajimalpa de morelos", "cuauhtemoc", "gustavo a. madero", "iztacalco", "iztapalapa", "la magdalena contreras", "miguel hidalgo", "milpa alta", "tlalpan", "tlahuac", "venustiano carranza", "xochimilco"]
         }
 
         let vins = []
@@ -876,7 +894,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                                 if (ModelExceptions.includes(modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase())) {
 
-                                    modelgroup[0] = modelgroup[0].toLowerCase() + ' ' + modelgroup[1].toLowerCase()
+                                    modelgroup[0] = modelgroup[0].toUpperCase() + ' ' + modelgroup[1].toUpperCase()
 
                                 }
                             }
