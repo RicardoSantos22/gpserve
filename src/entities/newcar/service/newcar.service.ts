@@ -55,6 +55,7 @@ export class NewCarService extends CrudService<typeof x> {
         Logger.debug(this.setupCarsSecret, 'setupCarsSecret')
     }
 
+ 
     async findAll(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
 
 
@@ -74,40 +75,76 @@ export class NewCarService extends CrudService<typeof x> {
         return r
 
 
-        // if (query.model && query.brand) {
-        //     let newquery = await this.getAllModelOfBrands(query)
-
-        //     const cars = await this.repository.findAll(newquery)
-        //     const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-        //     const response = {
-        //         ...cars,
-        //         items: groupedCars,
-        //     }
-        //     const r = {
-        //         count: cars.count,
-        //         items: response.items
-        //     }
-
-        //     return r
-        // }
-        // else {
-        //     const cars = await this.repository.findAll(query)
-        //     const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
-        //     const response = {
-        //         ...cars,
-        //         items: groupedCars,
-        //     }
-        //     const r = {
-        //         count: cars.count,
-        //         items: response.items
-        //     }
-
-        //     return r
-        // }
+    }
 
 
+    async findAllcars(query: FindAllNewCarsQuery): Promise<PaginatedEntities<NewCar>> {
+
+
+        query.status = 'online'
+
+        
+        const cars = await this.repository.findAll(query)
+        const groupedCars = NewCarHelps.groupCarsByHash(cars.items)
+        const response = {
+            ...cars,
+            items: groupedCars,
+        }
+        const r = {
+            count: groupedCars.length,
+            items: response.items
+        }
+
+        let brandsevents : any = []
+        let finalsearch: any = []
+
+
+        if(query.modelGroup && query.modelGroup.length > 0 && query.brand.length > 1){
+
+            brandsevents = query.brand
+
+            if(query.brand.length > 1)
+                {
+                    for(let brand of query.brand)
+                        {
+                            query.brand = []
+                            query.brand.push(brand)
+                            let cars = await this.repository.findAll(query)
+
+                            if(cars.count > 0)
+                                {
+                                    for(let car of cars.items)
+                                        {
+                                            finalsearch.push(car)
+                                        }
+                                    
+                                }
+                            else
+                            {
+                                let carsonlybrands = await this.repository.findAll({brand: query.brand, status: 'online'})
+                                for(let car of carsonlybrands.items)
+                                    {
+                                        finalsearch.push(car)
+                                    }
+                     
+                            }
+                        }
+                }
+
+                r.items = NewCarHelps.groupCarsByHash(finalsearch)
+                r.count = r.items.length
+
+                
+    
+
+        }
+
+
+    
+        return r
 
     }
+
 
     async getfiltercount() {
         let counts: any = {

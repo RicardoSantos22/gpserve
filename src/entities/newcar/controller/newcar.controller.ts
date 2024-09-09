@@ -79,6 +79,21 @@ export class NewCarController {
     return this.service.findAll(query);
   };
 
+
+
+    // #endregion findAll
+    @UseInterceptors(CacheInterceptor)
+    @CacheKey('usedcars')
+    @CacheTTL(30)
+    @Get('findallcars')
+    async findAllcars(@Query() query: FindAllNewCarsQuery, @Req() req: Request) {
+  
+      let hh = new Date().toLocaleString()
+      const userAgent = req.headers['user-agent'];
+      console.log('se requirio de catalogo usedcars a las: ' + hh + ' Por: ' + userAgent)
+      return this.service.findAllcars(query);
+    };
+
   @Get('updatecarlist')
   async updateCarList(@Req() req: Request){
     let hh = new Date().toLocaleString()

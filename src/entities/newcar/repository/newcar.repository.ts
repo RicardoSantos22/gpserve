@@ -31,6 +31,15 @@ export class NewCarRepository extends CrudRepository<typeof x> {
         return this.model.find().select('brand model').exec();
     }
 
+    async findallnewcars(query: any){
 
+        return this.model.find({
+            $and: [
+                { status: 'online' },
+                { brand: { $regex: query.brand} },
+                { modelGroup: { $regex: query.modelGroup, $options: 'i'} }
+            ]
+        }).exec()
+    }
 
 };

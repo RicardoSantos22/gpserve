@@ -15,6 +15,7 @@ import { FinishedcarsService } from 'src/entities/finishedcars/service/finishedc
 import { FindAllUsedCarsQuery } from '../dto/find-all-usedcars-query';
 import { PaginatedEntities } from 'src/common/models/paginated-entities.model';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
+import { model } from 'mongoose';
 
 
 
@@ -53,11 +54,75 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
 
+  
     async findAll(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
 
         query.status = 'online'
 
         return await this.repository.findAll(query)
+    }
+
+
+
+
+    async findAllcars(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
+
+        query.status = 'online'
+
+        let cars = await this.repository.findAll(query)
+
+        let brandsevents : any = []
+        let finalsearch: any = []
+
+        const r = {
+            count: 0,
+            items: []
+        }
+
+        r.count = cars.count
+        r.items = cars.items
+        
+        if(query.modelGroup && query.modelGroup.length > 0 && query.brand.length > 1){
+          
+            brandsevents = query.brand
+
+            if(query.brand.length > 1)
+                {
+                    for(let brand of query.brand)
+                        {
+                            query.brand = []
+                            query.brand.push(brand)
+                            let cars = await this.repository.findAll(query)
+                            if(cars.count > 0)
+                                {
+                                    for(let car of cars.items)
+                                        {
+                                            finalsearch.push(car)
+                                        }
+                                    
+                                }
+                            else
+                            {
+                                let carsonlybrands = await this.repository.findAll({brand: query.brand, status: 'online'})
+                                for(let car of carsonlybrands.items)
+                                    {
+                                        finalsearch.push(car)
+                                    }
+
+                            }
+                        }
+                }
+
+                r.items = finalsearch
+                r.count = finalsearch.length
+
+  
+        }
+
+        
+
+
+        return r
     }
 
 

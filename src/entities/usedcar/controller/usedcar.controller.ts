@@ -73,6 +73,18 @@ export class UsedCarController {
     return this.service.findAll(query);
   };
 
+    // #endregion findAll
+    @UsePipes(new ValidationPipe({ transform: true }))
+    @Get('findallcars')
+    async findAllcars(@Query() query: FindAllUsedCarsQuery,  @Req() req: Request) {
+  
+      let hh = new Date().toLocaleString()
+      const userAgent = req.headers['user-agent'];
+      console.log('se requirio de catalogo newcar a las: ' + hh + ' Por: ' + userAgent)
+      return this.service.findAllcars(query);
+    };
+  
+
   @Get('updatecarlist')
   async updateCarList(@Req() req: Request){
 
