@@ -308,6 +308,8 @@ export class UsedCarController {
 
   @Patch(':id')
   async update(@Param() params: FindByIdParams, @Body() body: UpdateUsedCarDTO) {
+
+    console.log(body, params.id)
     
     let sheetsIDs = ['800', '802', '901', '902', '903', '904', '905', '906', '907']
     let sheets = false
@@ -369,6 +371,7 @@ export class UsedCarController {
 
   @Delete(':id')
   async delete(@Param() params: DeleteParams) {
+    console.log(params.id)
     return { id: await this.service.delete(params.id) };
   };
 };

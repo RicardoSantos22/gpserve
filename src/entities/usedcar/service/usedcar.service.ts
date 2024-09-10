@@ -54,7 +54,7 @@ export class UsedCarService extends CrudService<typeof x> {
     }
 
 
-  
+
     async findAll(query: FindAllUsedCarsQuery): Promise<PaginatedEntities<UsedCar>> {
 
         query.status = 'online'
@@ -71,7 +71,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
         let cars = await this.repository.findAll(query)
 
-        let brandsevents : any = []
+        let brandsevents: any = []
         let finalsearch: any = []
 
         const r = {
@@ -81,45 +81,39 @@ export class UsedCarService extends CrudService<typeof x> {
 
         r.count = cars.count
         r.items = cars.items
-        
-        if(query.modelGroup && query.modelGroup.length > 0 && query.brand.length > 1){
-          
+
+        if (query.modelGroup && query.modelGroup.length > 0 && query.brand.length > 1) {
+
             brandsevents = query.brand
 
-            if(query.brand.length > 1)
-                {
-                    for(let brand of query.brand)
-                        {
-                            query.brand = []
-                            query.brand.push(brand)
-                            let cars = await this.repository.findAll(query)
-                            if(cars.count > 0)
-                                {
-                                    for(let car of cars.items)
-                                        {
-                                            finalsearch.push(car)
-                                        }
-                                    
-                                }
-                            else
-                            {
-                                let carsonlybrands = await this.repository.findAll({brand: query.brand, status: 'online'})
-                                for(let car of carsonlybrands.items)
-                                    {
-                                        finalsearch.push(car)
-                                    }
-
-                            }
+            if (query.brand.length > 1) {
+                for (let brand of query.brand) {
+                    query.brand = []
+                    query.brand.push(brand)
+                    let cars = await this.repository.findAll(query)
+                    if (cars.count > 0) {
+                        for (let car of cars.items) {
+                            finalsearch.push(car)
                         }
+
+                    }
+                    else {
+                        let carsonlybrands = await this.repository.findAll({ brand: query.brand, status: 'online' })
+                        for (let car of carsonlybrands.items) {
+                            finalsearch.push(car)
+                        }
+
+                    }
                 }
+            }
 
-                r.items = finalsearch
-                r.count = finalsearch.length
+            r.items = finalsearch
+            r.count = finalsearch.length
 
-  
+
         }
 
-        
+
 
 
         return r
@@ -159,13 +153,13 @@ export class UsedCarService extends CrudService<typeof x> {
         const newcars = await this.repository.findBymodelGroup(brands)
         const modelsSet = new Set<string>()
 
-  
+
 
         for (let c of newcars) {
             modelsSet.add(c.modelGroup)
         }
 
-        for(let model of modelsSet){
+        for (let model of modelsSet) {
             let newModel = {
                 label: '',
                 value: '',
@@ -173,15 +167,15 @@ export class UsedCarService extends CrudService<typeof x> {
                 isSelected: false,
             };
 
-        
+
             newModel.label = model;
             newModel.value = model;
-            newModel.count = (await this.repository.findAll({modelGroup: model, status: 'online'})).count;
+            newModel.count = (await this.repository.findAll({ modelGroup: model, status: 'online' })).count;
 
             models.push(newModel)
 
         }
-        
+
         return models
     }
 
@@ -905,8 +899,6 @@ export class UsedCarService extends CrudService<typeof x> {
                                 chasystype = 'VAN';
                             }
                             else {
-
-
                                 MetaDescription = 'Compra tu ' + sc.brand.trim() + ' ' + sc.model.trim() + ' Seminuevo en línea, y te lo llevamos a cualquier parte de México. 20 años de experiencia nos avalan. ¡Estrena tu auto ya!';
                                 h1 = 'Auto Seminuevo ' + sc.brand.trim() + ' ' + sc.model.trim() + ' ' + sc.year.trim();
 
@@ -933,6 +925,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                     promociontext = sc.promotionDescription;
                                 }
                             }
+
 
 
                             parsedModel = sc.model.replace('/', '-')
