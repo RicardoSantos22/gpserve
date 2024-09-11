@@ -702,7 +702,8 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = []
         let agencyIds = [
-
+            3040, // BYD Culiacan
+            3040, // BYD Los Mochis
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -728,7 +729,7 @@ export class UsedCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregón
             28, // JAC Cualiacán
-            29, // Chirey Culiacan
+            
             1030, // Omoda Hermosillo 
             1031, // chirey mazatlan
             1032, //Stallantis caballito
@@ -778,7 +779,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                     data = sadNewCars
                     for (let sc of sadNewCars) {
-
+                        console.log(sc.agencyID)
 
 
                         let BDID: string = '';
@@ -926,8 +927,7 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-
-
+            
                             parsedModel = sc.model.replace('/', '-')
                             parsedBrand = sc.brand.replace('/', '-')
                             parsedSeries = sc.version.replace('/', '-')

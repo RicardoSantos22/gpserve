@@ -763,17 +763,14 @@ export class NewCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = []
         let agencyIds = [
-            29,
-            9,
-            1031,
-            3037,
-            21,
+            3040, // BYD Culiacan
+            3040, // BYD Los Mochis
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
             7, // Hyundai Mazatlán
             8, // Hyundai Mexicali
-            // Hyundai Tijuana
+            9,// Hyundai Tijuana
             10, // Hyundai Los Cabos
             11, // Hino Culiacán
             12, // Chevrolet Culiacán
@@ -785,7 +782,7 @@ export class NewCarService extends CrudService<typeof x> {
             18, // Chrysler Culiacán 0 Stellantis Culiacán
             19, // Land Rover Culiacán
             20, // Kia Culiacán
-            //21,  Chevrolet Hermosillo
+            21, // Chevrolet Hermosillo
             22, // Chrysler Mochis 0 Stellantis Mochis
             23, // KIA Cabos
             24, // KIA Hermosillo
@@ -793,9 +790,9 @@ export class NewCarService extends CrudService<typeof x> {
             26, // KIA Mochis
             27, // KIA Obregó
             28, // JAC Cualiacán
-
+            29, // Chirey Culiacan
             1030, // Omoda Hermosillo
-            //1031, // chirey mazatlan
+            1031, // chirey mazatlan
             1032, //Stallantis caballito
             1033, //geely culiacan
             1034, //jac mochis
@@ -803,12 +800,14 @@ export class NewCarService extends CrudService<typeof x> {
             1037, //gwm culiacan
             2037, //gwm  mexicali
             2038, //gwm tijuana
-            //3037, // chirey mochis
+            3037, // chirey mochis
             3038, //gwm mazatlan 
+         
         ]
         let promises = []
         try {
             for (let id of agencyIds) {
+                console.log('id:',id)
                 promises.push(this.httpService.get<{ success: boolean, message: string, data: SADNewCar[] }>(
                     `http://201.116.249.45:1089/api/Vehicles?dealerId=${id}`,
                     {
@@ -837,6 +836,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                     for (let sc of sadNewCars) {
 
+                        console.log(sc.agencyID)
 
                         let BDID: string = '';
 
@@ -877,7 +877,6 @@ export class NewCarService extends CrudService<typeof x> {
                         else if (imgverification === 'online' && verificacion === 'online') {
                             finalstatus = 'online'
                         }
-
 
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N' && sc.demo !== 'S') {
@@ -1019,6 +1018,8 @@ export class NewCarService extends CrudService<typeof x> {
 
                                 }
                             }
+
+
 
 
                             //if(true) {
@@ -1298,6 +1299,8 @@ export class NewCarService extends CrudService<typeof x> {
             userName: this.sadApiConfig.username,
             password: this.sadApiConfig.password
         }).toPromise()
+
+        console.log(response.data)
 
         return { token: response.data }
     }
