@@ -11,9 +11,9 @@ require('dotenv').config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(compression());  
+  app.use(compression());
   const port = process.env.PORT;
-  app.setGlobalPrefix('api')
+  app.setGlobalPrefix('api');
   // app.useGlobalPipes(
   //   new ValidationPipe({
   //     transform: true,
@@ -26,12 +26,11 @@ async function bootstrap() {
   //   }),
   // );
 
-  const config = new DocumentBuilder()
-    .build();
+  const config = new DocumentBuilder().build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
-  
-  app.enableCors()
+
+  app.enableCors();
 
   await app.listen(port || 3000, '0.0.0.0');
 }

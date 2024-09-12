@@ -27,12 +27,11 @@ import { InitialAssessmentModule } from './entities/initialassessment/initial-as
 import { OrderModule } from './entities/order/order.module';
 import { RecursosModule } from './entities/recursos/recursos.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration]
+      load: [configuration],
     }),
     TypegooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -60,8 +59,7 @@ import { RecursosModule } from './entities/recursos/recursos.module';
     FinishedcarsModule,
     BugsModule,
     RecursosModule,
-    ApisModule
+    ApisModule,
   ],
 })
-
 export class AppModule {}
