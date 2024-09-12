@@ -1350,21 +1350,12 @@ export class UsedCarService extends CrudService<typeof x> {
               ) {
                 transmision = 'Automática';
                 console.log('Fixed', transmision);
-              } else {
-                transmision = sc.transmision.trim();
-                // console.log(transmision);
-              }
-
-              if (
+              } else if (
                 sc.transmision === 'MANUAL' ||
                 sc.transmision === 'Estándar'
               ) {
                 transmision = 'Manual';
-              } else {
-                transmision = sc.transmision.trim();
-              }
-
-              if (sc.transmision === 'ELECTRICA') {
+              } else if (sc.transmision === 'ELECTRICA') {
                 transmision = 'Eléctrica';
               } else {
                 transmision = sc.transmision.trim();
@@ -1436,7 +1427,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 ImgProImg: imgforimgpro || '',
                 year: sc.year,
                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
-                transmision: 'Automática',
+                transmision: transmision,
                 fuel: sc.fuelType.trim(),
                 colours: sc.color.trim(),
                 baseColour: NewCarHelps.getBaseColour(sc.color),
