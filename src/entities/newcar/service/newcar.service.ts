@@ -1472,7 +1472,27 @@ export class NewCarService extends CrudService<typeof x> {
                 }
               }
 
-              console.log(sc.transmision);
+              let transmision: string;
+
+              if (
+                sc.transmision === 'Autom�tica' ||
+                sc.transmision === 'AUTOMATICO' ||
+                sc.transmision === 'AUTOMATICA' ||
+                sc.transmision === 'IVT' ||
+                sc.transmision === 'CVT'
+              ) {
+                transmision = 'Automática';
+                console.log('Fixed', transmision);
+              } else if (
+                sc.transmision === 'MANUAL' ||
+                sc.transmision === 'Estándar'
+              ) {
+                transmision = 'Manual';
+              } else if (sc.transmision === 'ELECTRICA') {
+                transmision = 'Eléctrica';
+              } else {
+                transmision = sc.transmision.trim();
+              }
 
               //if(true) {
               let newCar: NewCar = {
@@ -1508,7 +1528,7 @@ export class NewCarService extends CrudService<typeof x> {
                 dealerId: dealerId,
                 year: sc.year,
                 images: !sc.images ? [] : sc.images.map(i => i.imageUrl),
-                transmision: sc.transmision,
+                transmision: transmision,
                 fuel: sc.fuelType,
                 colours: sc.color,
                 baseColour: NewCarHelps.getBaseColour(sc.color),
