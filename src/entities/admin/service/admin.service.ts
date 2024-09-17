@@ -29,6 +29,7 @@ import { recursosRepository } from 'src/entities/recursos/repository/recursos.re
 import { asesoresservice } from 'src/entities/asesores/service/asesores.service';
 import { karbotCreateLead } from 'src/entities/asesores/model/Karbot.response';
 import { BugRepository } from 'src/entities/bugs/repository/bitacora.repository';
+import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
 
 import * as csv from 'csv-parser';
 import { Readable } from 'stream';
@@ -57,6 +58,7 @@ export class AdminService extends CrudService<Admin> {
     private readonly recursosRepository: recursosRepository,
     private asesoreservices: asesoresservice,
     private bugRepository: BugRepository,
+    private agencyRepository: AgencyRepository,
    
     
   ) {
@@ -360,39 +362,38 @@ export class AdminService extends CrudService<Admin> {
     let list: any = []
 
     let credist: any = await this.CreditRequestRepository.findAll({ limit: '100', sort: '-createdAt' })
-    console.log(credist)
 
     for (let credit of credist.items) {
       let credito: any = {
         telefono: '',
         correo: '',
         nombre: '',
-        estado: '',
         status: '',
         karbotStatus: 'enviado',
         meses: '',
         pago: '',
-        creditInfo: [],
-        carInfo: [],
-        GuestInfo: []
+        tipo: '',
+        auto_vin: '',
+        auto_Marca: '',
+        auto_Modelo: '',
+        auto_Serie: '',
+        auto_Year: '',
+        auto_Transmision: '',
+        auto_ciudad: '',
+        auto_Agencia: '',
       }
-
-      credito.creditInfo = credit
 
       let user: any = await this.userRepository.findAll({ _id: credit.userId })
 
       if (credit.userType === 'Guest') {
-        credito.GuestInfo = credit.userGuest;
+        credito.nombre = credit.userGuest[0].nombres + ' ' + credit.userGuest[0].apellidos;
+        credito.telefono = credit.userGuest[0].telefono;
+        credito.correo = credit.userGuest[0].email;
       }
 
-      if (user.items[0]) {
-        credito.telefono = user.items[0].phone || ''
-        credito.correo = user.items[0].email || ''
-        credito.nombre = user.items[0].firstName + ' ' + user.items[0].lastName || ''
-        credito.estado = user.items[0].state || ''
-      }
+   
 
-      credito.status = credit.status,
+        credito.status = credit.status,
         credito.meses = credit.creditMonths,
         credito.pago = credit.downPayment
 
@@ -400,25 +401,52 @@ export class AdminService extends CrudService<Admin> {
       if (credit.carType === 'new') {
         let car = await this.NewCarRepository.findOne({ vin: credit.carId })
         if (car) {
-          credito.carInfo = car
+          credito.tipo = 'Nuevo'
+          credito.auto_vin = car.vin
+          credito.auto_Marca = car.brand
+          credito.auto_Modelo = car.model
+          credito.auto_Serie = car.series
+          credito.auto_Year = car.year
+          credito.auto_Transmision = car.transmision
+          credito.auto_ciudad = car.agencyCity
+          let agencia = await this.agencyRepository.findOne({ number: car.agencyId })
+          credito.auto_Agencia = agencia.name
+          credito.auto_ciudad = car.agencyCity
         }
         else {
-          credito.carInfo = ['Carro no encontrado o vendido']
+          credito.tipo = 'Nuevo'
+          credito.auto_vin = credit.carId
+          credito.auto_Marca = 'Carro no encontrado o vendido'
         }
       }
       else {
         let car = await this.UsedCarRepository.findOne({ vin: credit.carId })
         if (car) {
-          credito.carInfo = car
+          credito.tipo = 'Usado'
+          credito.auto_vin = car.vin
+          credito.auto_Marca = car.brand
+          credito.auto_Modelo = car.model
+          credito.auto_Serie = car.series
+          credito.auto_Year = car.year
+          credito.auto_Transmision = car.transmision
+          credito.auto_ciudad = car.agencyCity
+          let agencia = await this.agencyRepository.findOne({ number: car.agencyId })
+          credito.auto_Agencia = agencia.name
+          credito.auto_ciudad = car.agencyCity
+          
         }
         else {
-          credito.carInfo = ['Carro no encontrado o vendido']
+          credito.tipo = 'Usado'
+          credito.auto_vin = credit.carId
+          credito.auto_Marca = 'Carro no encontrado o vendido'
         }
       }
 
 
       list.push(credito)
     }
+
+    console.log(list)
 
     const  csvparse = new Parser();
     let csv  = csvparse.parse(list);

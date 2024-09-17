@@ -17,6 +17,7 @@ import { AsesoresModule } from '../asesores/asesores.module';
 import { RecursosModule } from '../recursos/recursos.module';
 import { FinishedcarsModule } from '../finishedcars/finishedcars.module';
 import { BugsModule } from '../bugs/bugs.module';
+import { AgencyModule } from '../agency/agency.module';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { BugsModule } from '../bugs/bugs.module';
     PassportModule,
     TypegooseModule.forFeature([Admin, banners]),
     BucketModule,
-
+    AgencyModule,
     CreditRequestModule,
     FinishedcarsModule,
     RecursosModule,
