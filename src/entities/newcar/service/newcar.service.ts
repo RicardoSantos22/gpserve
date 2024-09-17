@@ -1147,6 +1147,7 @@ export class NewCarService extends CrudService<typeof x> {
             1031,
             3037,
             21,
+            3040, // BYD Culiacan
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -1472,27 +1473,27 @@ export class NewCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                            let transmision: string;
+                            let transmision: string = ''
 
-                            if (
-                                sc.transmision === 'Autom�tica' ||
-                                sc.transmision === 'AUTOMATICO' ||
-                                sc.transmision === 'AUTOMATICA' ||
-                                sc.transmision === 'IVT' ||
-                                sc.transmision === 'CVT'
-                            ) {
-                                transmision = 'Automática';
-                                console.log('Fixed', transmision);
-                            } else if (
-                                sc.transmision === 'MANUAL' ||
-                                sc.transmision === 'Estándar'
-                            ) {
-                                transmision = 'Manual';
-                            } else if (sc.transmision === 'ELECTRICA') {
-                                transmision = 'Eléctrica';
-                            } else {
-                                transmision = sc.transmision.trim();
+                            let transmision_automactica = ['Autom�tica', 'AUTOMATICO', 'AUTOMATICA', 'IVT', 'CVT', 'Automática', 'Automatica']
+                            let transmision_manual = ['MANUAL', 'Estándar', 'Manual']
+                            let transmision_electrica = ['ELECTRICA', 'El�ctrica']
+
+
+                            switch (true) {
+                                case transmision_automactica.includes(sc.transmision):
+                                    transmision = 'Automática'
+                                    break;
+                                case transmision_manual.includes(sc.transmision):
+                                    transmision = 'Manual'
+                                    break;
+                                case transmision_electrica.includes(sc.transmision):
+                                    transmision = 'Eléctrica'
+                                    break;
+                                default:
+                                    transmision = sc.transmision.trim()
                             }
+
 
                             //if(true) {
                             let newCar: NewCar = {
@@ -1539,6 +1540,8 @@ export class NewCarService extends CrudService<typeof x> {
                                     lng: lng.toString(),
                                 },
                             };
+
+                            console.log(newCar.transmision, newCar.vin, newCar.agencyId, sc.transmision)
 
                             if (BDID !== '') {
                                 await this.repository.update(BDID, newCar);

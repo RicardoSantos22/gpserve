@@ -1038,6 +1038,7 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = [];
         let agencyIds = [
+            3040, // BYD Culiacan
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
@@ -1339,27 +1340,27 @@ export class UsedCarService extends CrudService<typeof x> {
                                 }
                             }
 
-                            let transmision: string;
+                            let transmision: string = ''
 
-                            if (
-                                sc.transmision === 'Autom�tica' ||
-                                sc.transmision === 'AUTOMATICO' ||
-                                sc.transmision === 'AUTOMATICA' ||
-                                sc.transmision === 'IVT' ||
-                                sc.transmision === 'CVT'
-                            ) {
-                                transmision = 'Automática';
-                                console.log('Fixed', transmision);
-                            } else if (
-                                sc.transmision === 'MANUAL' ||
-                                sc.transmision === 'Estándar'
-                            ) {
-                                transmision = 'Manual';
-                            } else if (sc.transmision === 'ELECTRICA') {
-                                transmision = 'Eléctrica';
-                            } else {
-                                transmision = sc.transmision.trim();
-                            }
+                            let transmision_automactica = ['Autom�tica', 'AUTOMATICO', 'AUTOMATICA', 'IVT', 'CVT', 'Automática', 'Automatica']
+                            let transmision_manual = ['MANUAL', 'Estándar', 'Manual']
+                            let transmision_electrica = ['ELECTRICA', 'El�ctrica']
+
+
+                           switch (true) {
+                            case transmision_automactica.includes(sc.transmision):
+                                transmision = 'Automática'
+                                break;
+                            case transmision_manual.includes(sc.transmision):
+                                transmision = 'Manual'
+                                break;
+                            case transmision_electrica.includes(sc.transmision):
+                                transmision = 'Eléctrica'
+                                break;
+                            default:
+                                transmision = sc.transmision.trim()
+                           }
+
 
                             parsedModel = sc.model.replace('/', '-');
                             parsedBrand = sc.brand.replace('/', '-');
@@ -1441,6 +1442,8 @@ export class UsedCarService extends CrudService<typeof x> {
                                 },
                             };
 
+                            console.log(usedCar.transmision)
+
                             if (BDID !== '') {
                                 await this.repository.update(BDID, usedCar);
                                 updateitem++;
@@ -1469,6 +1472,8 @@ export class UsedCarService extends CrudService<typeof x> {
                     }
                 }
             }
+
+
 
             if (carinlist.length > 0) {
                 carlist.items.forEach((car: any) => {
