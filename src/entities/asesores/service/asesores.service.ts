@@ -154,8 +154,7 @@ export class asesoresservice extends CrudService<Asesores> {
 
     try {
       let token: any = await this.login()
-      let tokenid = await this.recursosRepository.findAll({ name: 'karbotToken' })
-      await this.recursosRepository.delete(tokenid.items[0]._id)
+      await this.recursosRepository.deleteMany({ name: 'karbotToken' })
 
       await this.recursosRepository.create({
         name: 'karbotToken',

@@ -11,4 +11,8 @@ export class CreditRequestRepository extends CrudRepository<CreditRequest> {
   constructor(@InjectModel(CreditRequest) readonly model: ReturnModelType<typeof CreditRequest>) {
     super(model, 'CreditRequest');
   }
+
+  async findAllbyDate(start: string, end: string) {
+    return this.model.find({ createdAt: { $gte: start, $lte: end } }).exec()
+  }
 };
