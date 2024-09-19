@@ -362,9 +362,18 @@ export class AdminService extends CrudService<Admin> {
 
     let list: any = []
 
-    let credist: any = await this.CreditRequestRepository.findAll({ limit: '300', sort: '-createdAt' })
+    let hoy  = new Date();
+    let pastDate = new Date()
+    let start = pastDate.setDate(hoy.getDate() - 30);
+    let end = Date.now();
 
-    for (let credit of credist.items) {
+    let inicio = new Date(start)
+    let fin = new Date(end)
+
+
+    let credist: any = await this.CreditRequestRepository.findAllbyDate(inicio.toString(), fin.toString())
+
+    for (let credit of credist) {
       let credito: any = {
         fecha_de_creacion: '',
         telefono: '',
@@ -399,7 +408,9 @@ export class AdminService extends CrudService<Admin> {
         credito.status = credit.status,
         credito.meses = credit.creditMonths,
         credito.pago = credit.downPayment
-        credito.fecha_de_creacion = credit.createdAt.toString('dd/MM/yyyy')
+        let newfecha = new Date();
+        newfecha.setDate(credit.createdAt.getDate() - 5);
+        credito.fecha_de_creacion = newfecha.toLocaleString()
 
 
       if (credit.carType === 'new') {

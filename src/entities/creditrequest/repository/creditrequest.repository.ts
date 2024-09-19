@@ -15,4 +15,5 @@ export class CreditRequestRepository extends CrudRepository<CreditRequest> {
   async findAllbyDate(start: string, end: string) {
     return this.model.find({ createdAt: { $gte: start, $lte: end } }).exec()
   }
+  
 };
