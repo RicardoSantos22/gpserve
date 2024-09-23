@@ -7,13 +7,15 @@ import { orderRepository } from './repository/order.repository';
 import { HttpModule } from '@nestjs/axios';
 import { NewCarModule } from '../newcar/newcar.module';
 import { UsedCarModule } from '../usedcar/usedcar.module';
+import { AgencyModule } from '../agency/agency.module';
 
 @Module({  
   imports: [
   TypegooseModule.forFeature([order]),
   HttpModule.register({timeout: 60000, maxRedirects: 5}),
   NewCarModule,
-  UsedCarModule
+  UsedCarModule,
+  AgencyModule,
   
 ],
   controllers: [NeworderController],

@@ -7,17 +7,18 @@ import { orderRepository } from '../repository/order.repository'
 import { order } from '../model/order.model'
 import { NewCarRepository } from 'src/entities/newcar/repository/newcar.repository';
 import { UsedCarRepository } from 'src/entities/usedcar/repository/usedcar.repository';
+import { AgencyRepository } from 'src/entities/agency/repository/agency.repository';
 
 let x;
 
 @Injectable()
-export class OrdersService extends CrudService<typeof x>{
+export class OrdersService extends CrudService<typeof x> {
 
     //bbva llave publica
-   // private readonly bbvakey: string = '6x8S&74!45m&1=n!!Ffv!#6aQP-i1l8!-=0W!3H1mj3sM8Ty8dpWf45A4)u-#Jm=-(&mqUJt5t-!G7WIH%Wa9m2+o068b4&R(t63m83vH%%xC$LQZ#CQ2$eSUv#TEjTA';
+    // private readonly bbvakey: string = '6x8S&74!45m&1=n!!Ffv!#6aQP-i1l8!-=0W!3H1mj3sM8Ty8dpWf45A4)u-#Jm=-(&mqUJt5t-!G7WIH%Wa9m2+o068b4&R(t63m83vH%%xC$LQZ#CQ2$eSUv#TEjTA';
 
-   //bbva llave dev
-   private readonly bbvakey: string = 'M94eF#-09dKGeDN9u=-b=j2(4&Xe)f3U9+o134i&0y3(75XsSNE0MO6sEe-M!l)7G1%7(d6v$i#Kp-9sFkVo=&lB1#Pm2OL6kf##=kv7R%K9rLjb#3#+R9I&6E#Kh7B#';
+    //bbva llave dev
+    private readonly bbvakey: string = 'M94eF#-09dKGeDN9u=-b=j2(4&Xe)f3U9+o134i&0y3(75XsSNE0MO6sEe-M!l)7G1%7(d6v$i#Kp-9sFkVo=&lB1#Pm2OL6kf##=kv7R%K9rLjb#3#+R9I&6E#Kh7B#';
 
     setupCarsSecret: string
 
@@ -33,9 +34,10 @@ export class OrdersService extends CrudService<typeof x>{
         readonly config: ConfigService,
         private httpService: HttpService,
         private NewCarRepository: NewCarRepository,
-        private usedcarRepository: UsedCarRepository
-    ) { 
-        super(repository, 'UsedCar', config); 
+        private usedcarRepository: UsedCarRepository,
+        private agencyRepository: AgencyRepository
+    ) {
+        super(repository, 'UsedCar', config);
         this.sadApiConfig = {
             baseUrl: this.config.get('sadAPI.baseUrl'),
             username: this.config.get('sadAPI.username'),
@@ -45,11 +47,16 @@ export class OrdersService extends CrudService<typeof x>{
     }
 
 
-    async createintencion(body)
-    {
+    async createintencion(body) {
         let amount;
         if (body.concept === 1) {
-            amount = (body.amount / 100) * 50;
+
+            if (body.amount > 800000) {
+                amount = 40000
+            }
+            else {
+                amount = 10000
+            }
         }
         else if (body.concept === 2) {
             amount = body.amount;
@@ -61,30 +68,32 @@ export class OrdersService extends CrudService<typeof x>{
 
     async CreateOrder(body) {
 
-        console.log(body)
-
         let car: any;
 
-        if(body.typecar === 'true')
-        {
+        if (body.typecar === 'true') {
 
             car = await this.NewCarRepository.findById(body.idcar)
-            this.NewCarRepository.update(body.idcar, {status: 'offline'})
-            
+            this.NewCarRepository.update(body.idcar, { status: 'offline' })
+
         }
-        else
-        {
+        else {
             car = await this.usedcarRepository.findById(body.idcar)
-            this.usedcarRepository.update(body.idcar, {status: 'offline'})
+            this.usedcarRepository.update(body.idcar, { status: 'offline' })
 
         }
 
 
-        
+
 
         let amount;
         if (body.concept === 1) {
-            amount = (body.amount / 100) * 50;
+
+            if (body.amount > 800000) {
+                amount = 40000
+            }
+            else {
+                amount = 10000
+            }
         }
         else if (body.concept === 2) {
             amount = body.amount;
@@ -104,6 +113,7 @@ export class OrdersService extends CrudService<typeof x>{
         const Mensaje: string = (await N_order).toString() + (await N_referencia).toString() + (await amount).toString();
 
         const hash = createHmac('sha256', this.bbvakey).update(Mensaje).digest('hex');
+
 
         let order: order = {
             carid: body.idcar,
@@ -128,14 +138,12 @@ export class OrdersService extends CrudService<typeof x>{
         //     "concept": order.concept,
         //     "idRegister": '1'
         // }
-     
 
 
-       let reponseControl = await this.ReserveZAD(car, 1, body.token)
 
-       console.log(reponseControl)
+        let reponseControl = await this.ReserveZAD(car, 1, body.token)
 
-       let createResponse = await this.repository.create(order);
+        let createResponse = await this.repository.create(order);
 
         return createResponse
 
@@ -144,7 +152,7 @@ export class OrdersService extends CrudService<typeof x>{
     async AddNewOrder(Order) {
 
         console.log(Order)
-        let car; 
+        let car;
         let i;
 
         let urlreconstruccion = '&norder=' + Order.mp_order + '&agencyId=' + Order.agencyId + '&carId=' + Order.carID + '&brand=' + Order.brand + '&model=' + Order.model + '&series=' + Order.series + '&img=' + Order.img + '&price=' + Order.price + '&year=' + Order.year + '&colorname=' + Order.name + '&transmicion=' + Order.transmicion + '&fuel=' + Order.fuel + '&brandUrl=' + Order.brandUrl + '&modelUrl=' + Order.modelUrl + '&seriesUrl=' + Order.seriesUrl + '&isnewcar=' + Order.isnewcar + '&type=' + Order.type;
@@ -166,7 +174,7 @@ export class OrdersService extends CrudService<typeof x>{
         }
 
         if (Order.mp_authorization > 0) {
-            
+
 
             Order.fronturl = urlreconstruccion
 
@@ -175,17 +183,16 @@ export class OrdersService extends CrudService<typeof x>{
             let token = await this.getaccesetoken()
             console.log(token)
 
-            if(Order.isnewcar)
-            {
+            if (Order.isnewcar) {
                 car = await this.NewCarRepository.findById(Order.carID)
             }
-            else{
+            else {
 
                 car = await this.usedcarRepository.findById(Order.carID)
             }
 
             console.log(updateorder)
-            
+
 
             // i = this.paymetsZAD(Order, car.vin, token.token)
 
@@ -264,7 +271,7 @@ export class OrdersService extends CrudService<typeof x>{
                     postalCode: body.zip
                 },
                 regimenFiscal: body.regimen_fiscal,
-                usoCFDI:body.cfdi,
+                usoCFDI: body.cfdi,
                 RFC: body.rfc,
 
             },
@@ -277,26 +284,27 @@ export class OrdersService extends CrudService<typeof x>{
 
         }
 
-        const response:any = await this.httpService.post(`http://201.116.249.45:1089/api/Payments`, zadbody ,
-        {
-            headers: {
-                'Authorization': 'Bearer ' + token.trim()
-            }
-        }).toPromise()
-        .then(res => {console.log(res)})
-        .catch(e => {console.log(e)})
+        const response: any = await this.httpService.post(`http://201.116.249.45:1089/api/Payments`, zadbody,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + token.trim()
+                }
+            }).toPromise()
+            .then(res => { console.log(res) })
+            .catch(e => { console.log(e) })
 
-        
+
         return 0
 
     }
 
 
-    private async ReserveZAD(Reserve, status: number, token) {
+    async ReserveZAD(Reserve:any, status: number, token:any) {
 
-        let agencyID: number = parseInt(Reserve.agencyId); 
+        console.log(Reserve.vin, status, token)
+        let agencyID: number = parseInt(Reserve.agencyId);
 
-        
+
 
 
         const response = await this.httpService.post(`http://201.116.249.45:1089/api/Reserves/Vehicles`, {
@@ -306,38 +314,35 @@ export class OrdersService extends CrudService<typeof x>{
             reservedStatus: status
 
         },
-        {
-            headers: {
-                'Authorization': 'Bearer ' + token.trim()
-            }
-        }).toPromise()
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + token.trim()
+                }
+            }).toPromise()
 
 
-
-        return  response.data
+        return response.data
 
     }
 
-    async getaccesetoken(){
+    async getaccesetoken() {
 
         const responsetoken = await this.httpService.post(`${this.sadApiConfig.baseUrl}/login/authenticate`, {
             userName: this.sadApiConfig.username,
             password: this.sadApiConfig.password
         }).toPromise()
 
-        return {token: responsetoken.data}
+        return { token: responsetoken.data }
     }
 
 
-    async conciliacionforDocument(body: any){
+    async conciliacionforDocument(body: any) {
 
 
-        let documentsOrdesList:any = []
+        let documentsOrdesList: any = []
 
-        for(let orderitem of body)
-        {
-            if(orderitem.Estado === 'Dispersado')
-            {
+        for (let orderitem of body) {
+            if (orderitem.Estado === 'Dispersado') {
                 let Norder = parseInt(orderitem.Orden)
                 documentsOrdesList.push(Norder)
             }
@@ -347,13 +352,11 @@ export class OrdersService extends CrudService<typeof x>{
 
         let allorders = await this.repository.findAll();
 
-        for(let order of allorders.items)
-        {
-            if(documentsOrdesList.includes(order.Norder))
-            {
-              let id = order.id
+        for (let order of allorders.items) {
+            if (documentsOrdesList.includes(order.Norder)) {
+                let id = order.id
 
-              this.repository.update(id, {status: 'conciliado'})
+                this.repository.update(id, { status: 'conciliado' })
             }
         }
 
