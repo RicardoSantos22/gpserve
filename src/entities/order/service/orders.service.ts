@@ -68,6 +68,8 @@ export class OrdersService extends CrudService<typeof x> {
 
     async CreateOrder(body) {
 
+       
+
         let car: any;
 
         if (body.typecar === 'true') {
@@ -86,18 +88,12 @@ export class OrdersService extends CrudService<typeof x> {
 
 
         let amount;
-        if (body.concept === 1) {
-
-            if (body.amount > 800000) {
+            if (parseInt(body.amount) > 800000) {
                 amount = 40000
             }
             else {
                 amount = 10000
             }
-        }
-        else if (body.concept === 2) {
-            amount = body.amount;
-        }
 
         // if(body.concept === 1){
         // amount = this.getminamount(body.amount);
@@ -105,6 +101,7 @@ export class OrdersService extends CrudService<typeof x> {
         // else if(body.concept === 2){
         //     amount = body.amount
         // }
+
 
         const N_order = this.CreateRamdomNum();
 
@@ -151,7 +148,7 @@ export class OrdersService extends CrudService<typeof x> {
 
     async AddNewOrder(Order) {
 
-        console.log(Order)
+
         let car;
         let i;
 
@@ -301,7 +298,7 @@ export class OrdersService extends CrudService<typeof x> {
 
     async ReserveZAD(Reserve:any, status: number, token:any) {
 
-        console.log(Reserve.vin, status, token)
+
         let agencyID: number = parseInt(Reserve.agencyId);
 
 
