@@ -148,6 +148,7 @@ export class OrdersService extends CrudService<typeof x> {
 
     async AddNewOrder(Order) {
 
+        console.log(Order)
 
         let car;
         let i;
@@ -193,7 +194,10 @@ export class OrdersService extends CrudService<typeof x> {
 
             // i = this.paymetsZAD(Order, car.vin, token.token)
 
-            let r = await this.repository.update(Order.apiRegister, updateorder)
+            let order = await this.repository.findAll({ Norder: Order.Norder})
+            console.log(order)
+
+            let r = await this.repository.update(order.items[0]._id, updateorder)
 
             console.log(r)
 
