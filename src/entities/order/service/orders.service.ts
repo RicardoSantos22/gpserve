@@ -138,7 +138,7 @@ export class OrdersService extends CrudService<typeof x> {
 
 
 
-        let reponseControl = await this.ReserveZAD(car, 1, body.token)
+        // let reponseControl = await this.ReserveZAD(car, 1, body.token)
 
         let createResponse = await this.repository.create(order);
 
