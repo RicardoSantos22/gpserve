@@ -57,14 +57,14 @@ export class NeworderController {
         if(validation.orderDuplicate){
 
             
-        console.log('https://estrenatuauto.com/Proceso-de-Pago?order=true' + validation.fronturl)
+        console.log('http://premier-website-staging.s3-website-us-east-1.amazonaws.com/?order=true' + validation.fronturl)
             return {
-                url: 'https://estrenatuauto.com/Proceso-de-Pago?order=true' + validation.fronturl
+                url: 'http://premier-website-staging.s3-website-us-east-1.amazonaws.com/?order=true' + validation.fronturl
             }
         }
         else{
             return {
-                url: 'https://estrenatuauto.com/Proceso-de-Pago?order=false' + validation.fronturl
+                url: 'http://premier-website-staging.s3-website-us-east-1.amazonaws.com/?order=false' + validation.fronturl
             }
         }
          
