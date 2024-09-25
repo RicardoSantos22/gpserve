@@ -1482,7 +1482,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
 
             if (carinlist.length > 0) {
-                carlist.items.forEach((car: any) => {
+                carlist.items.forEach(async (car: any) => {
                     let bmwidlist = [
                         '800',
                         '901',
@@ -1524,7 +1524,7 @@ export class UsedCarService extends CrudService<typeof x> {
                         };
                         this.finishedcar.create(updateCar);
                         console.log('auto descartado: ', car.vin);
-                        this.repository.delete(car._id);
+                        await this.repository.update(car._id, { status: 'offline' })
                     }
                 });
             }
@@ -1695,4 +1695,15 @@ export class UsedCarService extends CrudService<typeof x> {
     async updatecatalogue() {
         await this.updateCarCatalogue();
     }
+
+    async desactivecars() {
+        let car = await this.repository.findAll({vin: 'LB37622Z4RX515582'})
+        if(car.count > 0)
+            {
+                await this.repository.update(car.items[0]._id, {status: 'offline'})
+            }
+
+        return await this.repository.findAll({vin: 'LB37622Z4RX515582'})
+    }
+
 }

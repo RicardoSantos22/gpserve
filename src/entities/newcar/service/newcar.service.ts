@@ -1570,8 +1570,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                                      this.finishedcar.create(car)
 
-                                    let data =  await this.repository.update(car._id, { status: 'offline' })
-                                    console.log(data)
+                                    await this.repository.update(car._id, { status: 'offline' })
                                     }
                                 })
                             }
@@ -1586,7 +1585,7 @@ export class NewCarService extends CrudService<typeof x> {
             const createdCars = await this.repository.createMany(newCarsArray);
 
             if (carinlist.length > 0) {
-                carlist.items.forEach((car: any) => {
+                carlist.items.forEach(async (car: any) => {
                     let bmwidlist = ['901', '902', '903', '904', '905', '906', '907'];
 
                     if (carinlist.includes(car.vin) || bmwidlist.includes(car.agencyId)) {
@@ -1615,6 +1614,7 @@ export class NewCarService extends CrudService<typeof x> {
                             km: 0,
                         };
                         this.finishedcar.create(updateCar);
+                        await this.repository.update(car._id, { status: 'offline' })
                         console.log('auto descartado: ', car.vin);
                     }
                 });
