@@ -507,6 +507,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 'sinaloa',
             ],
             sonora: [
+                'ciudad obregon',
                 'aconchi',
                 'agua prieta',
                 'alamos',
@@ -881,6 +882,7 @@ export class UsedCarService extends CrudService<typeof x> {
                 'sinaloa',
             ],
             sonora: [
+                'ciudad obregon',
                 'aconchi',
                 'agua prieta',
                 'alamos',
@@ -1008,7 +1010,6 @@ export class UsedCarService extends CrudService<typeof x> {
                 'villaldama',
             ],
             ciudadmexico: [
-                'ciudad obregon',
                 'ciudad de mexico',
                 'azcapotzalco',
                 'benito juarez',
@@ -1361,6 +1362,11 @@ export class UsedCarService extends CrudService<typeof x> {
                                 transmision = sc.transmision.trim()
                            }
 
+                           if(sc.agencyCity === 'HERMOSILLO' || sc.agencyCity === 'Hermosillo')
+                            {
+                                sc.agencyCity = 'Hermosillo'
+                            }
+
 
                             parsedModel = sc.model.replace('/', '-');
                             parsedBrand = sc.brand.replace('/', '-');
@@ -1451,24 +1457,24 @@ export class UsedCarService extends CrudService<typeof x> {
                                 usedCarsArray.push(usedCar);
                             }
                         }
-                        // else {
+                        else {
 
-                        //     if (verificacion.status !== 200) {
-                        //         carlistban.push(verificacion)
-                        //     }
-                        //     else {
-                        //         carlist.items.forEach((car: any) => {
+                            if (verificacion === 'offline') {
+                                carlistban.push(verificacion)
+                            }
+                            else {
+                                carlist.items.forEach((car: any) => {
 
-                        //             if (sc.ID === car.vin) {
+                                    if (sc.ID === car.vin) {
 
-                        //                 this.finishedcar.create(car)
+                                        this.finishedcar.create(car)
 
-                        //                 this.repository.delete(car._id)
-                        //             }
-                        //         })
-                        //     }
+                                        this.repository.update(car._id, { status: 'offline' })
+                                    }
+                                })
+                            }
 
-                        // }
+                        }
                     }
                 }
             }

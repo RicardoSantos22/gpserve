@@ -616,6 +616,7 @@ export class NewCarService extends CrudService<typeof x> {
                 'sinaloa',
             ],
             sonora: [
+                'ciudad obregon',
                 'aconchi',
                 'agua prieta',
                 'alamos',
@@ -987,6 +988,7 @@ export class NewCarService extends CrudService<typeof x> {
                 'sinaloa',
             ],
             sonora: [
+                'ciudad obregon',
                 'aconchi',
                 'agua prieta',
                 'alamos',
@@ -1114,7 +1116,6 @@ export class NewCarService extends CrudService<typeof x> {
                 'villaldama',
             ],
             ciudadmexico: [
-                'alvaro obregon',
                 'ciudad de mexico',
                 'azcapotzalco',
                 'benito juarez',
@@ -1142,6 +1143,7 @@ export class NewCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let newCarsArray: NewCar[] = [];
         let agencyIds = [
+            1033, //geely culiacan
             29,
             9,
             1031,
@@ -1177,7 +1179,7 @@ export class NewCarService extends CrudService<typeof x> {
             1030, // Omoda Hermosillo
             //1031, // chirey mazatlan
             1032, //Stallantis caballito
-            1033, //geely culiacan
+
             1034, //jac mochis
             1035, //geely hermosillo
             1037, //gwm culiacan
@@ -1217,6 +1219,7 @@ export class NewCarService extends CrudService<typeof x> {
                     const sadNewCars = response.data.data as SADNewCar[];
 
                     for (let sc of sadNewCars) {
+                      
                         let BDID: string = '';
 
                         carlist.items.forEach((car: any) => {
@@ -1262,6 +1265,7 @@ export class NewCarService extends CrudService<typeof x> {
                             sc.isReserved === 'N' &&
                             sc.demo !== 'S'
                         ) {
+
                             vins.push(sc.ID);
 
                             let agencia = await this.agencyRepository.findOne({
@@ -1482,6 +1486,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                             switch (true) {
                                 case transmision_automactica.includes(sc.transmision):
+                                    sc.transmision = 'Automática'
                                     transmision = 'Automática'
                                     break;
                                 case transmision_manual.includes(sc.transmision):
@@ -1493,6 +1498,11 @@ export class NewCarService extends CrudService<typeof x> {
                                 default:
                                     transmision = sc.transmision.trim()
                             }
+
+                            if (sc.agencyCity === 'HERMOSILLO' || sc.agencyCity === 'Hermosillo') {
+                                sc.agencyCity = 'Hermosillo'
+                            }
+
 
 
                             //if(true) {
@@ -1540,15 +1550,32 @@ export class NewCarService extends CrudService<typeof x> {
                                     lng: lng.toString(),
                                 },
                             };
-
                             console.log(newCar.transmision, newCar.vin, newCar.agencyId, sc.transmision)
-
                             if (BDID !== '') {
                                 await this.repository.update(BDID, newCar);
                                 updateitem++;
                             } else {
                                 newCarsArray.push(newCar);
                             }
+                        }
+                        else {
+
+                            if (verificacion === 'offline') {
+                                carlistban.push(verificacion)
+                            }
+                            else {
+                                carlist.items.forEach(async (car: any) => {
+
+                                    if (sc.ID === car.vin) {
+
+                                     this.finishedcar.create(car)
+
+                                    let data =  await this.repository.update(car._id, { status: 'offline' })
+                                    console.log(data)
+                                    }
+                                })
+                            }
+
                         }
                     }
                 }
