@@ -55,7 +55,11 @@ export class UsedCarService extends CrudService<typeof x> {
     ): Promise<PaginatedEntities<UsedCar>> {
         query.status = 'online';
 
-        return await this.repository.findAll(query);
+        let car = await this.repository.findAll(query);
+
+        console.log(car)
+
+        return car
     }
 
     async findAllcars(
@@ -1039,13 +1043,14 @@ export class UsedCarService extends CrudService<typeof x> {
         // Logger.debug(`Deleted ${deletedRecords.affected} records`)
         let usedCarsArray: UsedCar[] = [];
         let agencyIds = [
+            9, // Hyundai Tijuana
             3040, // BYD Culiacan
             1, // Hyundai Culiacán
             5, // Toyota Mazatlán
             6, // Chevrolet Mazatlán
             7, // Hyundai Mazatlán
             8, // Hyundai Mexicali
-            9, // Hyundai Tijuana
+           
             10, // Hyundai Los Cabos
             11, // Hino Culiacán
             12, // Chevrolet Culiacán
@@ -1154,6 +1159,13 @@ export class UsedCarService extends CrudService<typeof x> {
                         }
 
                         vins.push(sc.ID);
+
+                        let cars = ['MZBEP2A44LN058546', 'TMCJ33AB2LJ080120', 'MB2PB2A19MM111029']
+
+                        if(cars.includes(sc.ID))
+                            {
+                                console.log('car: ', sc)
+                            }
 
                         if (sc.isAvailable === 'S' && sc.isReserved === 'N') {
                             let agencia = await this.agencyrepository.findOne({
@@ -1467,7 +1479,7 @@ export class UsedCarService extends CrudService<typeof x> {
 
                                     if (sc.ID === car.vin) {
 
-                                        this.finishedcar.create(car)
+                                        // this.finishedcar.create(car)
 
                                         this.repository.update(car._id, { status: 'offline' })
                                     }
@@ -1522,7 +1534,7 @@ export class UsedCarService extends CrudService<typeof x> {
                             vins: [],
                             duplicates: [],
                         };
-                        this.finishedcar.create(updateCar);
+                        // this.finishedcar.create(updateCar);
                         console.log('auto descartado: ', car.vin);
                         await this.repository.update(car._id, { status: 'offline' })
                     }
@@ -1691,10 +1703,10 @@ export class UsedCarService extends CrudService<typeof x> {
         }
     }
 
-    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-    async updatecatalogue() {
-        await this.updateCarCatalogue();
-    }
+    // @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    // async updatecatalogue() {
+    //     await this.updateCarCatalogue();
+    // }
 
     async desactivecars() {
         let car = await this.repository.findAll({vin: 'LB37622Z4RX515582'})

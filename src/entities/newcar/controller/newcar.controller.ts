@@ -115,6 +115,10 @@ export class NewCarController {
   }
 
 
+  @Get('getcataloguecar/:id')
+  async getcataloguecar(@Param('id') id: string) {
+    return this.service.getAllCatalogueCarsForId(id)
+  }
   
   @Get('filters')
   async getFiltersValues() {

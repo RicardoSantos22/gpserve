@@ -46,6 +46,7 @@ export class NewCarService extends CrudService<typeof x> {
         private finishedcar: FinishedcarsService,
         private agencyRepository: AgencyRepository,
         private bugRepository: BugRepository,
+        private usedCarRepository: UsedCarRepository,
     ) {
         super(repository, 'NewCar', config);
         this.sadApiConfig = {
@@ -74,6 +75,40 @@ export class NewCarService extends CrudService<typeof x> {
         };
 
         return r;
+    }
+
+    
+    async getAllCatalogueCarsForId(id: string)
+    {
+        let car = {
+            car: [],
+            type: true
+        }
+        let newcar = await this.repository.findAll({_id: id})
+
+        console.log(newcar)
+
+        if(newcar.count >=1)
+            {
+                car.car = newcar.items;
+                car.type = true
+
+                return car;
+            }
+        else
+        {
+            let usedcar = await this.usedCarRepository.findAll({_id: id})
+            if(usedcar.count >= 1)
+                {
+                    car.car = usedcar.items;
+                    car.type = false
+                    return car
+                }
+            else
+            {
+                return []
+            }
+        }
     }
 
     async findAllcars(
@@ -130,6 +165,8 @@ export class NewCarService extends CrudService<typeof x> {
 
         return r;
     }
+
+
 
     async getfiltercount() {
         let counts: any = {
@@ -1568,7 +1605,7 @@ export class NewCarService extends CrudService<typeof x> {
 
                                     if (sc.ID === car.vin) {
 
-                                     this.finishedcar.create(car)
+                                    //  this.finishedcar.create(car)
 
                                     await this.repository.update(car._id, { status: 'offline' })
                                     }
@@ -1613,7 +1650,7 @@ export class NewCarService extends CrudService<typeof x> {
                             cartype: 'new',
                             km: 0,
                         };
-                        this.finishedcar.create(updateCar);
+                        // this.finishedcar.create(updateCar);
                         await this.repository.update(car._id, { status: 'offline' })
                         console.log('auto descartado: ', car.vin);
                     }
@@ -1772,10 +1809,10 @@ export class NewCarService extends CrudService<typeof x> {
         }
     }
 
-    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-    async updatecatalogue() {
-        await this.updateCarCatalogue();
-    }
+    // @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    // async updatecatalogue() {
+    //     await this.updateCarCatalogue();
+    // }
 
     private async loginToSAD(): Promise<{ token: string }> {
         const response = await this.httpService
