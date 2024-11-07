@@ -854,7 +854,12 @@ export class UsedCarService extends CrudService<typeof x> {
         return 500;
     }
 
-    async updateCarCatalogue() {
+    async updateCarCatalogue()
+    {
+        return 0
+    }
+
+    async updateCarCataloguea() {
         let estadosCiudades = {
             bajacalifornia: [
                 'ensenada',
